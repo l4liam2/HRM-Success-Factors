@@ -1,0 +1,217 @@
+{
+  "name": "Cybersecurity Awareness and Behavior",
+  "children": [
+    {
+      "name": "Psychological Perspective",
+      "children": [
+        {
+          "name": "Coping and Efficacy",
+          "children": [
+            {
+              "name": "The Role of Self-Efficacy in Cybersecurity Awareness",
+              "description": "Self-efficacy, defined as an individual's belief in their capability to mobilize resources and execute protective actions, is a critical predictor of cybersecurity behavior that influences the effort and persistence users apply to security tasks (Hanus & Wu, 2016, p. 7; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=9064e6fd-5469-45ad-8e75-4c00bf15485e\" target=\"_blank\" class=\"citation\">Thangavelu et al., 2021</a>, p. 5). As a central component of coping appraisal within Protection Motivation Theory, self-efficacy is positively reinforced by countermeasure awareness, enabling users to translate their knowledge into effective threat mitigation strategies (Baral & Asanka Gamagedara Arachchilage, 2019, p. 5; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=3dacb51b-293a-4b93-9591-e372de498468\" target=\"_blank\" class=\"citation\">Burns et al., 2015</a>, p. 3933). Conversely, low self-efficacy can lead to maladaptive behaviors such as psychological distancing, where users disengage from security protocols because they feel incapable of managing threats despite being aware of them (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=53c4e64a-c31b-4be8-9b52-a1fd035ff536\" target=\"_blank\" class=\"citation\">reeves</a> et al., 2021, p. 9; Torten et al., 2018, p. 70)."
+            },
+            {
+              "name": "The Architecture of Response Efficacy in Cybersecurity behavior",
+              "description": "Response efficacy constitutes a fundamental element of the coping appraisal process within Protection Motivation Theory (PMT), serving as the user's belief\u2014or \"outcome expectation\"\u2014that a specific recommended countermeasure will effectively mitigate a targeted security threat (Hanus & Wu, 2016, p. 3; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=241a999c-8968-4132-8292-a85a290f3bf5\" target=\"_blank\" class=\"citation\">Pham, 2017</a>, p. 3). Within this behavioral architecture, response efficacy functions interdependently with self-efficacy and response cost to determine whether an individual adopts adaptive protective behaviors or falls into maladaptive non-compliance (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=a1161e34-63db-4460-a5d9-3782eba0af8c\" target=\"_blank\" class=\"citation\">Ali et al., 2021</a>, p. 11; Hanus & Wu, 2016, p. 4). Furthermore, expanded frameworks like the Technology Threat Avoidance Theory (TTAT) structure coping efficacy into external appraisals, regarding the effectiveness of protective technology, and internal appraisals, regarding the individual's own ability to detect and avoid threats (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=53c4e64a-c31b-4be8-9b52-a1fd035ff536\" target=\"_blank\" class=\"citation\">reeves</a> et al., 2021, p. 8)."
+            },
+            {
+              "name": "The Architecture of Personal Agency in Cybersecurity",
+              "description": "Based on the psychological perspectives of cybersecurity, the architecture of personal agency is described as a critical mental construct that, along with attitude and perceived norms, directly forms an individual's behavioral intention to comply with security measures [1]. This framework relies heavily on coping appraisal mechanisms, specifically self-efficacy (the belief in one's ability to execute security tasks) and response efficacy (the belief that the action will effectively mitigate the threat), which determine motivation [2], [3]. Ultimately, a robust sense of personal agency enables users to mobilize cognitive resources and persist in protective behaviors when coping with complex cyber threats [4], [5]."
+            }
+          ]
+        },
+        {
+          "name": "Behavioural Drivers",
+          "children": [
+            {
+              "name": "Intrinsic motivation",
+              "description": "Intrinsic motivation in cybersecurity is defined as the internal drive to engage in secure behaviors for their own sake, characterized by feelings of enjoyment, satisfaction, and personal accomplishment rather than the pursuit of external rewards (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=a1161e34-63db-4460-a5d9-3782eba0af8c\" target=\"_blank\" class=\"citation\">Ali et al., 2021</a>, p. 27; Bada et al., 2019, p. 7). Within this context, behavioral drivers stem from an individual's personal values and beliefs, such as perceived legitimacy and value congruence, which research indicates are often more significant predictors of policy compliance than extrinsic factors (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=a1161e34-63db-4460-a5d9-3782eba0af8c\" target=\"_blank\" class=\"citation\">Ali et al., 2021</a>, p. 10). Furthermore, intrinsic benefits\u2014such as self-esteem and the justification of actions through internal inspiration\u2014help employees internalize security rules, leading to more sustainable behavioral changes (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=7561c81c-d364-4c97-9b55-95a64a39e7fc\" target=\"_blank\" class=\"citation\">Bulgurcu et al., 2010</a>, p. 530).\n\n**References**\n\n*   Ali, R. F., Dominic, P. D. D., Ali, S. E. A., Rehman, M., & Sohail, M. (2021). Information security behavior and information security policy compliance: A systematic literature review for identifying the transformation process from noncompliance to compliance. *Applied Sciences*, *11*(8), 3383.\n*   Bada, M., Sasse, A. M., & Nurse, J. R. (2019). Cyber security awareness campaigns: Why do they fail to change behaviour?. *arXiv preprint arXiv:1901.02672*.\n*   Bulgurcu, B., Cavusoglu, H., & Benbasat, I. (2010). Information security policy compliance: An empirical study of rationality-based beliefs and information security awareness. *MIS Quarterly*, *34*(3), 523\u2013548."
+            },
+            {
+              "name": "Moral beliefs",
+              "description": "Moral beliefs in the context of cybersecurity behavior refer to an individual's intrinsic evaluation of whether a specific action, such as violating an information security policy (ISP), is ethically right or wrong [1]. These beliefs function as an overriding internal control mechanism that can supersede other motivations, such as utility maximization or convenience, often proving to be a stronger predictor of compliance than external deterrents like sanctions [2], [3]. Empirical research demonstrates that moral beliefs consistently exert a strong negative influence on the intention to violate security policies, a finding that holds true across diverse national cultures [4], [5].\n\n**Sources:**\n\n*   Ali, R. F., et al. (2021). Information Security Behavior and Information Security Policy Compliance: A Systematic Literature Review for Identifying the Transformation Process from Noncompliance to Compliance. *Applied Sciences, 11*(3383), 22.\n*   Vance, A., Siponen, M. T., & Straub, D. W. (2020). Effects of sanctions, moral beliefs, and neutralization on information security policy violations across cultures. *Information & Management, 57*(4), Article 103212."
+            },
+            {
+              "name": "Counter-neutralization",
+              "description": "Counter-neutralization, often described as anti-neutralization, involves deploying communication strategies that proactively refute the specific rationalizations and excuses\u2014such as denial of responsibility or injury\u2014that employees use to justify non-compliant information security behaviors (Alyami et al., 2023, p. 69; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=c454cf7e-af74-4002-9886-04304c6185cd\" target=\"_blank\" class=\"citation\">Hu et al., 2021</a>, p. 11). By challenging these psychological justifications, organizations aim to prevent individuals from alleviating the moral guilt associated with violating security policies, thereby maintaining the psychological barrier against misconduct (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=c5897439-ba11-4080-b1c2-9760e2a0f0b6\" target=\"_blank\" class=\"citation\">Vance et al., 2020</a>, p. 3). Ultimately, this intervention seeks to block the cognitive process of neutralization to improve adherence to information security policies (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=53c4e64a-c31b-4be8-9b52-a1fd035ff536\" target=\"_blank\" class=\"citation\">reeves</a> et al., 2021, p. 18)."
+            }
+          ]
+        },
+        {
+          "name": "Cognitive Barriers",
+          "children": [
+            {
+              "name": "Security Fatigue",
+              "description": "Security fatigue describes a state of weariness or aversion where users feel overwhelmed by the repetitive demands, warnings, and advice required to maintain cybersecurity, leading to a depletion of the cognitive resources necessary for decision-making (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=53c4e64a-c31b-4be8-9b52-a1fd035ff536\" target=\"_blank\" class=\"citation\">reeves</a> et al., 2021, p. 2; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=a5807a8d-62fa-4a0f-a3d0-1cb89c248129\" target=\"_blank\" class=\"citation\">He & Zhang, 2019</a>, p. 4). This cognitive barrier often prompts individuals to perform a subconscious cost-benefit analysis\u2014sometimes referred to as a \"compliance budget\"\u2014where they conclude that the effort to comply outweighs the perceived risk or benefit (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=ab151c45-995a-45a1-b359-a5e41283f53a\" target=\"_blank\" class=\"citation\">Dawson, 2019</a>, p. 38; Furnell & Thomson, 2009, as cited in <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=53c4e64a-c31b-4be8-9b52-a1fd035ff536\" target=\"_blank\" class=\"citation\">reeves</a> et al., 2021, p. 11). Consequently, this fatigue results in disengagement and non-compliant behaviors, such as ignoring security alerts or rejecting good practices, as users struggle to cope with the cognitive burden of constant security vigilance (Scholefield & Shepherd, 2019, p. 2; Stanton et al., 2016, as cited in <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=ab151c45-995a-45a1-b359-a5e41283f53a\" target=\"_blank\" class=\"citation\">Dawson, 2019</a>, p. 38)."
+            },
+            {
+              "name": "Optimism Barriers"
+            },
+            {
+              "name": "Habituation"
+            },
+            {
+              "name": "Cognitive Biases"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Design Perspective",
+      "children": [
+        {
+          "name": "Delivery Frequency",
+          "children": [
+            {
+              "name": "Just In Time Training"
+            },
+            {
+              "name": "Continuous Reinforcement"
+            },
+            {
+              "name": "Drip-Feed Learning"
+            },
+            {
+              "name": "Communications Strategy"
+            }
+          ]
+        },
+        {
+          "name": "Engagement Methods",
+          "children": [
+            {
+              "name": "Gamification"
+            },
+            {
+              "name": "Hands on simulations"
+            },
+            {
+              "name": "Storytelling"
+            },
+            {
+              "name": "Interactive Media"
+            }
+          ]
+        },
+        {
+          "name": "Content Tailoring",
+          "children": [
+            {
+              "name": "Personal Life Relevance"
+            },
+            {
+              "name": "Role based scenarios"
+            }
+          ]
+        },
+        {
+          "name": "Training Design Best Practices",
+          "children": [
+            {
+              "name": "Audience Segmentation"
+            }
+          ]
+        },
+        {
+          "name": "Evaluation Methods",
+          "children": [
+            {
+              "name": "Independent Observations"
+            },
+            {
+              "name": "Phishing Evaluations"
+            },
+            {
+              "name": "Validated questionnaires"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Organisational Perspective",
+      "children": [
+        {
+          "name": "Executive Leadership",
+          "children": [
+            {
+              "name": "Visible Commitment"
+            },
+            {
+              "name": "Resource allocation"
+            },
+            {
+              "name": "Policy Sponsorship"
+            }
+          ]
+        },
+        {
+          "name": "Organisational Culture",
+          "children": [
+            {
+              "name": "Security Ownership"
+            },
+            {
+              "name": "Psychological Safety"
+            },
+            {
+              "name": "Social Norms"
+            }
+          ]
+        },
+        {
+          "name": "Policy Framework",
+          "children": [
+            {
+              "name": "Role Specific Ownership"
+            }
+          ]
+        },
+        {
+          "name": "User Centric Design",
+          "children": [
+            {
+              "name": "Accessibility"
+            }
+          ]
+        },
+        {
+          "name": "Success Measurement",
+          "children": [
+            {
+              "name": "Incident Reduction"
+            },
+            {
+              "name": "Behavioural change"
+            },
+            {
+              "name": "Knowledge retention"
+            },
+            {
+              "name": "Utility reactions"
+            }
+          ]
+        },
+        {
+          "name": "Maturity stages",
+          "children": [
+            {
+              "name": "Non-Existent"
+            },
+            {
+              "name": "Ad-hoc reactive"
+            },
+            {
+              "name": "Managed/defined"
+            },
+            {
+              "name": "Optimized/Continuous"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

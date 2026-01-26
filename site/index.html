@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factors Behind A Successful Security Awareness Program</title>
+    <meta name="description"
+        content="Interactive mind map exploring the Gamification Framework for Cybersecurity Awareness Training.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <h1>Factors Behind A Successful Security Awareness Program</h1>
+                <p>Interactive Mindmap of Success Factors</p>
+            </div>
+            <div class="controls">
+                <button id="reset-zoom" class="btn">Reset View</button>
+            </div>
+        </header>
+
+        <main id="visualization">
+            <!-- D3 Visualization will be injected here -->
+        </main>
+
+        <aside id="details-panel" class="glass-panel hidden">
+            <button id="close-panel" aria-label="Close details">&times;</button>
+            <h2 id="panel-title">Topic Details</h2>
+            <div id="panel-content">
+                <p>Select a node to view details.</p>
+            </div>
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
