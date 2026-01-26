@@ -237,3 +237,16 @@ header p {
     color: #fff;
     border-bottom-style: solid;
 }
+
+.copyright-notice {
+    position: absolute;
+    bottom: 1rem;
+    right: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 10;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.05em;
+}

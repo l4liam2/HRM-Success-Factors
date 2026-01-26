@@ -31,49 +31,27 @@ def load_source_map():
         print(f"Warning: Could not load source map: {e}")
     return source_map
 
-def get_leaf_nodes(node, path=[]):
-    """Recursively find all leaf nodes."""
-    leaves = []
+def get_all_nodes(node, path=[]):
+    """Recursively find all nodes (including intermediate ones)."""
+    nodes_to_process = []
+    
+    # Don't process the absolute root if it has no semantic meaning beyond title, 
+    # but for "Cybersecurity Awareness and Behavior" it might be worth a summary.
+    # We'll rely on the caller to pass the children of root if they want to skip root.
+    
     current_path = path + [node['name']]
+    
+    # Add the current node itself
+    nodes_to_process.append({
+        'node': node,
+        'path': current_path
+    })
     
     if 'children' in node and node['children']:
         for child in node['children']:
-            leaves.extend(get_leaf_nodes(child, current_path))
-    else:
-        # It's a leaf node
-        leaves.append({
-            'node': node,
-            'path': current_path
-        })
-    return leaves
-
-def format_citations(text, source_map, notebook_id):
-    """Format [1], [2] citations as HTML links."""
-    # We assume citations are simple [1], [2] etc, but mapping them to real sources 
-    # requires citation metadata from the query result which isn't fully exposed in simple text.
-    # However, NotebookLM usually appends a "Sources" section or we can ask for it.
-    
-    # Strategy: Since we don't get the citation metadata (which [1] maps to which source ID)
-    # easily from the text response alone without parsing raw_response (which we can't easily do right now),
-    # we will rely on a prompt engineering trick: "Include the full source title in citations like (Author, Year)".
-    # OR, we stick to the user's request: "make each of the sources cited, clickable". 
-    # If the response text has [1], [2], we technically don't know WHERE [1] points to unless we parse the `citation_metadata`.
-    
-    # Let's inspect `enrich_data.py` output again. The previous output showed:
-    # "Cybersecurity awareness is defined as... (Taherdoost, 2024, p. 1650)."
-    # It seems it's using APA style citations, not numeric [1]. 
-    # If so, we can try to pattern match likely source titles from our source_map.
-    
-    formatted_text = text
-    
-    # Simple heuristic: If we find a source title in the text, link it.
-    # But titles are long filenames like "ALSHAIKH, 2019...pdf".
-    # The text usually cites "Alshaikh (2019)".
-    
-    # Better approach: The user wants "final level leaf node topic" explained.
-    # Let's clean up existing descriptions (remove them if we are re-generating).
-    
-    return formatted_text
+            nodes_to_process.extend(get_all_nodes(child, current_path))
+            
+    return nodes_to_process
 
 def main():
     print("Loading tokens...")
@@ -92,14 +70,25 @@ def main():
     with open(DATA_FILE, 'r') as f:
         data = json.load(f)
         
-    leaves = get_leaf_nodes(data)
-    print(f"Found {len(leaves)} leaf nodes to enrich.")
+    # Collect all nodes starting from children (skip root wrapper if desired, 
+    # but let's just do everything inside the root's children to avoid summarizing the generic map title)
+    all_nodes = []
+    if 'children' in data:
+        for child in data['children']:
+            all_nodes.extend(get_all_nodes(child))
+            
+    print(f"Found {len(all_nodes)} total nodes to enrich (Levels 1-3).")
     
-    for i, item in enumerate(leaves):
+    for i, item in enumerate(all_nodes):
         node = item['node']
         path_str = " > ".join(item['path'])
         
-        print(f"[{i+1}/{len(leaves)}] Querying: {node['name']}...")
+        # Skip if already enriched (preserves manual edits)
+        if 'description' in node and node['description']:
+            print(f"[{i+1}/{len(all_nodes)}] Skipping {node['name']} (already enriched)")
+            continue
+
+        print(f"[{i+1}/{len(all_nodes)}] Querying: {node['name']}...")
         
         # We start a NEW conversation for each node to ensure fresh context
         # We ask for a specific format with source markers we can parse if possible.
