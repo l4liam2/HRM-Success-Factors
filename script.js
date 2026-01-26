@@ -6,10 +6,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const closePanelBtn = document.getElementById('close-panel');
     const resetZoomBtn = document.getElementById('reset-zoom');
 
+    // About Modal Elements
+    const aboutBtn = document.getElementById('about-btn');
+    const aboutModal = document.getElementById('about-modal');
+    const closeAboutBtn = document.getElementById('close-about');
+
     // Panel interactions
     closePanelBtn.addEventListener('click', () => {
         panel.classList.add('hidden');
     });
+
+    // About Modal Interactions
+    if (aboutBtn && aboutModal && closeAboutBtn) {
+        aboutBtn.addEventListener('click', () => {
+            aboutModal.classList.remove('hidden');
+        });
+
+        closeAboutBtn.addEventListener('click', () => {
+            aboutModal.classList.add('hidden');
+        });
+
+        // Close on click outside
+        aboutModal.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Assess Program Interaction
+    const assessBtn = document.getElementById('assess-btn');
+    if (assessBtn) {
+        assessBtn.addEventListener('click', () => {
+            window.open('https://edurisk.ca', '_blank');
+        });
+    }
 
     // D3 Setup
     const width = window.innerWidth;

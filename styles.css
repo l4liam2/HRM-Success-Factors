@@ -250,3 +250,100 @@ header p {
     font-family: 'Rajdhani', sans-serif;
     letter-spacing: 0.05em;
 }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 16, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    /* Reset glass-panel specific positioning if inherited */
+    top: auto;
+    right: auto;
+    left: auto;
+    transform: none !important;
+    /* Override glass-panel transition/transform */
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+}
+
+.modal-body p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.modal-body p:last-child {
+    margin-bottom: 0;
+}
+
+#close-about {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#close-about:hover {
+    color: var(--text-primary);
+}
+
+#about-btn {
+    margin-right: 1rem;
+}
+
+.discreet-link {
+    position: absolute;
+    bottom: 2.5rem;
+    /* Above the copyright notice which is at bottom: 1rem */
+    right: 2rem;
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    text-shadow: 0 0 5px var(--accent-glow);
+    letter-spacing: 0.05em;
+}
+
+.discreet-link:hover {
+    color: #fff;
+    opacity: 1;
+    text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+    transform: translateY(-1px);
+}
