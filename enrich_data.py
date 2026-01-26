@@ -5,7 +5,7 @@ import re
 from notebooklm_mcp.auth import load_cached_tokens
 from notebooklm_mcp.api_client import NotebookLMClient
 
-DATA_FILE = "site/data.json"
+DATA_FILE = "data.json"
 NOTEBOOK_DATA_FILE = "notebook_data.json"
 NOTEBOOK_ID = "2560eec5-1422-4fd9-9eec-48effc939ab0"
 

@@ -86,7 +86,7 @@ data = {
     ]
 }
 
-with open('/Users/liam-mini/Documents/Noteboooklm Test/site/data.json', 'w') as f:
+with open('data.json', 'w') as f:
     json.dump(data, f, indent=2)
 
-print("Successfully generated site/data.json")
+print("Successfully generated data.json")
