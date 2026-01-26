@@ -265,12 +265,15 @@ header p {
     justify-content: center;
     align-items: center;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
 .modal-overlay.hidden {
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
 
 .modal-content {
