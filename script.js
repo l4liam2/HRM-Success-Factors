@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let i = 0;
     const duration = 500;
 
-    d3.json('data.json').then(data => {
+    d3.json('data.json?v=1.1').then(data => {
         root = d3.hierarchy(data, d => d.children);
         root.x0 = height / 2;
         root.y0 = 0;
