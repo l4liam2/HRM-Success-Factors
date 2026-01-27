@@ -1,0 +1,548 @@
+:root {
+    /* Light Mode Palette */
+    --bg-color: #F8F9FA;
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+    --accent-color: #3B82F6;
+    /* Sky Blue */
+    --accent-glow: rgba(59, 130, 246, 0.2);
+    --secondary-accent: #10B981;
+    /* Sage Green */
+    --node-fill: #FFFFFF;
+    --node-stroke: #E2E8F0;
+    --link-stroke: #CBD5E1;
+    --panel-bg: rgba(255, 255, 255, 0.95);
+    --panel-border: #E2E8F0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    /* Update font preference */
+    /* Rotated (45deg) Square Grid Pattern with Header & Footer Fade Masks */
+    background-image: linear-gradient(to bottom, var(--bg-color) 0%, var(--bg-color) 5vh, transparent 35vh),
+        linear-gradient(to top, var(--bg-color) 0%, var(--bg-color) 5vh, transparent 35vh),
+        linear-gradient(to right, var(--bg-color) 0%, var(--bg-color) 3vw, transparent 15vw),
+        linear-gradient(to left, var(--bg-color) 0%, var(--bg-color) 3vw, transparent 15vw),
+        repeating-linear-gradient(45deg, rgba(226, 232, 240, 0.6) 0, rgba(226, 232, 240, 0.6) 1px, transparent 1px, transparent 30px),
+        repeating-linear-gradient(135deg, rgba(226, 232, 240, 0.6) 0, rgba(226, 232, 240, 0.6) 1px, transparent 1px, transparent 30px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto, auto;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat;
+    background-position: 0 0;
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Standard Container Wrapper (Flat 2D) */
+.iso-container {
+    /* Transform removed for flat view */
+    transform: none;
+    transition: transform 0.5s ease;
+}
+
+/* Layout */
+.app-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 2rem;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+}
+
+.header-content {
+    pointer-events: auto;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+    text-shadow: none;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.controls {
+    pointer-events: auto;
+}
+
+.btn {
+    background: #FFFFFF;
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+    padding: 0.6rem 2rem;
+    border-radius: 999px;
+    /* Pill shape */
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+    background: #F1F5F9;
+    border-color: var(--text-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+/* Visualization Canvas */
+#visualization {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+#visualization:active {
+    cursor: grabbing;
+}
+
+/* D3 Elements */
+/* Isometric Node Cards */
+.node rect {
+    fill: var(--node-fill);
+    stroke: var(--node-stroke);
+    stroke-width: 1px;
+    rx: 8;
+    ry: 8;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.node:hover rect {
+    stroke: var(--accent-color);
+    filter: drop-shadow(0 10px 15px rgba(59, 130, 246, 0.15));
+    transform: translateY(-2px);
+}
+
+.node--collapsed rect {
+    stroke: var(--accent-color);
+    stroke-width: 2px;
+}
+
+.node text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    fill: var(--text-primary);
+    cursor: pointer;
+    text-shadow: none;
+    pointer-events: none;
+    /* Let clicks pass to rect */
+}
+
+.node:hover text {
+    fill: var(--accent-color);
+    text-shadow: none;
+}
+
+.link {
+    fill: none;
+    /* stroke is set inline by JS now */
+    stroke-opacity: 0.5;
+    stroke-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.link:hover {
+    stroke: var(--accent-color) !important;
+    stroke-width: 3px;
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 4px var(--accent-color));
+}
+
+/* Details Panel */
+/* Glassmorphic Side Panel Redesign */
+.glass-panel {
+    position: absolute;
+    top: 20%;
+    right: 2rem;
+    width: 360px;
+    /* Frosted Glass Effect */
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    /* Border & Shadow */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    /* Softer corners */
+    box-shadow:
+        0 20px 40px -5px rgba(0, 0, 0, 0.1),
+        0 10px 20px -5px rgba(0, 0, 0, 0.04),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    /* Inner light ring */
+
+    padding: 2rem;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    z-index: 20;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.glass-panel.hidden {
+    transform: translateX(40px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#close-panel {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    /* Subtle button bg */
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+#close-panel:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+#panel-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    /* Larger */
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    /* Tighter */
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+    padding-right: 2rem;
+    /* Make room for close button */
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    /* Standard property */
+    -webkit-text-fill-color: transparent;
+    /* Gradient Text */
+}
+
+#panel-content p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1rem;
+    font-weight: 450;
+    margin-bottom: 1.5rem;
+}
+
+/* Side Panel Content Styles */
+.panel-section-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    /* Use accent color for label */
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.driver-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.driver-item {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    /* SLight card bg */
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: transform 0.2s ease;
+}
+
+.driver-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.driver-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Modal specific overrides */
+#about-btn {
+    margin-right: 1rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 16, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    background: #FFFFFF;
+    /* Fallback */
+    background: rgba(255, 255, 255, 0.9);
+    /* Opaque for readability */
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+
+    /* Strictly reset glass-panel positioning */
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    margin: 0;
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+}
+
+.modal-body p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.modal-body p:last-child {
+    margin-bottom: 0;
+}
+
+#close-about {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+#close-about:hover {
+    color: var(--text-primary);
+}
+
+/* Footer Styles */
+.discreet-link {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2rem;
+    z-index: 10;
+    transition: color 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.discreet-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.copyright-notice {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.7;
+}
+
+/* ========================================= */
+/* MOBILE OPTIMIZATION (max-width: 768px)    */
+/* ========================================= */
+
+@media (max-width: 768px) {
+
+    /* 1. Typography & Header */
+    header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        pointer-events: none;
+        /* Keep click-through */
+    }
+
+    .header-content {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        /* Space for title */
+        pointer-events: auto;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+        /* Much smaller */
+        line-height: 1.3;
+        max-width: 70%;
+        /* Prevent overlapping controls */
+    }
+
+    header p {
+        font-size: 0.85rem;
+        display: none;
+        /* Hide subtitle to save space if needed, or keep small */
+    }
+
+    /* 2. Controls - Float top right */
+    .controls {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .controls .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.70rem;
+    }
+
+    /* 3. Details Panel - Bottom Sheet Transformation */
+    .glass-panel {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        max-height: 60vh;
+        /* Max height */
+        border-radius: 20px 20px 0 0;
+        /* Rounded top only */
+        border-bottom: none;
+        transform: translateY(0);
+        /* Default open state */
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-panel.hidden {
+        transform: translateY(100%);
+        /* Slide down to hide */
+        opacity: 1;
+        /* Keep opacity, just move */
+    }
+
+    #close-panel {
+        top: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    #panel-content {
+        padding-bottom: 2rem;
+        /* Safe area */
+    }
+
+    /* 4. Footer & Assessing */
+    .discreet-link {
+        width: 100%;
+        text-align: center;
+        right: auto;
+        left: 0;
+        bottom: 0.5rem;
+        /* Adjust position */
+        padding: 0 1rem;
+        font-size: 0.7rem;
+        z-index: 5;
+        /* Behind panel if panel is open? No, panel z is 20 */
+    }
+
+    .copyright-notice {
+        display: none;
+        /* Hide on mobile to save space */
+    }
+
+    /* 5. Modal Mobile */
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+}

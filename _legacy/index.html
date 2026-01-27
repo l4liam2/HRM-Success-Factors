@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factors Behind A Successful Security Awareness Program</title>
+    <meta name="description"
+        content="Interactive mind map exploring the Gamification Framework for Cybersecurity Awareness Training.">
+    <link rel="stylesheet" href="styles.css?v=1.1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <h1>Factors Behind A Successful Security Awareness Program</h1>
+                <p>Interactive Mindmap of Success Factors</p>
+            </div>
+            <div class="controls">
+                <button id="about-btn" class="btn">About</button>
+                <button id="reset-zoom" class="btn">Reset View</button>
+            </div>
+        </header>
+
+        <main id="visualization" class="iso-container">
+            <!-- D3 Visualization will be injected here -->
+        </main>
+
+        <!-- Details Panel -->
+        <aside id="details-panel" class="glass-panel hidden">
+            <button id="close-panel" aria-label="Close details">&times;</button>
+            <h2 id="panel-title">Topic Details</h2>
+            <div id="panel-content">
+                <p>Select a node to view details.</p>
+            </div>
+        </aside>
+
+        <!-- About Modal -->
+        <div id="about-modal" class="modal-overlay hidden">
+            <div class="glass-panel modal-content">
+                <button id="close-about" aria-label="Close about">&times;</button>
+                <h2>About the Project</h2>
+                <div class="modal-body">
+                    <p>This interactive mind map visualizes the key factors behind a successful security awareness
+                        program.</p>
+                    <p>Explore the hierarchy to understand how different components like Gamification, Culture, and
+                        Communication contribute to building a robust security posture.</p>
+                    <p>Double-click nodes to expand/collapse them, and click to view detailed information in the side
+                        panel.</p>
+                    <p
+                        style="margin-top: 1rem; font-style: italic; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                        This project is part of the <a href="https://cybersecurecatalyst.ca/fellowship-program/"
+                            target="_blank" rel="noopener noreferrer"
+                            style="color: inherit; text-decoration: underline;">Rogers Cybersecurity Catalyst Fellowship
+                            program</a>. We would like to
+                        thank all those involved for supporting us and allowing this project to occur.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keep existing copyright/assess buttons but ensure they don't screen clutter if needed, or style them to match -->
+        <button id="assess-btn" class="discreet-link">Want to assess the maturity of your awareness program? Request an
+            audit.</button>
+        <div class="copyright-notice">
+            &copy; 2026 EduRisk Inc. All Rights Reserved
+        </div>
+    </div>
+
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>
