@@ -51,7 +51,8 @@ const MindMap = ({ onNodeSelect }) => {
         let i = 0;
         const duration = 500;
 
-        d3.json('/data.json').then(data => {
+        const dataPath = `${import.meta.env.BASE_URL}data.json`;
+        d3.json(dataPath).then(data => {
             root = d3.hierarchy(data, d => d.children);
             root.x0 = height / 2;
             root.y0 = 0;
