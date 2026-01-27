@@ -65,9 +65,8 @@ data = {
                 create_node("Social Norms")
             ]),
             create_node("Policy Framework", [
-                create_node("Role Specific Ownership")
-            ]),
-            create_node("User Centric Design", [
+                create_node("Role Specific Ownership"),
+                create_node("User Centric Design"),
                 create_node("Accessibility")
             ]),
             create_node("Success Measurement", [

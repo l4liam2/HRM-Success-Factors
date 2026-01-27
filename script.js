@@ -305,7 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr('d', d => {
                 const o = { x: source.x0, y: source.y0 };
                 return diagonal(o, o);
-            });
+            })
+            .style("stroke", d => getTrackColor(d.target));
 
         // UPDATE
         const linkUpdate = link.merge(linkEnter);
@@ -313,7 +314,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Transition back to the parent element position
         linkUpdate.transition()
             .duration(duration)
-            .attr('d', d => diagonal(d.source, d.target));
+            .attr('d', d => diagonal(d.source, d.target))
+            .style("stroke", d => getTrackColor(d.target));
 
         // Remove any exiting links
         const linkExit = link.exit().transition()
@@ -366,10 +368,24 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `<p class="description">${d.data.description}</p>`
             : `<p class="placeholder">Explore concepts related to <strong>${d.data.name}</strong> in the Gamification Framework via sources.</p>`;
 
-        // 3. Generate Key Drivers (Children)
-        let driversHtml = '';
+        // 3. Generate Key Drivers (Children or Siblings)
+        let listTitle = "Key Drivers / Sub-Factors";
+        let targetNodes = [];
+
+        // Case A: Node has children (it is a category)
         if (d.data.children && d.data.children.length > 0) {
-            const listItems = d.data.children.map(child => `
+            targetNodes = d.data.children;
+        }
+        // Case B: Node is a leaf (it IS a driver), show its siblings
+        else if (d.parent && d.parent.data.children) {
+            listTitle = "Related Drivers in this Category";
+            // Filter out self from siblings
+            targetNodes = d.parent.data.children.filter(sibling => sibling.name !== d.data.name);
+        }
+
+        let driversHtml = '';
+        if (targetNodes.length > 0) {
+            const listItems = targetNodes.map(child => `
                 <li class="driver-item">
                     <span class="driver-dot" style="background-color: ${d.depth === 0 ? "var(--accent-color)" : getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}"></span>
                     ${child.name}
@@ -378,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             driversHtml = `
                 <div style="margin-top: 1.5rem;">
-                    <label class="panel-section-label">Key Drivers / Sub-Factors</label>
+                    <label class="panel-section-label">${listTitle}</label>
                     <ul class="driver-list">
                         ${listItems}
                     </ul>

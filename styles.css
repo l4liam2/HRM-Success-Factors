@@ -167,17 +167,17 @@ header p {
 
 .link {
     fill: none;
-    stroke: var(--link-stroke);
-    stroke-opacity: 0.8;
-    stroke-width: 2.5px;
+    /* stroke is set inline by JS now */
+    stroke-opacity: 0.5;
+    stroke-width: 2px;
     transition: all 0.3s ease;
 }
 
 .link:hover {
-    stroke: var(--accent-color);
-    stroke-width: 2px;
+    stroke: var(--accent-color) !important;
+    stroke-width: 3px;
     stroke-opacity: 1;
-    filter: none;
+    filter: drop-shadow(0 0 4px var(--accent-color));
 }
 
 /* Details Panel */
@@ -253,6 +253,8 @@ header p {
     /* Make room for close button */
     background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
+    /* Standard property */
     -webkit-text-fill-color: transparent;
     /* Gradient Text */
 }
