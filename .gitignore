@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignored bundle file with secrets
+public/plugins/situ-design/situImport.bundle.js
