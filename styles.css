@@ -1,15 +1,21 @@
 :root {
-    --bg-color: #050510;
-    --text-primary: #e0f2fe;
-    --text-secondary: #94a3b8;
-    --accent-color: #00f3ff;
-    --accent-glow: rgba(0, 243, 255, 0.4);
-    --secondary-accent: #0066ff;
-    --node-fill: rgba(15, 23, 42, 0.8);
-    --node-stroke: #00f3ff;
-    --link-stroke: #1e3a8a;
-    --panel-bg: rgba(5, 5, 16, 0.85);
-    --panel-border: rgba(0, 243, 255, 0.2);
+    /* Light Mode Palette */
+    --bg-color: #F8F9FA;
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+    --accent-color: #3B82F6;
+    /* Sky Blue */
+    --accent-glow: rgba(59, 130, 246, 0.2);
+    --secondary-accent: #10B981;
+    /* Sage Green */
+    --node-fill: #FFFFFF;
+    --node-stroke: #E2E8F0;
+    --link-stroke: #CBD5E1;
+    --panel-bg: rgba(255, 255, 255, 0.95);
+    --panel-border: #E2E8F0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -19,17 +25,29 @@
 }
 
 body {
-    font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-    background-color: var(--bg-color);
-    background-image:
-        radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.05) 0%, transparent 50%),
-        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-    background-size: 100% 100%, 40px 40px, 40px 40px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    /* Update font preference */
+    /* Rotated (45deg) Square Grid Pattern with Header & Footer Fade Masks */
+    background-image: linear-gradient(to bottom, var(--bg-color) 0%, var(--bg-color) 5vh, transparent 35vh),
+        linear-gradient(to top, var(--bg-color) 0%, var(--bg-color) 5vh, transparent 35vh),
+        linear-gradient(to right, var(--bg-color) 0%, var(--bg-color) 3vw, transparent 15vw),
+        linear-gradient(to left, var(--bg-color) 0%, var(--bg-color) 3vw, transparent 15vw),
+        repeating-linear-gradient(45deg, rgba(226, 232, 240, 0.6) 0, rgba(226, 232, 240, 0.6) 1px, transparent 1px, transparent 30px),
+        repeating-linear-gradient(135deg, rgba(226, 232, 240, 0.6) 0, rgba(226, 232, 240, 0.6) 1px, transparent 1px, transparent 30px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto, auto;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat;
+    background-position: 0 0;
     color: var(--text-primary);
     overflow: hidden;
     height: 100vh;
     width: 100vw;
+}
+
+/* Standard Container Wrapper (Flat 2D) */
+.iso-container {
+    /* Transform removed for flat view */
+    transform: none;
+    transition: transform 0.5s ease;
 }
 
 /* Layout */
@@ -58,22 +76,15 @@ header {
 
 h1 {
     font-size: 2.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-weight: 700;
     margin-bottom: 0.25rem;
-    background: linear-gradient(to right, #00f3ff, #0066ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    color: var(--text-primary);
+    text-shadow: none;
 }
 
 header p {
-    color: var(--accent-color);
+    color: var(--text-secondary);
     font-size: 1rem;
-    letter-spacing: 0.05em;
-    opacity: 0.8;
 }
 
 .controls {
@@ -81,28 +92,26 @@ header p {
 }
 
 .btn {
-    background: rgba(0, 243, 255, 0.05);
+    background: #FFFFFF;
     border: 1px solid var(--panel-border);
-    color: var(--accent-color);
-    padding: 0.5rem 1.5rem;
-    border-radius: 2px;
-    /* Techy sharp corners */
+    color: var(--text-primary);
+    padding: 0.6rem 2rem;
+    border-radius: 999px;
+    /* Pill shape */
     cursor: pointer;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     transition: all 0.2s ease;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn:hover {
-    background: rgba(0, 243, 255, 0.15);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-    text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+    background: #F1F5F9;
+    border-color: var(--text-secondary);
+    box-shadow: var(--shadow-md);
 }
 
 /* Visualization Canvas */
@@ -117,48 +126,49 @@ header p {
 }
 
 /* D3 Elements */
-.node circle {
+/* Isometric Node Cards */
+.node rect {
     fill: var(--node-fill);
     stroke: var(--node-stroke);
-    stroke-width: 1.5px;
-    cursor: pointer;
+    stroke-width: 1px;
+    rx: 8;
+    ry: 8;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
     transition: all 0.3s ease;
-    filter: drop-shadow(0 0 8px var(--accent-glow));
+    cursor: pointer;
 }
 
-.node--collapsed circle {
-    fill: var(--accent-color);
-    stroke: #fff;
-    filter: drop-shadow(0 0 12px var(--accent-color));
+.node:hover rect {
+    stroke: var(--accent-color);
+    filter: drop-shadow(0 10px 15px rgba(59, 130, 246, 0.15));
+    transform: translateY(-2px);
 }
 
-.node circle:hover {
-    fill: var(--accent-color);
-    stroke: #fff;
-    r: 8 !important;
-    filter: drop-shadow(0 0 15px var(--accent-color));
+.node--collapsed rect {
+    stroke: var(--accent-color);
+    stroke-width: 2px;
 }
 
 .node text {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
     font-weight: 500;
     fill: var(--text-primary);
     cursor: pointer;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-    transition: all 0.2s ease;
-    letter-spacing: 0.03em;
+    text-shadow: none;
+    pointer-events: none;
+    /* Let clicks pass to rect */
 }
 
-.node text:hover {
+.node:hover text {
     fill: var(--accent-color);
-    text-shadow: 0 0 8px var(--accent-color);
+    text-shadow: none;
 }
 
 .link {
     fill: none;
     stroke: var(--link-stroke);
-    stroke-opacity: 0.7;
+    stroke-opacity: 0.8;
     stroke-width: 2.5px;
     transition: all 0.3s ease;
 }
@@ -167,88 +177,144 @@ header p {
     stroke: var(--accent-color);
     stroke-width: 2px;
     stroke-opacity: 1;
-    filter: drop-shadow(0 0 5px var(--accent-color));
+    filter: none;
 }
 
 /* Details Panel */
+/* Glassmorphic Side Panel Redesign */
 .glass-panel {
     position: absolute;
     top: 20%;
     right: 2rem;
-    width: 350px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--panel-border);
-    border-left: 2px solid var(--accent-color);
-    /* Tech accent */
-    border-radius: 4px;
-    /* Slightly squarer */
-    padding: 1.5rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 243, 255, 0.1);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    width: 360px;
+    /* Frosted Glass Effect */
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    /* Border & Shadow */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    /* Softer corners */
+    box-shadow:
+        0 20px 40px -5px rgba(0, 0, 0, 0.1),
+        0 10px 20px -5px rgba(0, 0, 0, 0.04),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    /* Inner light ring */
+
+    padding: 2rem;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     z-index: 20;
     max-height: 70vh;
     overflow-y: auto;
 }
 
 .glass-panel.hidden {
-    transform: translateX(20px);
+    transform: translateX(40px) scale(0.95);
     opacity: 0;
     pointer-events: none;
 }
 
 #close-panel {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    /* Subtle button bg */
     border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     color: var(--text-secondary);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
 #close-panel:hover {
+    background: rgba(0, 0, 0, 0.1);
     color: var(--text-primary);
+    transform: rotate(90deg);
 }
 
 #panel-title {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    /* Larger */
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    /* Tighter */
+    margin-bottom: 1.25rem;
     color: var(--text-primary);
+    padding-right: 2rem;
+    /* Make room for close button */
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Gradient Text */
 }
 
 #panel-content p {
     color: var(--text-secondary);
-    line-height: 1.6;
-    font-size: 0.95rem;
+    line-height: 1.7;
+    font-size: 1rem;
+    font-weight: 450;
+    margin-bottom: 1.5rem;
 }
 
-.citation {
+/* Side Panel Content Styles */
+.panel-section-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: var(--accent-color);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--accent-color);
-    transition: all 0.2s;
+    /* Use accent color for label */
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.citation:hover {
-    background: rgba(0, 243, 255, 0.1);
-    color: #fff;
-    border-bottom-style: solid;
+.driver-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.copyright-notice {
-    position: absolute;
-    bottom: 1rem;
-    right: 2rem;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    pointer-events: none;
-    opacity: 0.7;
-    z-index: 10;
-    font-family: 'Rajdhani', sans-serif;
-    letter-spacing: 0.05em;
+.driver-item {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    /* SLight card bg */
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: transform 0.2s ease;
+}
+
+.driver-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.driver-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Modal specific overrides */
+#about-btn {
+    margin-right: 1rem;
 }
 
 /* Modal Styles */
@@ -281,18 +347,28 @@ header p {
     width: 90%;
     max-width: 500px;
     padding: 2rem;
-    /* Reset glass-panel specific positioning if inherited */
+    background: #FFFFFF;
+    /* Fallback */
+    background: rgba(255, 255, 255, 0.9);
+    /* Opaque for readability */
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+
+    /* Strictly reset glass-panel positioning */
     top: auto;
-    right: auto;
     left: auto;
-    transform: none !important;
-    /* Override glass-panel transition/transform */
+    right: auto;
+    bottom: auto;
+    transform: none;
+    margin: 0;
 }
 
 .modal-content h2 {
     margin-bottom: 1rem;
     color: var(--accent-color);
     font-size: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
 }
 
 .modal-body p {
@@ -315,38 +391,41 @@ header p {
     font-size: 1.5rem;
     cursor: pointer;
     line-height: 1;
+    transition: color 0.2s;
 }
 
 #close-about:hover {
     color: var(--text-primary);
 }
 
-#about-btn {
-    margin-right: 1rem;
-}
-
+/* Footer Styles */
 .discreet-link {
-    position: absolute;
-    bottom: 2.5rem;
-    /* Above the copyright notice which is at bottom: 1rem */
-    right: 2rem;
     background: none;
     border: none;
-    color: var(--accent-color);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
     cursor: pointer;
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2rem;
     z-index: 10;
-    opacity: 0.8;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    text-shadow: 0 0 5px var(--accent-glow);
-    letter-spacing: 0.05em;
+    transition: color 0.2s;
+    font-family: 'Inter', sans-serif;
 }
 
 .discreet-link:hover {
-    color: #fff;
-    opacity: 1;
-    text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
-    transform: translateY(-1px);
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.copyright-notice {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.7;
 }

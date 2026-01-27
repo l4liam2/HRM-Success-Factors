@@ -2,7 +2,7 @@
   "name": "Cybersecurity Awareness and Behavior",
   "children": [
     {
-      "name": "Psychological Perspective",
+      "name": "Psychological Factors",
       "children": [
         {
           "name": "Coping and Efficacy",
@@ -66,7 +66,7 @@
       "description": "The psychological perspective in information security shifts the focus from technical controls to the \"human factor,\" utilizing behavioral theories to examine why employees comply with or violate security policies (Bada et al., 2019, p. 1; Hanus & Wu, 2016, p. 2). This approach analyzes internal cognitive processes, such as risk perception, attitudes, and biases, to understand how individuals internalize security information and make decisions regarding threats (Moustafa et al., 2021, p. 1; Tsohou et al., 2015, p. 2). By understanding these underlying psychological determinants, organizations can design more effective training and awareness programs that motivate sustainable behavior change rather than simply providing knowledge (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=736d31de-8d65-4662-9f80-57e22269fe9b\" target=\"_blank\" class=\"citation\">ALSHAIKH, 2019</a>, p. 5; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=3dacb51b-293a-4b93-9591-e372de498468\" target=\"_blank\" class=\"citation\">Burns et al., 2015</a>, p. 3932)."
     },
     {
-      "name": "Design Perspective",
+      "name": "Design Factors",
       "children": [
         {
           "name": "Delivery Frequency",
@@ -156,7 +156,7 @@
       "description": "The design perspective in cybersecurity awareness prioritizes a systematic, theory-informed approach to developing Security Education, Training, and Awareness (SETA) programs, contrasting with methods based solely on practical experience or compliance requirements (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=736d31de-8d65-4662-9f80-57e22269fe9b\" target=\"_blank\" class=\"citation\">ALSHAIKH, 2019</a>). This approach utilizes design theories and frameworks to conduct in-depth analyses of target behaviors, enabling the selection of specific strategies that address the psychological determinants of employee behavior (Bulgurcu, Cavusoglu, & Benbasat, 2010, p. 526; <a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=736d31de-8d65-4662-9f80-57e22269fe9b\" target=\"_blank\" class=\"citation\">ALSHAIKH, 2019</a>). Ultimately, the design perspective aims to construct effective interventions that go beyond mere awareness to achieve sustainable behavioral change within organizations (<a href=\"https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=736d31de-8d65-4662-9f80-57e22269fe9b\" target=\"_blank\" class=\"citation\">ALSHAIKH, 2019</a>)."
     },
     {
-      "name": "Organisational Perspective",
+      "name": "Organisational Factors",
       "children": [
         {
           "name": "Executive Leadership",
