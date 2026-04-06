@@ -85,7 +85,7 @@ data = {
     ]
 }
 
-with open('data.json', 'w') as f:
+with open('public/data.json', 'w') as f:
     json.dump(data, f, indent=2)
 
 print("Successfully generated data.json")
