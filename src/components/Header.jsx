@@ -123,8 +123,8 @@ const Header = ({ onAboutClick, onResetZoom }) => {
             </div>
             <div className="controls" style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem' }}>
                 <button id="home-btn" className="btn" onClick={() => navigate('/Home')}>Home</button>
-                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')}>Assessment</button>
                 <button id="about-btn" className="btn" onClick={onAboutClick}>About</button>
+                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')}>Assessment</button>
                 <button id="reset-zoom" className="btn" onClick={onResetZoom}>Reset View</button>
             </div>
         </header>
