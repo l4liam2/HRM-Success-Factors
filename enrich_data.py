@@ -83,8 +83,8 @@ def main():
         node = item['node']
         path_str = " > ".join(item['path'])
         
-        # Skip if already enriched (preserves manual edits)
-        if 'description' in node and node['description']:
+        # Skip if already enriched with new schema (preserves manual edits)
+        if 'tldr' in node and node['tldr'] and 'examples' in node:
             print(f"[{i+1}/{len(all_nodes)}] Skipping {node['name']} (already enriched)")
             continue
 
@@ -97,8 +97,14 @@ def main():
         
         query = (
             f"Explain '{node['name']}' in the context of {path_str}. "
-            f"Provide a concise summary (max 3 sentences). "
-             "Use standard citations."
+            f"Please return your response AS A VALID JSON OBJECT ONLY. Do not use markdown code blocks like ```json ... ```, just return the raw JSON object. "
+            f"The JSON object must have EXACTLY the following keys: "
+            f"'tldr' (a concise 1-sentence summary), "
+            f"'description' (a detailed multi-paragraph explanation formatted in Markdown, e.g. using bolding or bullet points), "
+            f"'examples' (a string formatted in Markdown describing practical examples or case studies), "
+            f"'actionItems' (an array of 2-3 actionable strings an organization can take right now), "
+            f"'kpis' (an array of 2-3 measurable KPI strings related to this factor), "
+            f"and 'maturityLevels' (an object with two keys: 'level1' and 'level5' mapping to strings describing the reactive vs optimized states). "
         )
         
         try:
@@ -111,32 +117,51 @@ def main():
             result = client.query(NOTEBOOK_ID, query)
             
             if result and 'answer' in result:
-                answer = result['answer']
-                
-                # Attempt to link sources by fuzzy matching author names from our source list?
-                # E.g. "Alshaikh, 2019" -> Match to file "ALSHAIKH, 2019..."
-                # This is hacky but might work given the filenames.
-                
-                enriched_answer = answer
+                answer_raw = result['answer'].strip()
+                # Remove markdown code block if model ignored the instruction
+                if answer_raw.startswith("```json"):
+                    answer_raw = answer_raw[7:]
+                if answer_raw.startswith("```"):
+                    answer_raw = answer_raw[3:]
+                if answer_raw.endswith("```"):
+                    answer_raw = answer_raw[:-3]
+                answer_raw = answer_raw.strip()
+
+                try:
+                    structured_data = json.loads(answer_raw)
+                except json.JSONDecodeError:
+                    print(f"  -> Warning: Could not parse JSON. Raw answer: {answer_raw[:100]}...")
+                    # Fallback
+                    structured_data = {
+                        "description": answer_raw,
+                        "tldr": "",
+                        "examples": "",
+                        "actionItems": [],
+                        "kpis": [],
+                        "maturityLevels": { "level1": "", "level5": "" }
+                    }
                 
                 # Basic fuzzy linker
-                for src_id, src_title in source_map.items():
-                    # Extract "Author, Year" candidate from filename
-                    # Filename format: "Author, Year - Title.pdf"
-                    parts = src_title.split('-')[0].strip() # "ALSHAIKH, 2019"
-                    if len(parts) > 5:
-                        # Case insensitive check
-                        if parts.lower() in enriched_answer.lower():
-                            # Create link
-                            url = f"https://notebooklm.google.com/notebook/{NOTEBOOK_ID}?source={src_id}"
-                            link = f'<a href="{url}" target="_blank" class="citation">{parts}</a>'
-                            
-                            # Replace (case insensitive)
-                            pattern = re.compile(re.escape(parts), re.IGNORECASE)
-                            enriched_answer = pattern.sub(link, enriched_answer)
+                def link_citations(text):
+                    if not text: return text
+                    res = text
+                    for src_id, src_title in source_map.items():
+                        # Extract "Author, Year" candidate from filename
+                        parts = src_title.split('-')[0].strip() # "ALSHAIKH, 2019"
+                        if len(parts) > 5:
+                            # Case insensitive check
+                            if parts.lower() in res.lower():
+                                url = f"https://notebooklm.google.com/notebook/{NOTEBOOK_ID}?source={src_id}"
+                                link = f'<a href="{url}" target="_blank" class="citation">{parts}</a>'
+                                pattern = re.compile(re.escape(parts), re.IGNORECASE)
+                                res = pattern.sub(link, res)
+                    return res
                 
-                node['description'] = enriched_answer
-                print(f"  -> Updated description ({len(enriched_answer)} chars)")
+                node['description'] = link_citations(structured_data.get('description', ''))
+                node['tldr'] = link_citations(structured_data.get('tldr', ''))
+                node['examples'] = link_citations(structured_data.get('examples', ''))
+                
+                print(f"  -> Updated description, tldr, and examples.")
             
             with open(DATA_FILE, 'w') as f:
                 json.dump(data, f, indent=2)

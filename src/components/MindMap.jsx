@@ -93,9 +93,10 @@ const MindMap = ({ onNodeSelect }) => {
 
             // Icons
             const icons = {
-                "Psychological Factors": "M15.5 12c2.5 0 4.5 2 4.5 4.5S18 21 15.5 21 11 19 11 16.5 13 12 15.5 12zM15.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM10.5 4a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM10.5 6a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM5.5 12C8 12 10 14 10 16.5S8 21 5.5 21 1 19 1 16.5 3 12 5.5 12zM5.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z",
-                "Design Factors": "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z",
-                "Organisational Factors": "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z",
+                "Human Cognition": "M15.5 12c2.5 0 4.5 2 4.5 4.5S18 21 15.5 21 11 19 11 16.5 13 12 15.5 12zM15.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM10.5 4a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM10.5 6a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM5.5 12C8 12 10 14 10 16.5S8 21 5.5 21 1 19 1 16.5 3 12 5.5 12zM5.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z",
+                "Pedagogical Design": "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z",
+                "Organisational Governance & Culture": "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z",
+                "Metrics & Impact Measurement": "M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z",
                 "Coping and Efficacy": "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z",
                 "Behavioural Drivers": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
                 "Behavioural Drivers_alt": "M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z",
@@ -117,16 +118,17 @@ const MindMap = ({ onNodeSelect }) => {
                 const name = d.data.name;
                 if (icons[name]) return icons[name];
                 if (name === "Behavioural Drivers") return "M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z";
-                if (d.depth === 1) return icons["Organisational Factors"];
+                if (d.depth === 1) return icons["Organisational Governance & Culture"];
                 if (d.data.children) return "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2v-3h2v3zm4 0h-2v-5h2v5z";
                 return icons.default;
             };
 
             const trackColors = {
-                "Psychological Factors": "#9D84D6",
-                "Design Factors": "#58B698",
-                "Organisational Factors": "#E6B658",
-                "default": "#E2E8F0"
+                "Human Cognition": "#8B5CF6", // Vibrant Purple
+                "Pedagogical Design": "#10B981", // Emerald Green
+                "Organisational Governance & Culture": "#F59E0B", // Amber
+                "Metrics & Impact Measurement": "#EC4899", // Pink
+                "default": "#94A3B8"
             };
 
             const getTrackColor = (d) => {
@@ -167,7 +169,14 @@ const MindMap = ({ onNodeSelect }) => {
                 .attr('y', -40)
                 .attr('rx', 12)
                 .attr('ry', 12)
-                .style("fill", "#FFFFFF")
+                .style("fill", d => {
+                    const color = d3.color(getTrackColor(d));
+                    if (color) {
+                        color.opacity = 0.08;
+                        return color;
+                    }
+                    return "#FFFFFF";
+                })
                 .style("stroke", d => getTrackColor(d))
                 .style("stroke-width", "2px")
                 .style("filter", "drop-shadow(0 4px 6px rgba(0,0,0,0.05))");
@@ -346,8 +355,59 @@ const MindMap = ({ onNodeSelect }) => {
         };
         window.addEventListener('resize', handleResize);
 
+        // Focus Node Handler
+        const handleFocusNode = (e) => {
+            const targetName = e.detail;
+            if (!root) return;
+            
+            // Find the node by traversing both expanded and collapsed branches
+            let targetNode = null;
+            const findNode = (node) => {
+                if (node.data.name === targetName) {
+                    targetNode = node;
+                    return;
+                }
+                if (node.children) node.children.forEach(findNode);
+                if (node._children) node._children.forEach(findNode);
+            };
+            findNode(root);
+            
+            if (targetNode) {
+                // Expand all parents
+                let current = targetNode.parent;
+                while (current) {
+                    if (current._children) {
+                        current.children = current._children;
+                        current._children = null;
+                    }
+                    current = current.parent;
+                }
+                // Call update on root so the layout recalculates properly
+                update(root);
+                
+                // Zoom to node
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const scale = 1.2;
+                
+                // In D3 tree, d.y is the horizontal position and d.x is the vertical position
+                const tx = -targetNode.y * scale + width / 3; 
+                const ty = -targetNode.x * scale + height / 2;
+                
+                svg.transition().duration(750).call(
+                    zoom.transform,
+                    d3.zoomIdentity.translate(tx, ty).scale(scale)
+                );
+                
+                // Open Details Panel
+                if (onNodeSelect) onNodeSelect(targetNode);
+            }
+        };
+        window.addEventListener('focus-node', handleFocusNode);
+
         return () => {
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('focus-node', handleFocusNode);
         };
 
     }, []); // Empty dependency array = run once on mount

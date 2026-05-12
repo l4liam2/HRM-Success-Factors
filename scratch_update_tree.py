@@ -1,12 +1,52 @@
 import json
+import os
+
+data_path = 'public/data.json'
+
+with open(data_path, 'r') as f:
+    data = json.load(f)
+
+# Extract existing nodes to preserve descriptions
+existing_nodes = {}
+def extract_nodes(node):
+    if "description" in node:
+        existing_nodes[node["name"]] = node["description"]
+    if "children" in node:
+        for child in node["children"]:
+            extract_nodes(child)
+
+extract_nodes(data)
+
+# Print a few to check
+print(f"Extracted {len(existing_nodes)} nodes with descriptions.")
 
 def create_node(name, children=None):
+    # Try multiple names if renamed
+    name_map = {
+        "Self-Efficacy": "The Role of Self-Efficacy in Cybersecurity Awareness",
+        "Response Efficacy": "The Architecture of Response Efficacy in Cybersecurity behavior",
+        "Personal Agency": "The Architecture of Personal Agency in Cybersecurity",
+        "Level 1: Non-Existent / Reactive": "Non-Existent",
+        "Level 2: Compliance-Focused": "Ad-hoc reactive",
+        "Level 3: Defined & Promoting": "Managed/defined",
+        "Level 4: Cultural Integration & Behavioral": "Optimized/Continuous",
+        "Phishing Simulations": "Phishing Evaluations",
+        "Hands-On Simulations": "Hands on simulations"
+    }
+    
     node = {"name": name}
-    if children:
+    
+    lookup_name = name_map.get(name, name)
+    if lookup_name in existing_nodes:
+        node["description"] = existing_nodes[lookup_name]
+    elif name in existing_nodes:
+        node["description"] = existing_nodes[name]
+
+    if children is not None:
         node["children"] = children
     return node
 
-data = {
+new_data = {
     "name": "Cybersecurity Awareness and Behavior",
     "children": [
         create_node("Human Cognition", [
@@ -87,7 +127,11 @@ data = {
     ]
 }
 
-with open('public/data.json', 'w') as f:
-    json.dump(data, f, indent=2)
+# Preserve description for root if any
+if "description" in data:
+    new_data["description"] = data["description"]
 
-print("Successfully generated data.json")
+with open(data_path, 'w') as f:
+    json.dump(new_data, f, indent=2)
+
+print("Updated data.json successfully.")
