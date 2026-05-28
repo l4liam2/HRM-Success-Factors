@@ -1,10 +1,9 @@
 {
   "name": "Cybersecurity Awareness and Behavior",
-  "description": "A comprehensive, multi-dimensional framework designed to build, measure, and sustain a secure organizational culture. This roadmap integrates psychological cognitive drivers, modern pedagogical training designs, corporate governance structures, and rigorous impact metrics to transform employees from security risks into a resilient human firewall.",
   "children": [
     {
       "name": "Human Cognition",
-      "description": "The psychological and cognitive foundation of cybersecurity behavior. This dimension explores how internal coping mechanisms, beliefs, motivations, and cognitive barriers (such as fatigue or bias) influence an employee's decision to comply with or violate information security policies.",
+      "description": "Human Cognition represents the internal psychological, cognitive, and emotional processes that govern how individuals perceive and respond to cybersecurity threats and organizational policies. Guided by behavioral frameworks such as Protection Motivation Theory (PMT) and the Theory of Planned Behavior, this category examines the coping appraisals of personal agency and self/response efficacy (Hanus & Wu, 2016; Bulgurcu et al., 2010), the intrinsic and moral drivers of compliance (Vance et al., 2020), and the cognitive barriers—such as security fatigue, habituation, and optimism biases—that can distort risk perception and impede compliance (Reeves et al., 2021; Skinner et al., 2018).",
       "children": [
         {
           "name": "Coping and Efficacy",
@@ -84,7 +83,7 @@
     },
     {
       "name": "Pedagogical Design",
-      "description": "The educational framework and training methodologies used to deliver security awareness. It focuses on strategic delivery frequency, interactive and gamified engagement methods, and tailoring training content to specific organizational roles to maximize retention and change real-world behavior.",
+      "description": "Pedagogical Design focuses on the structural planning, instructional methodologies, and delivery formats of security education, training, and awareness (SETA) programs. It addresses the scheduling and timing of interventions to combat memory decay through continuous, drip-feed, or just-in-time training (Hu et al., 2021; Yeoh et al., 2021), the utilization of active engagement methods like gamification and interactive simulations (Taherdoost, 2024; Bada et al., 2019), and the tailoring of content to specific organizational roles and audience segments to maximize relevance and behavioral change (Alshaikh et al., 2021).",
       "children": [
         {
           "name": "Delivery Frequency",
@@ -328,7 +327,7 @@
     },
     {
       "name": "Organisational Governance & Culture",
-      "description": "The structural and cultural environment that shapes security behavior within an organization. It encompasses executive leadership sponsorship, resource allocation, and a policy framework integrated with social norms and psychological safety to embed security as a shared responsibility.",
+      "description": "Organisational Governance & Culture encompasses the social, strategic, and structural environments that shape security behaviors within an enterprise. It focuses on the role of executive leadership in establishing governance and resource allocation (Sabillon et al., 2017; Flores & Ekstedt, 2016), the cultivation of an organizational culture that promotes security ownership, psychological safety, and positive social norms (Thamae, 2024; Tolah et al., 2021), and the integration of user-centric, accessible policy frameworks that align workforce operations with security objectives (Dawson, 2019; Oldham & McAlpine, 2019).",
       "children": [
         {
           "name": "Executive Leadership",
@@ -391,7 +390,7 @@
     },
     {
       "name": "Metrics & Impact Measurement",
-      "description": "The data-driven evaluation mechanisms used to benchmark and optimize security awareness programs. It combines qualitative assessments, simulations, and quantitative incident reduction metrics with mature progression roadmaps to demonstrate program efficacy and security ROI.",
+      "description": "Metrics & Impact Measurement focuses on the analytical tools and methodologies used to evaluate, track, and benchmark the effectiveness of security awareness initiatives. It incorporates multi-dimensional evaluation methods—including independent observations, phishing simulations, and psychometrically validated questionnaires (Parsons et al., 2017; Scholl et al., 2017)—with direct success indicators like incident reduction, reporting rates, and utility reactions (Manifavas et al., 2014; Alshaikh et al., 2021) to justify security investments and guide maturity progression.",
       "children": [
         {
           "name": "Evaluation Methods",

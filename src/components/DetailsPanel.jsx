@@ -28,10 +28,6 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
         }
     }
 
-    const handleNodeClick = (targetName) => {
-        window.dispatchEvent(new CustomEvent('focus-node', { detail: targetName }));
-    };
-
     // Construct breadcrumbs (skip root node for brevity if depth > 0)
     const getBreadcrumbs = (n) => {
         const path = [];
@@ -147,7 +143,17 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                                     <li 
                                         key={index} 
                                         className="driver-item"
-                                        onClick={() => handleNodeClick(child.name)}
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={() => {
+                                            window.dispatchEvent(new CustomEvent('focus-node', { detail: child.name }));
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                window.dispatchEvent(new CustomEvent('focus-node', { detail: child.name }));
+                                            }
+                                        }}
                                     >
                                         <span
                                             className="driver-dot"

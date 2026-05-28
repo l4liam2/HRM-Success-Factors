@@ -385,13 +385,24 @@ header p {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-primary);
+    transition: all 0.2s ease;
     cursor: pointer;
-    transition: transform 0.2s ease;
+}
+
+body.dark-mode .driver-item {
+    background: rgba(15, 28, 46, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .driver-item:hover {
     transform: translateX(5px);
     background: rgba(255, 255, 255, 0.8);
+    border-color: var(--accent-color);
+}
+
+body.dark-mode .driver-item:hover {
+    background: rgba(15, 28, 46, 0.8);
+    border-color: var(--accent-color);
 }
 
 .driver-dot {
