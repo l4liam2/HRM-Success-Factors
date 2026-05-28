@@ -28,6 +28,10 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
         }
     }
 
+    const handleNodeClick = (targetName) => {
+        window.dispatchEvent(new CustomEvent('focus-node', { detail: targetName }));
+    };
+
     // Construct breadcrumbs (skip root node for brevity if depth > 0)
     const getBreadcrumbs = (n) => {
         const path = [];
@@ -140,7 +144,11 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                             <label className="panel-section-label">{listTitle}</label>
                             <ul className="driver-list">
                                 {targetNodes.map((child, index) => (
-                                    <li key={index} className="driver-item">
+                                    <li 
+                                        key={index} 
+                                        className="driver-item"
+                                        onClick={() => handleNodeClick(child.name)}
+                                    >
                                         <span
                                             className="driver-dot"
                                             style={{ backgroundColor: depth === 0 ? "var(--accent-color)" : undefined }}

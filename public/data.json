@@ -1,8 +1,10 @@
 {
   "name": "Cybersecurity Awareness and Behavior",
+  "description": "A comprehensive, multi-dimensional framework designed to build, measure, and sustain a secure organizational culture. This roadmap integrates psychological cognitive drivers, modern pedagogical training designs, corporate governance structures, and rigorous impact metrics to transform employees from security risks into a resilient human firewall.",
   "children": [
     {
       "name": "Human Cognition",
+      "description": "The psychological and cognitive foundation of cybersecurity behavior. This dimension explores how internal coping mechanisms, beliefs, motivations, and cognitive barriers (such as fatigue or bias) influence an employee's decision to comply with or violate information security policies.",
       "children": [
         {
           "name": "Coping and Efficacy",
@@ -82,6 +84,7 @@
     },
     {
       "name": "Pedagogical Design",
+      "description": "The educational framework and training methodologies used to deliver security awareness. It focuses on strategic delivery frequency, interactive and gamified engagement methods, and tailoring training content to specific organizational roles to maximize retention and change real-world behavior.",
       "children": [
         {
           "name": "Delivery Frequency",
@@ -325,6 +328,7 @@
     },
     {
       "name": "Organisational Governance & Culture",
+      "description": "The structural and cultural environment that shapes security behavior within an organization. It encompasses executive leadership sponsorship, resource allocation, and a policy framework integrated with social norms and psychological safety to embed security as a shared responsibility.",
       "children": [
         {
           "name": "Executive Leadership",
@@ -387,6 +391,7 @@
     },
     {
       "name": "Metrics & Impact Measurement",
+      "description": "The data-driven evaluation mechanisms used to benchmark and optimize security awareness programs. It combines qualitative assessments, simulations, and quantitative incident reduction metrics with mature progression roadmaps to demonstrate program efficacy and security ROI.",
       "children": [
         {
           "name": "Evaluation Methods",

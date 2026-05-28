@@ -385,6 +385,7 @@ header p {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-primary);
+    cursor: pointer;
     transition: transform 0.2s ease;
 }
 
