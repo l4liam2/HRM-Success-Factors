@@ -9,19 +9,23 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
     const { data, parent, depth } = node;
     const { name, description, tldr, examples, children, actionItems, kpis, maturityLevels } = data;
 
+    const isMaturityStage = name.startsWith("Level ") || (parent && parent.data && parent.data.name === "Maturity stages");
+
     // Determine Drivers / Sub-Factors
     let listTitle = "Key Drivers / Sub-Factors";
     let targetNodes = [];
 
-    // Case A: Node has children (it is a category)
-    if (children && children.length > 0) {
-        targetNodes = children;
-    }
-    // Case B: Node is a leaf (it IS a driver), show its siblings
-    else if (parent && parent.data.children) {
-        listTitle = "Related Drivers in this Category";
-        // Filter out self from siblings
-        targetNodes = parent.data.children.filter(sibling => sibling.name !== name);
+    if (!isMaturityStage) {
+        // Case A: Node has children (it is a category)
+        if (children && children.length > 0) {
+            targetNodes = children;
+        }
+        // Case B: Node is a leaf (it IS a driver), show its siblings
+        else if (parent && parent.data.children) {
+            listTitle = "Related Drivers in this Category";
+            // Filter out self from siblings
+            targetNodes = parent.data.children.filter(sibling => sibling.name !== name);
+        }
     }
 
     // Construct breadcrumbs (skip root node for brevity if depth > 0)
@@ -93,7 +97,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         </div>
                     )}
 
-                    {kpis && kpis.length > 0 && (
+                    {kpis && kpis.length > 0 && !isMaturityStage && (
                         <div className="content-section">
                             <h3 className="section-title">Key Performance Indicators</h3>
                             <div className="kpi-container">
@@ -104,7 +108,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         </div>
                     )}
 
-                    {actionItems && actionItems.length > 0 && (
+                    {actionItems && actionItems.length > 0 && !isMaturityStage && (
                         <div className="content-section">
                             <h3 className="section-title">Action Items</h3>
                             <ul className="action-items-list">

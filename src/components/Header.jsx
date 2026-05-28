@@ -1,14 +1,32 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Search, Sun, Moon, Home, Info, ClipboardCheck, RefreshCw } from 'lucide-react';
 
 const Header = ({ onAboutClick, onResetZoom }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [allNodes, setAllNodes] = useState([]);
     const [filteredNodes, setFilteredNodes] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
     const searchRef = useRef(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => {
+            const next = prev === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', next);
+            return next;
+        });
+    };
 
     useEffect(() => {
         const dataPath = `${import.meta.env.BASE_URL}data.json`;
@@ -17,6 +35,7 @@ const Header = ({ onAboutClick, onResetZoom }) => {
             .then(data => {
                 const nodes = [];
                 const traverse = (node) => {
+                    if (node.name === "Maturity stages") return;
                     if (node.name) nodes.push(node.name);
                     if (node.children) node.children.forEach(traverse);
                 };
@@ -58,10 +77,22 @@ const Header = ({ onAboutClick, onResetZoom }) => {
     return (
         <header className="header-content-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '1.5rem 2rem', position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 10, pointerEvents: 'none' }}>
             <div className="header-content" style={{ pointerEvents: 'auto' }}>
-                <h1>Factors Behind A Successful Security Awareness Program</h1>
+                <h1 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Factors Behind A Successful Security Awareness Program</h1>
                 <p>Interactive Mindmap of Success Factors</p>
                 
                 <div className="search-container" ref={searchRef} style={{ marginTop: '1rem', position: 'relative', width: '300px' }}>
+                    <Search 
+                        size={16} 
+                        style={{ 
+                            position: 'absolute', 
+                            left: '1rem', 
+                            top: '50%', 
+                            transform: 'translateY(-50%)', 
+                            color: 'var(--text-secondary)',
+                            pointerEvents: 'none',
+                            opacity: 0.7
+                        }} 
+                    />
                     <input 
                         type="text" 
                         value={searchQuery}
@@ -70,16 +101,16 @@ const Header = ({ onAboutClick, onResetZoom }) => {
                         placeholder="Search factors..."
                         style={{
                             width: '100%',
-                            padding: '0.6rem 1rem',
+                            padding: '0.6rem 1rem 0.6rem 2.5rem',
                             borderRadius: '999px',
                             border: '1px solid var(--panel-border)',
-                            background: 'rgba(255, 255, 255, 0.9)',
-                            backdropFilter: 'blur(10px)',
+                            background: 'var(--node-fill)',
                             fontSize: '0.9rem',
                             color: 'var(--text-primary)',
                             outline: 'none',
                             boxShadow: 'var(--shadow-sm)',
-                            fontFamily: 'Inter, sans-serif'
+                            fontFamily: 'Inter, sans-serif',
+                            transition: 'all 0.2s ease'
                         }}
                     />
                     {isDropdownOpen && filteredNodes.length > 0 && (
@@ -89,7 +120,8 @@ const Header = ({ onAboutClick, onResetZoom }) => {
                             left: 0,
                             right: 0,
                             marginTop: '0.5rem',
-                            background: 'white',
+                            background: 'var(--node-fill)',
+                            border: '1px solid var(--panel-border)',
                             borderRadius: '12px',
                             boxShadow: 'var(--shadow-md)',
                             maxHeight: '250px',
@@ -109,10 +141,11 @@ const Header = ({ onAboutClick, onResetZoom }) => {
                                         padding: '0.5rem 1rem',
                                         cursor: 'pointer',
                                         fontSize: '0.85rem',
-                                        borderBottom: i < filteredNodes.length - 1 ? '1px solid #f1f5f9' : 'none'
+                                        color: 'var(--text-primary)',
+                                        borderBottom: i < filteredNodes.length - 1 ? '1px solid var(--panel-border)' : 'none'
                                     }}
-                                    onMouseOver={(e) => e.target.style.background = '#f1f5f9'}
-                                    onMouseOut={(e) => e.target.style.background = 'white'}
+                                    onMouseOver={(e) => e.target.style.background = 'rgba(99, 102, 241, 0.08)'}
+                                    onMouseOut={(e) => e.target.style.background = 'transparent'}
                                 >
                                     {n}
                                 </li>
@@ -121,11 +154,44 @@ const Header = ({ onAboutClick, onResetZoom }) => {
                     )}
                 </div>
             </div>
-            <div className="controls" style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem' }}>
-                <button id="home-btn" className="btn" onClick={() => navigate('/Home')}>Home</button>
-                <button id="about-btn" className="btn" onClick={onAboutClick}>About</button>
-                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')}>Assessment</button>
-                <button id="reset-zoom" className="btn" onClick={onResetZoom}>Reset View</button>
+            <div className="controls" style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <button id="home-btn" className="btn" onClick={() => navigate('/Home')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Home size={14} />
+                    <span>Home</span>
+                </button>
+                <button id="about-btn" className="btn" onClick={onAboutClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Info size={14} />
+                    <span>About</span>
+                </button>
+                {/* Hide the Assessment route button until released */}
+                {/* 
+                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <ClipboardCheck size={14} />
+                    <span>Assessment</span>
+                </button>
+                */}
+                <button id="reset-zoom" className="btn" onClick={onResetZoom} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <RefreshCw size={14} />
+                    <span>Reset View</span>
+                </button>
+                <button 
+                    id="theme-toggle" 
+                    className="btn theme-toggle-btn" 
+                    onClick={toggleTheme} 
+                    aria-label="Toggle dark mode"
+                    style={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        width: '38px', 
+                        height: '38px', 
+                        padding: 0,
+                        borderRadius: '50%',
+                        cursor: 'pointer'
+                    }}
+                >
+                    {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                </button>
             </div>
         </header>
     );

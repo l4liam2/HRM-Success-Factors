@@ -53,7 +53,18 @@ const MindMap = ({ onNodeSelect }) => {
 
         const dataPath = `${import.meta.env.BASE_URL}data.json`;
         d3.json(dataPath).then(data => {
-            root = d3.hierarchy(data, d => d.children);
+            const filterNode = (node) => {
+                if (!node) return null;
+                const filteredNode = { ...node };
+                if (node.children) {
+                    filteredNode.children = node.children
+                        .filter(c => c.name !== "Maturity stages")
+                        .map(filterNode);
+                }
+                return filteredNode;
+            };
+            const filteredData = filterNode(data);
+            root = d3.hierarchy(filteredData, d => d.children);
             root.x0 = height / 2;
             root.y0 = 0;
 
@@ -151,10 +162,10 @@ const MindMap = ({ onNodeSelect }) => {
                 .style("filter", "drop-shadow(0 0 15px rgba(59, 130, 246, 0.3))");
 
             rootNode.append('text')
+                .attr("class", "root-node-text")
                 .attr("dy", "0.3em")
                 .attr("text-anchor", "middle")
                 .text(d => d.data.name)
-                .style("fill", "var(--text-primary)")
                 .style("font-size", "11px")
                 .style("font-weight", "800")
                 .style("text-transform", "uppercase")

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import MindMap from './MindMap';
@@ -9,7 +9,61 @@ function MindMapScreen() {
   const [activeNode, setActiveNode] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [maturityStagesNode, setMaturityStagesNode] = useState(null);
+  const [maturityLevels, setMaturityLevels] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const dataPath = `${import.meta.env.BASE_URL}data.json`;
+    fetch(dataPath)
+      .then(res => res.json())
+      .then(data => {
+        let foundNode = null;
+        const findMaturity = (node) => {
+          if (node.name === "Maturity stages") {
+            foundNode = node;
+            return;
+          }
+          if (node.children) {
+            node.children.forEach(findMaturity);
+          }
+        };
+        findMaturity(data);
+        if (foundNode) {
+          setMaturityStagesNode(foundNode);
+          setMaturityLevels(foundNode.children || []);
+        }
+      })
+      .catch(err => console.error("Error loading data for maturity stepper", err));
+  }, []);
+
+  const handleSelectMaturityLevel = (level) => {
+    if (!maturityStagesNode) return;
+
+    const parentNodeOfMaturityStages = {
+      data: { name: "Metrics & Impact Measurement" },
+      depth: 1,
+      parent: {
+        data: { name: "Cybersecurity Awareness and Behavior" },
+        depth: 0,
+        parent: null
+      }
+    };
+
+    const maturityStagesMockNode = {
+      data: maturityStagesNode,
+      depth: 2,
+      parent: parentNodeOfMaturityStages
+    };
+
+    const mockNode = {
+      data: level,
+      depth: 3,
+      parent: maturityStagesMockNode
+    };
+
+    handleNodeSelect(mockNode);
+  };
 
   const handleNodeSelect = (node) => {
     setActiveNode(node);
@@ -55,13 +109,43 @@ function MindMapScreen() {
         onClose={handleCloseAbout}
       />
 
+      {/* Floating Stepper for Maturity Stages */}
+      {maturityLevels.length > 0 && (
+        <div className="maturity-stepper-container">
+          <div className="maturity-stepper-label">
+            <span>Maturity Timeline</span>
+            <span className="maturity-stepper-sub">Progression Benchmark</span>
+          </div>
+          <div className="maturity-stepper-steps">
+            {maturityLevels.map((level, idx) => {
+              const levelNumber = idx + 1;
+              const shortName = level.name.replace(/^Level \d+:\s*/, '');
+              const isActive = activeNode && activeNode.data && activeNode.data.name === level.name;
+              return (
+                <button
+                  key={level.name}
+                  className={`maturity-step-btn ${isActive ? 'active-step' : ''}`}
+                  onClick={() => handleSelectMaturityLevel(level)}
+                >
+                  <span className="step-number">L{levelNumber}</span>
+                  <span className="step-name">{shortName}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Hide the audit prompt until the feature is officially released */}
+      {/* 
       <button
         id="assess-btn"
         className="discreet-link"
         onClick={() => navigate('/assessment')}
       >
         Want to assess the maturity of your awareness program? Try the Audit.
-      </button>
+      </button> 
+      */}
 
       <div className="copyright-notice">
         &copy; 2026 EduRisk Inc. All Rights Reserved
