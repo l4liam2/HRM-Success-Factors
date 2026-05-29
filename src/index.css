@@ -47,6 +47,10 @@ body.dark-mode {
     --grid-color: rgba(248, 250, 252, 0.025);
 }
 
+html {
+    zoom: 0.9;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
