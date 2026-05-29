@@ -52,7 +52,7 @@ function LandingPage() {
 
       <div className="landing-content">
         <div className="landing-header">
-          <h1>Factors Behind A Successful Security Awareness Program</h1>
+          <h1>Security Awareness Program Success Factors</h1>
           <p>Explore the success factors of security culture or assess your organization's maturity.</p>
         </div>
 

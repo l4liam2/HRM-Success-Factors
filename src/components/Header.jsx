@@ -77,7 +77,7 @@ const Header = ({ onAboutClick, onBibliographyClick, onResetZoom }) => {
     return (
         <header className="header-content-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '1.5rem 2rem', position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 10, pointerEvents: 'none' }}>
             <div className="header-content" style={{ pointerEvents: 'auto' }}>
-                <h1 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Factors Behind A Successful Security Awareness Program</h1>
+                <h1 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Security Awareness Program Success Factors</h1>
                 <p>Interactive Mindmap of Success Factors</p>
                 
                 <div className="search-container" ref={searchRef} style={{ marginTop: '1rem', position: 'relative', width: '300px' }}>

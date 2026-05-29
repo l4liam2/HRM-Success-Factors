@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import MindMap from './MindMap';
 import DetailsPanel from './DetailsPanel';
@@ -13,7 +12,6 @@ function MindMapScreen() {
   const [isBibliographyOpen, setIsBibliographyOpen] = useState(false);
   const [maturityStagesNode, setMaturityStagesNode] = useState(null);
   const [maturityLevels, setMaturityLevels] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const dataPath = `${import.meta.env.BASE_URL}data.json`;
@@ -46,7 +44,7 @@ function MindMapScreen() {
       data: { name: "Metrics & Impact Measurement" },
       depth: 1,
       parent: {
-        data: { name: "Cybersecurity Awareness and Behavior" },
+        data: { name: "Security Awareness Program Success Factors" },
         depth: 0,
         parent: null
       }

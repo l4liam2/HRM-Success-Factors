@@ -284,7 +284,7 @@ const MindMap = ({ onNodeSelect }) => {
                 .attr('d', d => diagonal(d.source, d.target))
                 .style("stroke", d => getTrackColor(d.target));
 
-            const linkExit = link.exit().transition().duration(duration)
+            link.exit().transition().duration(duration)
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
                     return diagonal(o, o);
@@ -340,7 +340,7 @@ const MindMap = ({ onNodeSelect }) => {
                     dy = parseFloat(text.attr("dy") || 0),
                     tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
 
-                while (word = words.pop()) {
+                while ((word = words.pop())) {
                     line.push(word);
                     tspan.text(line.join(" "));
                     if (tspan.node().getComputedTextLength() > width) {
@@ -421,6 +421,7 @@ const MindMap = ({ onNodeSelect }) => {
             window.removeEventListener('focus-node', handleFocusNode);
         };
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Empty dependency array = run once on mount
 
     // Expose Zoom Reset if needed via event listener in useEffect or ref. 
