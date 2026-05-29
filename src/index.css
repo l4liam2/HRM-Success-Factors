@@ -1,3 +1,7 @@
+html {
+    font-size: 90%; /* Scale all rem units down by 10% for a cleaner, lower-density visual style */
+}
+
 :root {
     /* Modern Sleek Light Mode Palette */
     --bg-color: #F8FAFC;
@@ -45,10 +49,6 @@ body.dark-mode {
 
     /* Background texture grid color in dark mode */
     --grid-color: rgba(248, 250, 252, 0.025);
-}
-
-html {
-    zoom: 0.9;
 }
 
 * {
@@ -200,7 +200,7 @@ header p {
 
 .node text {
     font-family: 'Inter', sans-serif;
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 500;
     fill: var(--text-primary);
     cursor: pointer;
@@ -514,7 +514,7 @@ body.dark-mode .driver-item:hover {
 .modal-content {
     position: relative;
     width: 90%;
-    max-width: 500px;
+    max-width: 32rem;
     padding: 2rem;
     background: var(--node-fill);
     border: 1px solid var(--panel-border);

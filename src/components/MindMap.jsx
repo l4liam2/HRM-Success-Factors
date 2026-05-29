@@ -32,7 +32,7 @@ const MindMap = ({ onNodeSelect }) => {
         // Initial transform
         // Initial transform
         const isMobile = window.innerWidth < 768;
-        const initialScale = isMobile ? 0.6 : 1;
+        const initialScale = isMobile ? 0.55 : 0.9;
         const initialTranslateX = isMobile ? window.innerWidth / 3 : 150;
 
         svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, height / 2).scale(initialScale));
@@ -90,7 +90,7 @@ const MindMap = ({ onNodeSelect }) => {
             const links = treeData.links();
 
             // Normalize for fixed-depth
-            nodes.forEach(d => { d.y = d.depth * 350; });
+            nodes.forEach(d => { d.y = d.depth * 315; });
 
             // ****************** Nodes section ******************
             const node = g.selectAll('g.node')
@@ -155,7 +155,7 @@ const MindMap = ({ onNodeSelect }) => {
             // Root Node (Circle)
             const rootNode = nodeEnter.filter(d => d.depth === 0);
             rootNode.append('circle')
-                .attr('r', 65)
+                .attr('r', 58)
                 .style("fill", "#FFFFFF")
                 .style("stroke", "var(--accent-color)")
                 .style("stroke-width", "4px")
@@ -169,15 +169,15 @@ const MindMap = ({ onNodeSelect }) => {
                 .style("font-size", "11px")
                 .style("font-weight", "800")
                 .style("text-transform", "uppercase")
-                .each(function (d) { wrap(d3.select(this), 110) });
+                .each(function (d) { wrap(d3.select(this), 100) });
 
             // Child Node (Rect)
             const childNode = nodeEnter.filter(d => d.depth > 0);
             childNode.append('rect')
-                .attr('width', 220)
-                .attr('height', 80)
-                .attr('x', -110)
-                .attr('y', -40)
+                .attr('width', 200)
+                .attr('height', 72)
+                .attr('x', -100)
+                .attr('y', -36)
                 .attr('rx', 12)
                 .attr('ry', 12)
                 .style("fill", d => {
@@ -195,12 +195,12 @@ const MindMap = ({ onNodeSelect }) => {
             childNode.append('path')
                 .attr('d', d => getIcon(d))
                 .attr('fill', d => getTrackColor(d))
-                .attr('transform', 'translate(-95, -12) scale(1.2)')
+                .attr('transform', 'translate(-85, -10) scale(1.1)')
                 .style("opacity", 1);
 
             childNode.append('text')
                 .attr("dy", "0.32em")
-                .attr("x", -65)
+                .attr("x", -55)
                 .attr("text-anchor", "start")
                 .text(d => d.data.name)
                 .style("fill", "var(--text-primary)")
@@ -208,11 +208,11 @@ const MindMap = ({ onNodeSelect }) => {
                 .style("font-weight", "700")
                 .style("text-transform", "uppercase")
                 .style("letter-spacing", "0.05em")
-                .each(function (d) { wrap(d3.select(this), 150) });
+                .each(function (d) { wrap(d3.select(this), 135) });
 
             // Info Icon Group (Appended last to ensure z-index ON TOP)
             const infoGroup = nodeEnter.append('g')
-                .attr('transform', 'translate(90, -23)') // Lowered to -18
+                .attr('transform', 'translate(80, -20)') // Lowered to -18
                 .attr('cursor', 'pointer')
                 .style("opacity", 0)
                 // Hide for root node AND leaf nodes
