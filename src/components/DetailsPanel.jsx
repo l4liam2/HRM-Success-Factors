@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import { findCitation } from './bibliographyData';
 
 const DetailsPanel = ({ node, isOpen, onClose }) => {
     if (!node) return null;
@@ -10,6 +12,48 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
     const { name, description, tldr, examples, children, actionItems, kpis, maturityLevels } = data;
 
     const isMaturityStage = name.startsWith("Level ") || (parent && parent.data && parent.data.name === "Maturity stages");
+
+    const [hoveredCitation, setHoveredCitation] = useState(null);
+    const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+    const contentRef = useRef(null);
+
+    useEffect(() => {
+        if (!isOpen || !node || !contentRef.current) return;
+
+        const container = contentRef.current;
+        const citationLinks = container.querySelectorAll('a.citation');
+
+        const handleMouseEnter = (e) => {
+            const linkText = e.currentTarget.textContent || "";
+            const parentText = e.currentTarget.parentElement ? e.currentTarget.parentElement.textContent : "";
+            const sourceText = findCitation(linkText, parentText);
+
+            if (sourceText) {
+                setHoveredCitation(sourceText);
+                const rect = e.currentTarget.getBoundingClientRect();
+                setTooltipPos({
+                    x: rect.left + rect.width / 2,
+                    y: rect.bottom + 8
+                });
+            }
+        };
+
+        const handleMouseLeave = () => {
+            setHoveredCitation(null);
+        };
+
+        citationLinks.forEach(link => {
+            link.addEventListener('mouseenter', handleMouseEnter);
+            link.addEventListener('mouseleave', handleMouseLeave);
+        });
+
+        return () => {
+            citationLinks.forEach(link => {
+                link.removeEventListener('mouseenter', handleMouseEnter);
+                link.removeEventListener('mouseleave', handleMouseLeave);
+            });
+        };
+    }, [isOpen, node, description, tldr, examples]);
 
     // Determine Drivers / Sub-Factors
     let listTitle = "Key Drivers / Sub-Factors";
@@ -68,7 +112,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                     <button id="close-panel" aria-label="Close details" onClick={onClose}>&times;</button>
                 </div>
                 
-                <div id="panel-content">
+                <div id="panel-content" ref={contentRef}>
                     {tldr && (
                         <div className="tldr-box">
                             <strong>TL;DR:</strong> <span dangerouslySetInnerHTML={{ __html: tldr }} />
@@ -79,7 +123,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         <div className="content-section">
                             <h3 className="section-title">Overview</h3>
                             <div className="description markdown-body">
-                                <ReactMarkdown>{description}</ReactMarkdown>
+                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
                             </div>
                         </div>
                     ) : (
@@ -92,7 +136,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         <div className="content-section">
                             <h3 className="section-title">Practical Examples</h3>
                             <div className="description markdown-body">
-                                <ReactMarkdown>{examples}</ReactMarkdown>
+                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{examples}</ReactMarkdown>
                             </div>
                         </div>
                     )}
@@ -167,6 +211,32 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                     )}
                 </div>
             </div>
+            {hoveredCitation && (
+                <div 
+                    className="citation-tooltip animate-fade-in"
+                    style={{
+                        position: 'fixed',
+                        left: `${tooltipPos.x}px`,
+                        top: `${tooltipPos.y}px`,
+                        transform: 'translateX(-50%)',
+                        background: 'var(--panel-bg)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid var(--panel-border)',
+                        color: 'var(--text-primary)',
+                        padding: '0.75rem 1rem',
+                        borderRadius: '8px',
+                        boxShadow: 'var(--shadow-lg)',
+                        fontSize: '0.8rem',
+                        lineHeight: '1.4',
+                        maxWidth: '280px',
+                        zIndex: 9999,
+                        pointerEvents: 'none',
+                        fontFamily: 'Inter, sans-serif'
+                    }}
+                >
+                    {hoveredCitation}
+                </div>
+            )}
         </Rnd>
     );
 };

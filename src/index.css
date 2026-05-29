@@ -1635,3 +1635,20 @@ body.dark-mode .driver-item:hover {
 .node:hover .root-node-text {
     fill: var(--accent-color) !important;
 }
+
+/* Citation Tooltip Hover Animations & Premium Fade-in */
+.citation-tooltip {
+    opacity: 0;
+    animation: fadeInTooltip 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInTooltip {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 8px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
