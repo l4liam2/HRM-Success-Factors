@@ -1719,3 +1719,53 @@ body.dark-mode .driver-item:hover {
         transform: translate(-50%, 0);
     }
 }
+
+/* Floating Bibliography Button in Bottom Right */
+.floating-bib-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    z-index: 25;
+    pointer-events: auto;
+    
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+    
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-bib-btn:hover {
+    transform: translateY(-2px);
+    background: var(--node-fill);
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-lg), 0 0 12px var(--accent-glow);
+    color: var(--accent-color);
+}
+
+.floating-bib-btn:active {
+    transform: translateY(0);
+}
+
+/* On mobile, adjust floating button to avoid overlapping controls or stepper */
+@media (max-width: 768px) {
+    .floating-bib-btn {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}

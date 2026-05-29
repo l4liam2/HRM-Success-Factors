@@ -4,6 +4,7 @@ import MindMap from './MindMap';
 import DetailsPanel from './DetailsPanel';
 import AboutModal from './AboutModal';
 import BibliographyModal from './BibliographyModal';
+import { BookOpen } from 'lucide-react';
 
 function MindMapScreen() {
   const [activeNode, setActiveNode] = useState(null);
@@ -160,6 +161,15 @@ function MindMapScreen() {
         Want to assess the maturity of your awareness program? Try the Audit.
       </button> 
       */}
+
+      <button 
+        className="floating-bib-btn" 
+        onClick={handleBibliographyClick}
+        title="Open Bibliography"
+      >
+        <BookOpen size={16} />
+        <span>Bibliography</span>
+      </button>
 
       <div className="copyright-notice">
         &copy; 2026 EduRisk Inc. All Rights Reserved

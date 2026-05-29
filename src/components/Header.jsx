@@ -163,10 +163,7 @@ const Header = ({ onAboutClick, onBibliographyClick, onResetZoom }) => {
                     <Info size={14} />
                     <span>About</span>
                 </button>
-                <button id="bibliography-btn" className="btn" onClick={onBibliographyClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <BookOpen size={14} />
-                    <span>Bibliography</span>
-                </button>
+
                 {/* Hide the Assessment route button until released */}
                 {/* 
                 <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
