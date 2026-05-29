@@ -1,14 +1,43 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { findCitation } from './bibliographyData';
 
 const DetailsPanel = ({ node, isOpen, onClose }) => {
     const [hoveredCitation, setHoveredCitation] = useState(null);
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [shouldTruncate, setShouldTruncate] = useState(false);
     const contentRef = useRef(null);
+    const descriptionRef = useRef(null);
+
+    // Reset expand/collapse states when node changes
+    useEffect(() => {
+        setIsExpanded(false);
+        setShouldTruncate(false);
+    }, [node]);
+
+    // Check if overview description overflows after rendering or when description changes
+    useEffect(() => {
+        if (!isOpen || !node || !descriptionRef.current) return;
+        
+        const handleResize = () => {
+            if (descriptionRef.current) {
+                // 130px threshold for description height
+                const hasOverflow = descriptionRef.current.scrollHeight > 130;
+                setShouldTruncate(hasOverflow);
+            }
+        };
+
+        // Run checking
+        handleResize();
+        
+        // Also check if contents changed or window resized
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isOpen, node, node?.data?.description]);
 
     useEffect(() => {
         if (!isOpen || !node || !contentRef.current) return;
@@ -122,9 +151,35 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                     {description ? (
                         <div className="content-section">
                             <h3 className="section-title">Overview</h3>
-                            <div className="description markdown-body">
-                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+                            <div className={`overview-wrapper ${shouldTruncate ? 'has-fade' : ''} ${shouldTruncate && !isExpanded ? 'collapsed' : ''}`}>
+                                <div 
+                                    ref={descriptionRef}
+                                    className="description markdown-body overview-content"
+                                    style={{
+                                        maxHeight: shouldTruncate && !isExpanded ? '130px' : 'none',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+                                </div>
                             </div>
+                            {shouldTruncate && (
+                                <button 
+                                    className="overview-expand-btn"
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    aria-expanded={isExpanded}
+                                >
+                                    {isExpanded ? (
+                                        <>
+                                            Show Less <ChevronUp size={14} style={{ marginLeft: '4px' }} />
+                                        </>
+                                    ) : (
+                                        <>
+                                            Read More <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                                        </>
+                                    )}
+                                </button>
+                            )}
                         </div>
                     ) : (
                         <p className="placeholder">

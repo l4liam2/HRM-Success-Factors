@@ -355,6 +355,63 @@ header p {
     font-weight: 600;
 }
 
+/* Expandable Overview Styles */
+.overview-wrapper {
+    position: relative;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overview-content {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overview-wrapper.has-fade.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--panel-bg));
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+body.dark-mode .overview-wrapper.has-fade.collapsed::after {
+    background: linear-gradient(to bottom, rgba(15, 28, 46, 0), var(--panel-bg));
+}
+
+.overview-expand-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    margin-top: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.overview-expand-btn:hover {
+    color: var(--secondary-accent);
+}
+
+.overview-expand-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.overview-expand-btn:hover svg {
+    transform: translateY(2px);
+}
+
+.overview-expand-btn[aria-expanded="true"]:hover svg {
+    transform: translateY(-2px);
+}
+
 /* Side Panel Content Styles */
 .panel-section-label {
     display: block;
