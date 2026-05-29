@@ -289,8 +289,8 @@ header p {
 
 #close-panel {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 0;
+    right: 0;
     background: rgba(0, 0, 0, 0.05);
     /* Subtle button bg */
     border: none;
@@ -674,8 +674,8 @@ body.dark-mode .driver-item:hover {
     }
 
     #close-panel {
-        top: 1rem;
-        right: 1rem;
+        top: 0.25rem;
+        right: 0.25rem;
         background: rgba(0, 0, 0, 0.1);
     }
 
