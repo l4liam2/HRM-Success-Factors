@@ -13,11 +13,6 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
     const contentRef = useRef(null);
     const descriptionRef = useRef(null);
 
-    // Reset expand/collapse states when node changes
-    useEffect(() => {
-        setIsExpanded(false);
-        setShouldTruncate(false);
-    }, [node]);
 
     // Check if overview description overflows after rendering or when description changes
     useEffect(() => {
@@ -39,43 +34,32 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, [isOpen, node, node?.data?.description]);
 
-    useEffect(() => {
-        if (!isOpen || !node || !contentRef.current) return;
-
-        const container = contentRef.current;
-        const citationLinks = container.querySelectorAll('a.citation');
-
-        const handleMouseEnter = (e) => {
-            const linkText = e.currentTarget.textContent || "";
-            const parentText = e.currentTarget.parentElement ? e.currentTarget.parentElement.textContent : "";
-            const sourceText = findCitation(linkText, parentText);
-
-            if (sourceText) {
-                setHoveredCitation(sourceText);
-                const rect = e.currentTarget.getBoundingClientRect();
-                setTooltipPos({
-                    x: rect.left + rect.width / 2,
-                    y: rect.bottom + 8
-                });
+    const markdownComponents = {
+        a: ({ node, ...props }) => {
+            if (node && props.className === 'citation') {
+                return (
+                    <a
+                        {...props}
+                        onMouseEnter={(e) => {
+                            const linkText = e.currentTarget.textContent || "";
+                            const parentText = e.currentTarget.parentElement ? e.currentTarget.parentElement.textContent : "";
+                            const sourceText = findCitation(linkText, parentText);
+                            if (sourceText) {
+                                setHoveredCitation(sourceText);
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                setTooltipPos({
+                                    x: rect.left + rect.width / 2,
+                                    y: rect.bottom + 8
+                                });
+                            }
+                        }}
+                        onMouseLeave={() => setHoveredCitation(null)}
+                    />
+                );
             }
-        };
-
-        const handleMouseLeave = () => {
-            setHoveredCitation(null);
-        };
-
-        citationLinks.forEach(link => {
-            link.addEventListener('mouseenter', handleMouseEnter);
-            link.addEventListener('mouseleave', handleMouseLeave);
-        });
-
-        return () => {
-            citationLinks.forEach(link => {
-                link.removeEventListener('mouseenter', handleMouseEnter);
-                link.removeEventListener('mouseleave', handleMouseLeave);
-            });
-        };
-    }, [isOpen, node, node?.data?.description, node?.data?.tldr, node?.data?.examples]);
+            return <a {...props} />;
+        }
+    };
 
     if (!node) return null;
 
@@ -130,7 +114,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
             className={`glass-panel-rnd ${isOpen ? '' : 'hidden'}`}
             style={{ zIndex: 20, position: 'absolute' }}
         >
-            <div className="panel-inner">
+            <div className="panel-inner" key={name}>
                 <div className="panel-header">
                     {breadcrumbs.length > 1 && (
                         <div className="breadcrumbs" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -160,7 +144,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                                         overflow: 'hidden'
                                     }}
                                 >
-                                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{description}</ReactMarkdown>
+                                    <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{description}</ReactMarkdown>
                                 </div>
                             </div>
                             {shouldTruncate && (
@@ -191,7 +175,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         <div className="content-section">
                             <h3 className="section-title">Practical Examples</h3>
                             <div className="description markdown-body">
-                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{examples}</ReactMarkdown>
+                                <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{examples}</ReactMarkdown>
                             </div>
                         </div>
                     )}
