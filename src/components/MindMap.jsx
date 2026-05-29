@@ -32,8 +32,8 @@ const MindMap = ({ onNodeSelect }) => {
         // Initial transform
         // Initial transform
         const isMobile = window.innerWidth < 768;
-        const initialScale = isMobile ? 0.55 : 0.9;
-        const initialTranslateX = isMobile ? window.innerWidth / 3 : 150;
+        const initialScale = isMobile ? 0.55 : 0.85;
+        const initialTranslateX = isMobile ? window.innerWidth / 3 : 180;
 
         svg.call(zoom.transform, d3.zoomIdentity.translate(initialTranslateX, height / 2).scale(initialScale));
 
@@ -46,7 +46,7 @@ const MindMap = ({ onNodeSelect }) => {
 
         // Better React pattern: use useImperativeHandle or props. For now, we'll just focus on rendering.
 
-        const treeMap = d3.tree().nodeSize([110, 350]);
+        const treeMap = d3.tree().nodeSize([100, 300]);
         let root;
         let i = 0;
         const duration = 500;
@@ -90,7 +90,7 @@ const MindMap = ({ onNodeSelect }) => {
             const links = treeData.links();
 
             // Normalize for fixed-depth
-            nodes.forEach(d => { d.y = d.depth * 315; });
+            nodes.forEach(d => { d.y = d.depth * 300; });
 
             // ****************** Nodes section ******************
             const node = g.selectAll('g.node')
@@ -155,7 +155,7 @@ const MindMap = ({ onNodeSelect }) => {
             // Root Node (Circle)
             const rootNode = nodeEnter.filter(d => d.depth === 0);
             rootNode.append('circle')
-                .attr('r', 58)
+                .attr('r', 65)
                 .style("fill", "#FFFFFF")
                 .style("stroke", "var(--accent-color)")
                 .style("stroke-width", "4px")
@@ -169,15 +169,15 @@ const MindMap = ({ onNodeSelect }) => {
                 .style("font-size", "11px")
                 .style("font-weight", "800")
                 .style("text-transform", "uppercase")
-                .each(function (d) { wrap(d3.select(this), 100) });
+                .each(function (d) { wrap(d3.select(this), 110) });
 
             // Child Node (Rect)
             const childNode = nodeEnter.filter(d => d.depth > 0);
             childNode.append('rect')
-                .attr('width', 200)
-                .attr('height', 72)
-                .attr('x', -100)
-                .attr('y', -36)
+                .attr('width', 220)
+                .attr('height', 80)
+                .attr('x', -110)
+                .attr('y', -40)
                 .attr('rx', 12)
                 .attr('ry', 12)
                 .style("fill", d => {
@@ -195,12 +195,12 @@ const MindMap = ({ onNodeSelect }) => {
             childNode.append('path')
                 .attr('d', d => getIcon(d))
                 .attr('fill', d => getTrackColor(d))
-                .attr('transform', 'translate(-85, -10) scale(1.1)')
+                .attr('transform', 'translate(-95, -12) scale(1.2)')
                 .style("opacity", 1);
 
             childNode.append('text')
                 .attr("dy", "0.32em")
-                .attr("x", -55)
+                .attr("x", -65)
                 .attr("text-anchor", "start")
                 .text(d => d.data.name)
                 .style("fill", "var(--text-primary)")
@@ -208,11 +208,11 @@ const MindMap = ({ onNodeSelect }) => {
                 .style("font-weight", "700")
                 .style("text-transform", "uppercase")
                 .style("letter-spacing", "0.05em")
-                .each(function (d) { wrap(d3.select(this), 135) });
+                .each(function (d) { wrap(d3.select(this), 150) });
 
             // Info Icon Group (Appended last to ensure z-index ON TOP)
             const infoGroup = nodeEnter.append('g')
-                .attr('transform', 'translate(80, -20)') // Lowered to -18
+                .attr('transform', 'translate(90, -23)') // Lowered to -18
                 .attr('cursor', 'pointer')
                 .style("opacity", 0)
                 // Hide for root node AND leaf nodes
@@ -399,7 +399,7 @@ const MindMap = ({ onNodeSelect }) => {
                 // Zoom to node
                 const width = window.innerWidth;
                 const height = window.innerHeight;
-                const scale = 1.2;
+                const scale = 1.05;
                 
                 // In D3 tree, d.y is the horizontal position and d.x is the vertical position
                 const tx = -targetNode.y * scale + width / 3; 
@@ -414,42 +414,23 @@ const MindMap = ({ onNodeSelect }) => {
                 if (onNodeSelect) onNodeSelect(targetNode);
             }
         };
+        const handleResetZoom = () => {
+            svg.transition().duration(750).call(
+                zoom.transform,
+                d3.zoomIdentity.translate(initialTranslateX, height / 2).scale(initialScale)
+            );
+        };
+
         window.addEventListener('focus-node', handleFocusNode);
+        window.addEventListener('reset-zoom', handleResetZoom);
 
         return () => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('focus-node', handleFocusNode);
+            window.removeEventListener('reset-zoom', handleResetZoom);
         };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Empty dependency array = run once on mount
-
-    // Expose Zoom Reset if needed via event listener in useEffect or ref. 
-    // For now we will attach a window listener for the 'reset-zoom' custom event
-    useEffect(() => {
-        const handleResetZoom = () => {
-            if (!svgRef.current) return;
-            const svg = d3.select(svgRef.current);
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            // We need 'zoom' instance. Since it's inside, we might need to recreate or store it.
-            // Re-selecting zoom behavior from SVG node:
-            // d3 stores zoom transform on the node, but the behavior 'zoom' function is needed to transform.
-            // Easiest is to move zoom definition up or re-create generic zoom identity.
-            // Actually we can transition the transform.
-
-            svg.transition().duration(750).call(
-                // We need the zoom behavior instance to call zoom.transform. 
-                // Since we defined it inside, we can't access it easily here without refactoring.
-                // Let's refactor the previous useEffect to store zoom in a ref? 
-                // Or just define a new zoom behavior matching the old one (same scale extent).
-                d3.zoom().on("zoom", (e) => d3.select(svgRef.current).select('g').attr('transform', e.transform)).transform,
-                d3.zoomIdentity.translate(width / 2, height / 2).scale(1)
-            );
-        };
-
-        window.addEventListener('reset-zoom', handleResetZoom);
-        return () => window.removeEventListener('reset-zoom', handleResetZoom);
     }, []);
 
     return <svg ref={svgRef} id="visualization"></svg>;

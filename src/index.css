@@ -1,5 +1,5 @@
 html {
-    font-size: 90%; /* Scale all rem units down by 10% for a cleaner, lower-density visual style */
+    font-size: 90%; /* Scale all rem units down by 10% for a cleaner, lower-density visual style to increase canvas real estate */
 }
 
 :root {
@@ -200,7 +200,7 @@ header p {
 
 .node text {
     font-family: 'Inter', sans-serif;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 500;
     fill: var(--text-primary);
     cursor: pointer;
@@ -514,7 +514,7 @@ body.dark-mode .driver-item:hover {
 .modal-content {
     position: relative;
     width: 90%;
-    max-width: 32rem;
+    max-width: 500px;
     padding: 2rem;
     background: var(--node-fill);
     border: 1px solid var(--panel-border);

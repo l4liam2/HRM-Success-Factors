@@ -103,10 +103,10 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
         <>
             <Rnd
                 default={{
-                    x: typeof window !== 'undefined' ? window.innerWidth - 415 : 0,
+                    x: typeof window !== 'undefined' ? window.innerWidth - 450 : 0,
                     y: typeof window !== 'undefined' ? window.innerHeight * 0.1 : 0,
-                    width: 380,
-                    height: 550,
+                    width: 420,
+                    height: 600,
                 }}
                 minWidth={300}
                 minHeight={300}
