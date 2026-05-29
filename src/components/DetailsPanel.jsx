@@ -6,13 +6,6 @@ import rehypeRaw from 'rehype-raw';
 import { findCitation } from './bibliographyData';
 
 const DetailsPanel = ({ node, isOpen, onClose }) => {
-    if (!node) return null;
-
-    const { data, parent, depth } = node;
-    const { name, description, tldr, examples, children, actionItems, kpis, maturityLevels } = data;
-
-    const isMaturityStage = name.startsWith("Level ") || (parent && parent.data && parent.data.name === "Maturity stages");
-
     const [hoveredCitation, setHoveredCitation] = useState(null);
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
     const contentRef = useRef(null);
@@ -53,7 +46,14 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                 link.removeEventListener('mouseleave', handleMouseLeave);
             });
         };
-    }, [isOpen, node, description, tldr, examples]);
+    }, [isOpen, node, node?.data?.description, node?.data?.tldr, node?.data?.examples]);
+
+    if (!node) return null;
+
+    const { data, parent, depth } = node;
+    const { name, description, tldr, examples, children, actionItems, kpis, maturityLevels } = data;
+
+    const isMaturityStage = name.startsWith("Level ") || (parent && parent.data && parent.data.name === "Maturity stages");
 
     // Determine Drivers / Sub-Factors
     let listTitle = "Key Drivers / Sub-Factors";
