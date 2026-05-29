@@ -4,11 +4,13 @@ import Header from './Header';
 import MindMap from './MindMap';
 import DetailsPanel from './DetailsPanel';
 import AboutModal from './AboutModal';
+import BibliographyModal from './BibliographyModal';
 
 function MindMapScreen() {
   const [activeNode, setActiveNode] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isBibliographyOpen, setIsBibliographyOpen] = useState(false);
   const [maturityStagesNode, setMaturityStagesNode] = useState(null);
   const [maturityLevels, setMaturityLevels] = useState([]);
   const navigate = useNavigate();
@@ -82,6 +84,14 @@ function MindMapScreen() {
     setIsAboutModalOpen(false);
   };
 
+  const handleBibliographyClick = () => {
+    setIsBibliographyOpen(true);
+  };
+
+  const handleCloseBibliography = () => {
+    setIsBibliographyOpen(false);
+  };
+
   const handleResetZoom = () => {
     // Dispatch custom event for D3 component to pick up
     window.dispatchEvent(new Event('reset-zoom'));
@@ -91,6 +101,7 @@ function MindMapScreen() {
     <div className="app-container">
       <Header
         onAboutClick={handleAboutClick}
+        onBibliographyClick={handleBibliographyClick}
         onResetZoom={handleResetZoom}
       />
 
@@ -107,6 +118,11 @@ function MindMapScreen() {
       <AboutModal
         isOpen={isAboutModalOpen}
         onClose={handleCloseAbout}
+      />
+
+      <BibliographyModal
+        isOpen={isBibliographyOpen}
+        onClose={handleCloseBibliography}
       />
 
       {/* Floating Stepper for Maturity Stages */}

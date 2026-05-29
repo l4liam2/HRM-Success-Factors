@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Sun, Moon, Home, Info, ClipboardCheck, RefreshCw } from 'lucide-react';
+import { Search, Sun, Moon, Home, Info, ClipboardCheck, RefreshCw, BookOpen } from 'lucide-react';
 
-const Header = ({ onAboutClick, onResetZoom }) => {
+const Header = ({ onAboutClick, onBibliographyClick, onResetZoom }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [allNodes, setAllNodes] = useState([]);
     const [filteredNodes, setFilteredNodes] = useState([]);
@@ -162,6 +162,10 @@ const Header = ({ onAboutClick, onResetZoom }) => {
                 <button id="about-btn" className="btn" onClick={onAboutClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <Info size={14} />
                     <span>About</span>
+                </button>
+                <button id="bibliography-btn" className="btn" onClick={onBibliographyClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BookOpen size={14} />
+                    <span>Bibliography</span>
                 </button>
                 {/* Hide the Assessment route button until released */}
                 {/* 
