@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Printer } from 'lucide-react';
 
@@ -67,6 +67,7 @@ function RadarChart({ dims, revealed }) {
 
 function AssessmentScreen() {
   const navigate = useNavigate();
+  const layoutRef = useRef(null);
   const [maturityLevels, setMaturityLevels] = useState([]);
   const [assessment, setAssessment] = useState(null);
   const [phase, setPhase] = useState('intro'); // intro | quiz | results
@@ -201,6 +202,8 @@ function AssessmentScreen() {
     return () => cancelAnimationFrame(raf);
   }, [phase, results]);
 
+  const scrollTop = () => layoutRef.current?.scrollTo({ top: 0 });
+
   const startQuiz = () => {
     if (selectedIds.length === 0) setSelectedIds(generateSelection(assessment));
     setSectionIdx(0);
@@ -219,9 +222,9 @@ function AssessmentScreen() {
       setHalftimeSeen(true);
       setShowHalftime(true);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollTop();
   };
-  const goBack = () => { setSectionIdx(i => Math.max(i - 1, 0)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const goBack = () => { setSectionIdx(i => Math.max(i - 1, 0)); scrollTop(); };
 
   const computeResults = () => {
     const dims = quiz.map(d => {
@@ -241,7 +244,7 @@ function AssessmentScreen() {
     setSelectedLevelIdx(overallLevel - 1);
     setExpandedLevels({ [overallLevel - 1]: true, [overallLevel]: true });
     setPhase('results');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollTop();
   };
 
   const retake = () => {
@@ -253,7 +256,7 @@ function AssessmentScreen() {
     setHalftimeSeen(false);
     setSelectedLevelIdx(null);
     setPhase('quiz');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollTop();
   };
 
   const summaryText = () => {
@@ -293,7 +296,7 @@ function AssessmentScreen() {
         {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
       </button>
 
-      <div className="assessment-layout">
+      <div className="assessment-layout" ref={layoutRef}>
         <div className="assessment-intro">
           <h2 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {assessment?.intro?.title || 'Program Maturity Assessment'}
@@ -323,7 +326,7 @@ function AssessmentScreen() {
               <h2 style={{ marginBottom: '0.5rem' }}>Yeeeah… you're about halfway.</h2>
               <p style={{ color: 'var(--text-secondary)', maxWidth: 460, marginBottom: '0.75rem', fontSize: '1.05rem' }}>So if you could go ahead and knock out the other half, that'd be greaaat.</p>
               <p style={{ color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '2rem' }}>{answeredCount} of {allQuestions.length} done. Mmkay.</p>
-              <button className="submit-btn" style={{ maxWidth: 320 }} onClick={() => setShowHalftime(false)}>Yeah, I'll continue</button>
+              <button className="submit-btn" style={{ maxWidth: 320 }} onClick={() => { setShowHalftime(false); scrollTop(); }}>Yeah, I'll continue</button>
             </div>
           ) : (
           <>
