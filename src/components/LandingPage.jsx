@@ -70,28 +70,13 @@ function LandingPage() {
           </div>
 
           <div className="landing-card assessment-card" onClick={() => navigate('/assessment')} style={{ position: 'relative' }}>
-            <div className="coming-soon-badge-card" style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(79, 70, 229, 0.1)',
-                color: 'var(--accent-color)',
-                padding: '0.25rem 0.75rem',
-                borderRadius: '99px',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-            }}>
-                Coming Soon
-            </div>
             <div className="card-icon-wrapper assessment-icon">
               <ClipboardCheck size={40} />
             </div>
             <h2>Maturity Assessment</h2>
             <p>Evaluate your awareness program against the key success factors and identify areas for improvement.</p>
             <div className="card-action">
-              <span>Coming Soon</span>
+              <span>Take Assessment</span>
               <ArrowRight size={20} />
             </div>
           </div>

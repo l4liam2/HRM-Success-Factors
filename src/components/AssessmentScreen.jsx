@@ -1,21 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Award, CheckCircle, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Printer } from 'lucide-react';
+
+// Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
+const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
+
+// How many questions to ask from a dimension's pool (capped at pool size).
+const askN = (d) => Math.min(d.askCount ?? d.questions.length, d.questions.length);
+
+// Points for a chosen descriptor. Normal: top->bottom = 1..5. reverse: top->bottom = 5..1
+// (use reverse for negatively-keyed items whose descriptors are authored most-mature-first).
+const pointsFor = (q, idx) => q.reverse ? (q.descriptors.length - idx) : (idx + 1);
+
+// Random subset per dimension (Fisher-Yates), returns flat list of chosen question ids.
+const generateSelection = (assessment) => {
+  const ids = [];
+  for (const d of assessment.dimensions) {
+    const pool = [...d.questions];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    ids.push(...pool.slice(0, askN(d)).map(q => q.id));
+  }
+  return ids;
+};
+
+// --- Radar chart (hand-rolled SVG, no dependency) ---
+const RADAR_C = 150, RADAR_R = 108;
+const radarPoint = (i, n, r) => {
+  const a = (-90 + (i * 360) / n) * (Math.PI / 180);
+  return [RADAR_C + r * Math.cos(a), RADAR_C + r * Math.sin(a)];
+};
+const polyPoints = (pts) => pts.map(p => p.join(',')).join(' ');
+
+function RadarChart({ dims, revealed }) {
+  const n = dims.length;
+  const dataPts = dims.map((d, i) => radarPoint(i, n, (d.level / 5) * RADAR_R));
+  return (
+    <svg className="radar-chart" viewBox="0 0 300 300" role="img" aria-label="Maturity level by dimension">
+      {[1, 2, 3, 4, 5].map(L => (
+        <polygon key={L} className="radar-grid"
+          points={polyPoints(dims.map((_, i) => radarPoint(i, n, (L / 5) * RADAR_R)))} />
+      ))}
+      {dims.map((_, i) => {
+        const [x, y] = radarPoint(i, n, RADAR_R);
+        return <line key={i} className="radar-axis" x1={RADAR_C} y1={RADAR_C} x2={x} y2={y} />;
+      })}
+      <g style={{ transformOrigin: 'center', transform: revealed ? 'scale(1)' : 'scale(0)', transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
+        <polygon className="radar-area" points={polyPoints(dataPts)} />
+        {dataPts.map(([x, y], i) => <circle key={i} className="radar-dot" cx={x} cy={y} r={4} />)}
+      </g>
+      {dims.map((d, i) => {
+        const [x, y] = radarPoint(i, n, RADAR_R + 22);
+        const anchor = Math.abs(x - RADAR_C) < 1 ? 'middle' : (x > RADAR_C ? 'start' : 'end');
+        return (
+          <text key={i} className="radar-label" x={x} y={y} textAnchor={anchor} dominantBaseline="middle">
+            {d.label}
+            <tspan className="radar-label-lvl" x={x} dy="14">Level {d.level}</tspan>
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
 
 function AssessmentScreen() {
-  const SHOW_ASSESSMENT_CONTENT = false; // Toggle to true when ready to show
   const navigate = useNavigate();
   const [maturityLevels, setMaturityLevels] = useState([]);
+  const [assessment, setAssessment] = useState(null);
+  const [phase, setPhase] = useState('intro'); // intro | quiz | results
+  const [sectionIdx, setSectionIdx] = useState(0);
+  const [answers, setAnswers] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('assessmentAnswers')) || {}; }
+    catch { return {}; }
+  });
+  // Which questions this run drew from each pool (persisted so a refresh keeps the same set).
+  const [selectedIds, setSelectedIds] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('assessmentSelectedIds')) || []; }
+    catch { return []; }
+  });
+  const [results, setResults] = useState(null);
+  const [showHalftime, setShowHalftime] = useState(false);
+  const [halftimeSeen, setHalftimeSeen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [countPct, setCountPct] = useState(0);
+  const [copied, setCopied] = useState(false);
   const [selectedLevelIdx, setSelectedLevelIdx] = useState(null);
   const [expandedLevels, setExpandedLevels] = useState({ 0: true });
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
+    document.body.classList.toggle('dark-mode', theme === 'dark');
   }, [theme]);
 
   const toggleTheme = () => {
@@ -26,15 +102,21 @@ function AssessmentScreen() {
     });
   };
 
+  // Persist answers + drawn question set so a refresh mid-quiz doesn't wipe progress.
   useEffect(() => {
-    const dataPath = `${import.meta.env.BASE_URL}data.json`;
-    fetch(dataPath)
+    localStorage.setItem('assessmentAnswers', JSON.stringify(answers));
+  }, [answers]);
+  useEffect(() => {
+    localStorage.setItem('assessmentSelectedIds', JSON.stringify(selectedIds));
+  }, [selectedIds]);
+
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL;
+    fetch(`${base}data.json`)
       .then(res => res.json())
       .then(data => {
         const findMaturity = (node) => {
-          if (node.name === "Maturity stages") {
-            return node.children || [];
-          }
+          if (node.name === "Maturity stages") return node.children || [];
           if (node.children) {
             for (const child of node.children) {
               const res = findMaturity(child);
@@ -43,371 +125,369 @@ function AssessmentScreen() {
           }
           return [];
         };
-        const levels = findMaturity(data);
-        setMaturityLevels(levels);
+        setMaturityLevels(findMaturity(data));
       })
-      .catch(err => console.error("Error loading assessment data", err));
+      .catch(err => console.error("Error loading maturity stages", err));
+
+    fetch(`${base}assessment.json`)
+      .then(res => res.json())
+      .then(data => {
+        // Invariant: every assessment asks exactly 25 questions. Warn in dev if the config drifts.
+        if (import.meta.env.DEV) {
+          const total = data.dimensions.reduce((s, d) => s + (d.askCount ?? d.questions.length), 0);
+          if (total !== 25) console.warn(`assessment.json: askCount sums to ${total}, expected 25`);
+          data.dimensions.forEach(d => {
+            if ((d.askCount ?? 0) > d.questions.length)
+              console.warn(`assessment.json: "${d.label}" pool has ${d.questions.length} questions but askCount is ${d.askCount}`);
+          });
+        }
+        setAssessment(data);
+      })
+      .catch(err => console.error("Error loading assessment questions", err));
   }, []);
 
-  const toggleExpand = (idx) => {
-    setExpandedLevels(prev => ({
-      ...prev,
-      [idx]: !prev[idx]
-    }));
+  // Heal stale saved progress: if the persisted selection no longer matches the current
+  // question set (content changed, or it's an old partial draw), discard it.
+  useEffect(() => {
+    if (!assessment || selectedIds.length === 0) return;
+    const dimOf = new Map();
+    assessment.dimensions.forEach(d => d.questions.forEach(q => dimOf.set(q.id, d.key)));
+    const counts = {};
+    selectedIds.forEach(id => { const k = dimOf.get(id); if (k) counts[k] = (counts[k] || 0) + 1; });
+    const valid = selectedIds.every(id => dimOf.has(id))
+      && assessment.dimensions.every(d => (counts[d.key] || 0) === askN(d));
+    if (!valid) { setSelectedIds([]); setAnswers({}); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assessment]);
+
+  // The drawn subset, grouped by dimension. Falls back to nothing until a selection is made.
+  const quiz = useMemo(() => {
+    if (!assessment || selectedIds.length === 0) return [];
+    const set = new Set(selectedIds);
+    return assessment.dimensions
+      .map(d => ({ ...d, questions: d.questions.filter(q => set.has(q.id)) }))
+      .filter(d => d.questions.length > 0);
+  }, [assessment, selectedIds]);
+
+  const allQuestions = quiz.flatMap(d => d.questions);
+  const totalAsked = assessment ? assessment.dimensions.reduce((s, d) => s + askN(d), 0) : 0;
+  const estMinutes = Math.max(1, Math.round((totalAsked * 15) / 60)); // ~15s/question
+  const answeredCount = allQuestions.filter(q => answers[q.id] != null).length;
+  const allAnswered = allQuestions.length > 0 && answeredCount === allQuestions.length;
+
+  const section = quiz[sectionIdx];
+  const sectionLeft = section ? section.questions.filter(q => answers[q.id] == null).length : 0;
+  const isLastSection = sectionIdx >= quiz.length - 1;
+
+  // Animate the results in: scale the radar/bars, count the overall % up.
+  useEffect(() => {
+    if (phase !== 'results') { setRevealed(false); return; }
+    const id = setTimeout(() => setRevealed(true), 60);
+    return () => clearTimeout(id);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== 'results' || !results) return;
+    const target = Math.round(results.overallPct * 100);
+    setCountPct(0);
+    let raf, start;
+    const step = (t) => {
+      if (start == null) start = t;
+      const p = Math.min(1, (t - start) / 1100);
+      setCountPct(Math.round(target * (1 - Math.pow(1 - p, 3)))); // easeOutCubic
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [phase, results]);
+
+  const startQuiz = () => {
+    if (selectedIds.length === 0) setSelectedIds(generateSelection(assessment));
+    setSectionIdx(0);
+    setShowHalftime(false);
+    setHalftimeSeen(false);
+    setPhase('quiz');
   };
+
+  const selectAnswer = (qid, idx) => setAnswers(prev => ({ ...prev, [qid]: idx }));
+
+  const goNext = () => {
+    const target = Math.min(sectionIdx + 1, quiz.length - 1);
+    setSectionIdx(target);
+    // Halfway moment: first time we cross into the second half of the dimensions.
+    if (!halftimeSeen && target === Math.ceil(quiz.length / 2)) {
+      setHalftimeSeen(true);
+      setShowHalftime(true);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const goBack = () => { setSectionIdx(i => Math.max(i - 1, 0)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  const computeResults = () => {
+    const dims = quiz.map(d => {
+      const score = d.questions.reduce((s, q) => s + pointsFor(q, answers[q.id]), 0);
+      const max = d.questions.length * 5;
+      return {
+        key: d.key, label: d.label, dataName: d.dataName, weight: d.weight,
+        score, max, level: bandLevel(score, max), pct: max ? score / max : 0,
+      };
+    });
+    const totalW = dims.reduce((s, d) => s + d.weight, 0) || 1;
+    // Overall = weight-averaged dimension levels (weights = each dimension's factor proportion).
+    const overallAvg = dims.reduce((s, d) => s + d.weight * d.level, 0) / totalW;
+    const overallPct = dims.reduce((s, d) => s + d.weight * d.pct, 0) / totalW;
+    const overallLevel = Math.min(5, Math.max(1, Math.round(overallAvg)));
+    setResults({ dims, overallAvg, overallPct, overallLevel });
+    setSelectedLevelIdx(overallLevel - 1);
+    setExpandedLevels({ [overallLevel - 1]: true, [overallLevel]: true });
+    setPhase('results');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const retake = () => {
+    setAnswers({});
+    setSelectedIds(generateSelection(assessment)); // draw a fresh random set
+    setResults(null);
+    setSectionIdx(0);
+    setShowHalftime(false);
+    setHalftimeSeen(false);
+    setSelectedLevelIdx(null);
+    setPhase('quiz');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const summaryText = () => {
+    if (!results) return '';
+    const lines = ['Security Awareness Program — Maturity Assessment', ''];
+    results.dims.forEach(d => lines.push(`• ${d.label}: Level ${d.level} (${d.score}/${d.max})`));
+    lines.push('', `Overall: Level ${results.overallLevel} — ${Math.round(results.overallPct * 100)}% maturity`);
+    return lines.join('\n');
+  };
+  const copySummary = async () => {
+    try {
+      await navigator.clipboard.writeText(summaryText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard unavailable */ }
+  };
+
+  const toggleExpand = (idx) => setExpandedLevels(prev => ({ ...prev, [idx]: !prev[idx] }));
 
   const handleSelectLevel = (idx) => {
     setSelectedLevelIdx(idx);
-    setExpandedLevels(prev => ({
-      ...prev,
-      [idx]: true,
-      [idx + 1]: idx < 4 ? true : prev[idx + 1]
-    }));
+    setExpandedLevels(prev => ({ ...prev, [idx]: true, [idx + 1]: idx < 4 ? true : prev[idx + 1] }));
   };
 
-  const getCleanLevelName = (name) => {
-    return name.includes(':') ? name.split(':')[1].trim() : name;
-  };
+  const getCleanLevelName = (name) => name.includes(':') ? name.split(':')[1].trim() : name;
 
-  if (!SHOW_ASSESSMENT_CONTENT) {
-    return (
-      <div className="assessment-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem', textAlign: 'center', position: 'relative' }}>
-        <button 
-          className="back-btn" 
-          onClick={() => navigate('/Home')} 
-          style={{ 
-            position: 'absolute',
-            top: '2rem',
-            left: '2rem',
-            zIndex: 10,
-            background: 'var(--node-fill)',
-            border: '1px solid var(--panel-border)',
-            padding: '0.5rem 1.2rem',
-            borderRadius: '999px',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            color: 'var(--text-primary)',
-            boxShadow: 'var(--shadow-sm)',
-            fontFamily: 'Inter, sans-serif',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Home</span>
-        </button>
-        
-        <button 
-          className="theme-toggle-btn" 
-          onClick={toggleTheme} 
-          aria-label="Toggle dark mode"
-          style={{ 
-            position: 'absolute',
-            top: '2rem',
-            right: '2rem',
-            zIndex: 10,
-            background: 'var(--node-fill)',
-            border: '1px solid var(--panel-border)',
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            cursor: 'pointer',
-            boxShadow: 'var(--shadow-sm)',
-            color: 'var(--text-primary)',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
-
-        <div className="coming-soon-card" style={{
-            background: 'var(--panel-bg)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid var(--panel-border)',
-            borderRadius: '24px',
-            padding: '4rem 3rem',
-            maxWidth: '500px',
-            boxShadow: 'var(--shadow-lg)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1.5rem',
-            transform: 'translateY(-20px)'
-        }}>
-            <div style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                background: 'rgba(79, 70, 229, 0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--accent-color)',
-                marginBottom: '0.5rem'
-            }}>
-                <Award size={32} />
-            </div>
-            <h2 style={{ 
-                fontSize: '2.2rem', 
-                fontWeight: 800, 
-                margin: 0,
-                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%)', 
-                WebkitBackgroundClip: 'text', 
-                WebkitTextFillColor: 'transparent',
-                fontFamily: 'Inter, sans-serif',
-                letterSpacing: '-0.02em'
-            }}>
-                Maturity Audit
-            </h2>
-            <div style={{
-                background: 'rgba(79, 70, 229, 0.1)',
-                color: 'var(--accent-color)',
-                padding: '0.4rem 1.2rem',
-                borderRadius: '999px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-            }}>
-                Coming Soon
-            </div>
-            <p style={{ 
-                color: 'var(--text-secondary)', 
-                fontSize: '1rem', 
-                lineHeight: '1.6', 
-                margin: '0 0 1rem 0',
-                fontFamily: 'Inter, sans-serif'
-            }}>
-                We are crafting an interactive benchmarking audit to help you evaluate and track the maturity of your organization's cybersecurity awareness program. Stay tuned!
-            </p>
-            <button 
-                className="btn-select-level" 
-                onClick={() => navigate('/Home')}
-                style={{
-                    background: 'var(--accent-color)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.8rem 2rem',
-                    borderRadius: '999px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3)',
-                    transition: 'all 0.2s ease',
-                    fontFamily: 'Inter, sans-serif'
-                }}
-            >
-                Return to Dashboard
-            </button>
-        </div>
-      </div>
-    );
-  }
+  const pillStyle = { position: 'static', boxShadow: 'var(--shadow-sm)' };
 
   return (
-    <div className="assessment-container" style={{ minHeight: '100vh', padding: '2rem 1.5rem', overflow: 'hidden', position: 'relative' }}>
-      <button 
-        className="back-btn" 
-        onClick={() => navigate('/Home')} 
-        style={{ 
-          position: 'absolute',
-          top: '2rem',
-          left: '2rem',
-          zIndex: 10,
-          background: 'var(--node-fill)',
-          border: '1px solid var(--panel-border)',
-          padding: '0.5rem 1.2rem',
-          borderRadius: '999px',
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          fontSize: '0.85rem',
-          fontWeight: 600,
-          color: 'var(--text-primary)',
-          boxShadow: 'var(--shadow-sm)',
-          fontFamily: 'Inter, sans-serif',
-          transition: 'all 0.2s ease'
-        }}
-      >
+    <div className="assessment-container" style={{ minHeight: '100vh', padding: '2rem 1.5rem', position: 'relative' }}>
+      <button className="back-btn" onClick={() => navigate('/Home')} style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 10, background: 'var(--node-fill)', border: '1px solid var(--panel-border)', padding: '0.5rem 1.2rem', borderRadius: '999px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', boxShadow: 'var(--shadow-sm)', fontFamily: 'Inter, sans-serif', transition: 'all 0.2s ease' }}>
         <ArrowLeft size={16} />
         <span>Back to Home</span>
       </button>
 
-      <button 
-        className="theme-toggle-btn" 
-        onClick={toggleTheme} 
-        aria-label="Toggle dark mode"
-        style={{ 
-          position: 'absolute',
-          top: '2rem',
-          right: '2rem',
-          zIndex: 10,
-          background: 'var(--node-fill)',
-          border: '1px solid var(--panel-border)',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          cursor: 'pointer',
-          boxShadow: 'var(--shadow-sm)',
-          color: 'var(--text-primary)',
-          transition: 'all 0.2s ease'
-        }}
-      >
+      <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle dark mode" style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10, background: 'var(--node-fill)', border: '1px solid var(--panel-border)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)', color: 'var(--text-primary)', transition: 'all 0.2s ease' }}>
         {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
       </button>
 
       <div className="assessment-layout">
         <div className="assessment-intro">
-          <h2 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Security Awareness Maturity Roadmap</h2>
-          <p>
-            Assess your organisation's current cybersecurity culture maturity against industry standards and view custom steps to level up.
-          </p>
+          <h2 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            {assessment?.intro?.title || 'Program Maturity Assessment'}
+          </h2>
+          {assessment?.intro?.description && <p>{assessment.intro.description}</p>}
         </div>
 
-        {/* Self-Assessment Banner */}
-        {maturityLevels.length > 0 && (
-          <div 
-            className={`self-assessment-banner ${selectedLevelIdx === null ? 'unrated' : ''}`}
-            style={{ 
-              background: selectedLevelIdx !== null 
-                ? 'linear-gradient(135deg, var(--accent-color), var(--secondary-accent))' 
-                : undefined
-            }}
-          >
-            <div className="self-assessment-info">
-              <h3>
-                {selectedLevelIdx !== null 
-                  ? `Assessed: ${getCleanLevelName(maturityLevels[selectedLevelIdx].name)}` 
-                  : 'Evaluate Your Program'}
-              </h3>
-              {selectedLevelIdx !== null ? (
-                selectedLevelIdx < 4 ? (
-                  <p style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                    Currently at Level {selectedLevelIdx + 1}. To transition to <strong>{getCleanLevelName(maturityLevels[selectedLevelIdx + 1].name)}</strong>, focus on the action items listed in Level {selectedLevelIdx + 2} below.
-                  </p>
-                ) : (
-                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Congratulations! Your program is fully optimized. Focus on data-driven sustainment and adaptive learning.</p>
-                )
+        {/* INTRO */}
+        {phase === 'intro' && assessment && (
+          <div className="results-card" style={{ padding: '3rem 2rem' }}>
+            <div className="success-icon"><ClipboardCheck size={48} /></div>
+            <h2 style={{ marginBottom: '0.5rem' }}>{totalAsked} questions · about {estMinutes} minutes</h2>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: 480, marginBottom: '2rem' }}>
+              A random set is drawn from each of the four dimensions. You'll move through one dimension at a time — answers save automatically as you go.
+            </p>
+            <button className="submit-btn" style={{ maxWidth: 320 }} onClick={startQuiz}>
+              {answeredCount > 0 ? `Resume (${answeredCount}/${allQuestions.length})` : 'Start Assessment'}
+            </button>
+          </div>
+        )}
+
+        {/* QUIZ — one dimension at a time */}
+        {phase === 'quiz' && assessment && section && (
+          showHalftime ? (
+            <div className="results-card halftime-card" style={{ padding: '3rem 2rem' }}>
+              <img className="halftime-img" src={`${import.meta.env.BASE_URL}mid-assessment.jpg`} alt="Office manager leaning by a cubicle holding a coffee mug" />
+              <h2 style={{ marginBottom: '0.5rem' }}>Yeeeah… you're about halfway.</h2>
+              <p style={{ color: 'var(--text-secondary)', maxWidth: 460, marginBottom: '0.75rem', fontSize: '1.05rem' }}>So if you could go ahead and knock out the other half, that'd be greaaat.</p>
+              <p style={{ color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '2rem' }}>{answeredCount} of {allQuestions.length} done. Mmkay.</p>
+              <button className="submit-btn" style={{ maxWidth: 320 }} onClick={() => setShowHalftime(false)}>Yeah, I'll continue</button>
+            </div>
+          ) : (
+          <>
+            <div className="quiz-progress">
+              <div className="quiz-progress-topline">
+                <span className="quiz-progress-label">Dimension {sectionIdx + 1} of {quiz.length} · {section.label}</span>
+                <span className="quiz-progress-label">{answeredCount} / {allQuestions.length}</span>
+              </div>
+              <div className="quiz-progress-track">
+                <div className="quiz-progress-fill" style={{ width: `${(answeredCount / allQuestions.length) * 100}%` }} />
+              </div>
+            </div>
+
+            <div className="quiz-dimension-group">
+              <h3 className="quiz-dimension-title">{section.label}</h3>
+              {section.questions.map(q => (
+                <div key={q.id} className="question-card">
+                  {q.factor && <span className="question-factor">{q.factor}</span>}
+                  <div className="question-text">{q.text}</div>
+                  <div className="options-grid descriptors">
+                    {q.descriptors.map((desc, idx) => (
+                      <button
+                        key={idx}
+                        className={`option-btn option-row ${answers[q.id] === idx ? 'selected' : ''}`}
+                        onClick={() => selectAnswer(q.id, idx)}
+                      >
+                        <span className="option-radio" aria-hidden="true" />
+                        <span className="option-row-text">{desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="quiz-nav">
+              <button className="quiz-nav-btn" onClick={goBack} disabled={sectionIdx === 0}>
+                <ArrowLeft size={16} /> Back
+              </button>
+              {!isLastSection ? (
+                <button className="submit-btn quiz-nav-next" disabled={sectionLeft > 0} onClick={goNext}>
+                  {sectionLeft > 0 ? `Answer all (${sectionLeft} left)` : <>Next dimension <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></>}
+                </button>
               ) : (
-                <p>Select your current maturity level in the timeline cards below to define your progression path.</p>
+                <button className="submit-btn quiz-nav-next" disabled={!allAnswered} onClick={computeResults}>
+                  {allAnswered ? 'See My Results' : `Answer all (${allQuestions.length - answeredCount} left)`}
+                </button>
+              )}
+            </div>
+          </>
+          )
+        )}
+
+        {/* RESULTS — animated radar + overall, dimension cards, export */}
+        {phase === 'results' && results && (
+          <>
+            <div className="results-hero">
+              <RadarChart dims={results.dims} revealed={revealed} />
+              <div className="results-hero-overall">
+                <div className="results-overall-pct">{countPct}<span>%</span></div>
+                <div className="results-overall-sub">overall maturity</div>
+                {maturityLevels.length > 0 && (
+                  <>
+                    <div className="results-overall-level">Level {results.overallLevel}: {getCleanLevelName(maturityLevels[results.overallLevel - 1].name)}</div>
+                    <div className="results-overall-framing">
+                      {results.overallLevel < 5
+                        ? `One step from ${getCleanLevelName(maturityLevels[results.overallLevel].name)}.`
+                        : `You've reached the top tier — focus on sustainment.`}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="results-summary">
+              {results.dims.map(d => (
+                <div key={d.key} className={`dim-result-card level-${d.level}`}>
+                  <div className="dim-result-label">{d.label}</div>
+                  <div className="dim-result-level">Level {d.level}</div>
+                  <div className="dim-result-bar"><div className="dim-result-bar-fill" style={{ width: revealed ? `${d.pct * 100}%` : '0%' }} /></div>
+                  <div className="dim-result-score">{d.score} / {d.max} pts</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="results-actions">
+              <button className="back-btn" onClick={copySummary} style={pillStyle}>
+                <Copy size={16} /><span>{copied ? 'Copied!' : 'Copy summary'}</span>
+              </button>
+              <button className="back-btn" onClick={() => window.print()} style={pillStyle}>
+                <Printer size={16} /><span>Print / Save PDF</span>
+              </button>
+              <button className="back-btn" onClick={retake} style={pillStyle}>
+                <RotateCcw size={16} /><span>Retake</span>
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Self-Assessment Banner (overall result) */}
+        {phase === 'results' && maturityLevels.length > 0 && selectedLevelIdx !== null && (
+          <div className="self-assessment-banner" style={{ background: 'linear-gradient(135deg, var(--accent-color), var(--secondary-accent))' }}>
+            <div className="self-assessment-info">
+              <h3>Overall: {getCleanLevelName(maturityLevels[selectedLevelIdx].name)}</h3>
+              {selectedLevelIdx < 4 ? (
+                <p style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                  Weighted across dimensions you are at Level {selectedLevelIdx + 1}. To reach <strong>{getCleanLevelName(maturityLevels[selectedLevelIdx + 1].name)}</strong>, focus on the Level {selectedLevelIdx + 2} action items below.
+                </p>
+              ) : (
+                <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Congratulations! Your program is fully optimized. Focus on data-driven sustainment and adaptive learning.</p>
               )}
             </div>
             <div className="self-assessment-result">
-              {selectedLevelIdx !== null ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Award size={24} style={{ color: '#FCD34D' }} />
-                  <span className="self-assessment-badge">Level {selectedLevelIdx + 1}</span>
-                </div>
-              ) : (
-                <span className="self-assessment-badge" style={{ background: 'var(--text-secondary)' }}>Unrated</span>
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Award size={24} style={{ color: '#FCD34D' }} />
+                <span className="self-assessment-badge">Level {selectedLevelIdx + 1}</span>
+              </div>
             </div>
           </div>
         )}
 
         {/* Timeline Roadmap */}
-        {maturityLevels.length > 0 && (
+        {phase === 'results' && maturityLevels.length > 0 && (
           <div className="timeline-roadmap">
             <div className="timeline-line-container">
-              <div 
-                className="timeline-line-highlight"
-                style={{ 
-                  height: selectedLevelIdx !== null 
-                    ? `${(selectedLevelIdx / (maturityLevels.length - 1)) * 100}%` 
-                    : '0%' 
-                }}
-              />
+              <div className="timeline-line-highlight" style={{ height: selectedLevelIdx !== null ? `${(selectedLevelIdx / (maturityLevels.length - 1)) * 100}%` : '0%' }} />
             </div>
 
             {maturityLevels.map((level, idx) => {
               const isOpen = !!expandedLevels[idx];
               const isSelected = selectedLevelIdx === idx;
               const isPassed = selectedLevelIdx !== null && idx < selectedLevelIdx;
-              
-              const levelNumber = idx + 1;
-              const levelName = level.name;
-              
               return (
-                <div 
-                  key={levelName} 
-                  className={`timeline-item ${isSelected ? 'active-level' : ''} ${isPassed ? 'passed-level' : ''}`}
-                >
+                <div key={level.name} className={`timeline-item ${isSelected ? 'active-level' : ''} ${isPassed ? 'passed-level' : ''}`}>
                   <div className="timeline-badge">
-                    {isPassed ? <CheckCircle size={16} style={{ color: 'white' }} /> : levelNumber}
+                    {isPassed ? <CheckCircle size={16} style={{ color: 'white' }} /> : idx + 1}
                   </div>
-                  
-                  <div 
-                    className="timeline-panel"
-                    onClick={() => toggleExpand(idx)}
-                  >
+                  <div className="timeline-panel" onClick={() => toggleExpand(idx)}>
                     <div className="timeline-panel-header">
-                      <div className="timeline-level-name">
-                        {levelName}
-                      </div>
-                      
+                      <div className="timeline-level-name">{level.name}</div>
                       <div className="timeline-panel-actions" onClick={(e) => e.stopPropagation()}>
-                        {isSelected ? (
-                          <span className="level-status-tag current">Current</span>
-                        ) : isPassed ? (
-                          <span className="level-status-tag completed">Achieved</span>
-                        ) : null}
-                        
-                        <button 
-                          className="btn-select-level"
-                          onClick={() => handleSelectLevel(idx)}
-                          style={{
-                            backgroundColor: isSelected ? 'var(--accent-color)' : '',
-                            color: isSelected ? 'white' : '',
-                            border: isSelected ? '1px solid var(--accent-color)' : ''
-                          }}
-                        >
+                        {isSelected ? <span className="level-status-tag current">You are here</span>
+                          : isPassed ? <span className="level-status-tag completed">Achieved</span> : null}
+                        <button className="btn-select-level" onClick={() => handleSelectLevel(idx)} style={{ backgroundColor: isSelected ? 'var(--accent-color)' : '', color: isSelected ? 'white' : '', border: isSelected ? '1px solid var(--accent-color)' : '' }}>
                           {isSelected ? 'Selected' : 'Set Active'}
                         </button>
-                        
-                        <span 
-                          className={`toggle-arrow ${isOpen ? 'expanded' : ''}`}
-                          onClick={() => toggleExpand(idx)}
-                        >
-                          ▼
-                        </span>
+                        <span className={`toggle-arrow ${isOpen ? 'expanded' : ''}`} onClick={() => toggleExpand(idx)}>▼</span>
                       </div>
                     </div>
-                    
                     {isOpen && (
                       <div className="timeline-panel-body" onClick={(e) => e.stopPropagation()}>
-                        <div className="level-tldr">
-                          <strong>TL;DR:</strong> {level.tldr}
-                        </div>
-                        
-                        <div className="level-description">
-                          {level.description}
-                        </div>
-                        
+                        <div className="level-tldr"><strong>TL;DR:</strong> {level.tldr}</div>
+                        <div className="level-description">{level.description}</div>
                         <div className="level-section-grid">
                           <div>
                             <h4 className="level-section-title">Key Transition Action Items</h4>
                             <ul className="level-action-items">
-                              {level.actionItems && level.actionItems.map((item, i) => (
-                                <li key={i}>{item}</li>
-                              ))}
+                              {level.actionItems && level.actionItems.map((item, i) => <li key={i}>{item}</li>)}
                             </ul>
                           </div>
-                          
                           <div>
                             <h4 className="level-section-title">Critical KPIs to Track</h4>
                             <div className="level-kpis">
-                              {level.kpis && level.kpis.map((kpi, i) => (
-                                <span key={i} className="level-kpi-badge">{kpi}</span>
-                              ))}
+                              {level.kpis && level.kpis.map((kpi, i) => <span key={i} className="level-kpi-badge">{kpi}</span>)}
                             </div>
                           </div>
                         </div>

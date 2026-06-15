@@ -164,13 +164,10 @@ const Header = ({ onAboutClick, onBibliographyClick, onResetZoom }) => {
                     <span>About</span>
                 </button>
 
-                {/* Hide the Assessment route button until released */}
-                {/* 
                 <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <ClipboardCheck size={14} />
                     <span>Assessment</span>
                 </button>
-                */}
                 <button id="reset-zoom" className="btn" onClick={onResetZoom} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <RefreshCw size={14} />
                     <span>Reset View</span>
