@@ -98,7 +98,7 @@ function LandingPage() {
         </div>
       </div>
       <div className="copyright-notice" style={{ position: 'absolute', bottom: '1.5rem' }}>
-        &copy; 2026 EduRisk Inc. All Rights Reserved
+        &copy; 2026 <a href="https://www.edurisk.ca/" target="_blank" rel="noopener noreferrer">EduRisk</a> Inc. All Rights Reserved
       </div>
     </div>
   );
