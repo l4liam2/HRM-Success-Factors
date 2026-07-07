@@ -1941,6 +1941,7 @@ body.dark-mode .driver-item:hover {
     font-size: 0.92rem;
     line-height: 1.6;
     color: var(--text-secondary);
+    white-space: pre-line;
 }
 
 .level-section-grid {

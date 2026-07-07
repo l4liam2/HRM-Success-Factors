@@ -4,7 +4,7 @@
     "description": ""
   },
   "scale": {
-    "note": "descriptors[] is ordered Level 1 (least mature) -> Level 5 (most mature); index + 1 = points. For negatively-keyed items, author descriptors most-mature-first and set \"reverse\": true to flip points to 5..1. askCount = how many to randomly draw from each dimension's pool per assessment (capped at pool size)."
+    "note": "descriptors[] ordered Level 1 (least mature) -> Level 5 (most mature); index+1 = points. reverse:true flips to 5..1 for negatively-keyed items. Each assessment draws askCount distinct factors per dimension and asks one random question from each."
   },
   "dimensions": [
     {
@@ -17,131 +17,196 @@
         {
           "id": "psy-1",
           "factor": "Self-Efficacy",
-          "text": "How effectively does the maturity program build employees’ confidence in applying the organization’s Information Security Policy (ISP) consistently, including in unfamiliar, stressful, or high-pressure situations?",
-          "guidance": "This question measures employees’ self-efficacy which is their confidence in their own ability to understand, apply, and maintain secure behaviours. Ratings should reflect whether employees feel capable, proactive, and resilient when carrying out security-related responsibilities.",
+          "text": "Which statement best captures how confident your employees are applying everyday security practices?",
+          "guidance": "Measures everyday self-efficacy: employees' confidence in carrying out routine secure behaviours.",
           "descriptors": [
-            "Employees lack foundational security knowledge and feel unable to perform secure behaviours effectively. Security tasks may feel overwhelming, confusing, or outside their capability, leading to avoidance or resignation.",
-            "Employees feel confident only when following explicit instructions or completing mandatory requirements. Security is viewed primarily as an obligation or IT responsibility rather than a personal competency, limiting confidence in real-world situations.",
-            "Employees understand both the procedures and the reasoning behind key security practices. Confidence is strongest in areas reinforced through targeted training, such as identifying phishing attempts or managing passwords securely.",
-            "Employees regularly observe and model secure behaviours within their teams. Security practices are becoming habitual, reducing uncertainty and increasing confidence in handling day-to-day security responsibilities independently.",
-            "Employees demonstrate strong confidence in applying security practices even in complex or high-pressure situations. Hands-on simulations, real-time feedback, and continuous reinforcement have strengthened their ability to respond proactively and adaptively to emerging threats."
+            "They feel out of their depth and avoid security tasks where they can.",
+            "They're confident only when there's a step-by-step instruction to follow.",
+            "They're confident with the tasks we've trained them on, like reporting phishing.",
+            "They handle most day-to-day security decisions on their own without checking.",
+            "Their confidence stays current as tools change, kept fresh by practice and feedback."
           ]
         },
         {
           "id": "psy-2",
-          "factor": "Response Efficacy",
-          "text": "How effectively does the maturity program build trust in the organization’s security tools and procedures (e.g., password managers, MFA, phishing reporting buttons, security alerts) as meaningful protections against cyber threats?",
-          "guidance": "This question measures employees’ belief in the effectiveness and value of organizational security measures. Higher scores reflect trust that security practices genuinely reduce risk, while lower scores indicate skepticism, disengagement, or “security fatalism.”",
+          "factor": "Self-Efficacy",
+          "text": "An employee hits an unfamiliar, high-pressure situation the training never covered. What's their likely response?",
+          "guidance": "Measures resilience-related self-efficacy: confidence when conditions fall outside routine.",
           "descriptors": [
-            "Employees do not believe their actions meaningfully improve security. There is a sense that cyber incidents are unavoidable or entirely the responsibility of technical teams, leading to low participation in security practices.",
-            "Employees follow security procedures mainly because they are required to. Security actions are seen as a box-checking exercise or administrative burden rather than something that provides real protection.",
-            "Employees understand how and why certain security procedures work. They believe recommended safeguards are useful within their role and can connect security practices to reducing specific risks.",
-            "Employees regularly see evidence that security tools and reporting processes make a difference. Positive feedback and peer reinforcement strengthen trust in organizational safeguards and encourage proactive security behaviour.",
-            "Employees strongly believe security measures are effective because the organization continuously demonstrates their impact through simulations, real-time feedback, and measurable outcomes. Security tools are viewed as valuable enablers that actively reduce organizational risk."
+            "They freeze, guess, or disengage entirely.",
+            "They cope only if a rule happens to fit; otherwise they take a risky shortcut.",
+            "They manage a pressured version of a familiar threat, but a truly novel one throws them.",
+            "They stay composed and apply sound judgement, drawing on experience rather than a rule.",
+            "They respond confidently to the unexpected, expecting to handle new threats, not just familiar ones."
           ]
         },
         {
           "id": "psy-3",
-          "factor": "Personal agency",
-          "text": "How effectively does the maturity program foster employee confidence and independence in making secure decisions under pressure or technical difficulty?",
-          "guidance": "This question measures employees’ sense of personal agency and control in cybersecurity-related behaviour. Higher scores reflect employees feeling empowered, responsible, and capable of making intentional security decisions rather than simply following rules under pressure.",
+          "factor": "Response Efficacy",
+          "text": "Asked whether tools like MFA and phishing reporting really make a difference, most employees would say:",
+          "guidance": "Measures response efficacy: belief that recommended security measures actually reduce risk.",
           "descriptors": [
-            "Employees feel little personal responsibility or control over security outcomes. Security is viewed as someone else’s job, and behaviours are often automatic, passive, or disconnected from conscious decision-making.",
-            "Employees follow security rules mainly because they are required to, not because they personally value them. Policies may feel restrictive, frustrating, or impractical, leading some employees to seek shortcuts or workarounds.",
-            "Employees understand the reasoning behind security expectations and begin making security decisions through reflection rather than obligation. Secure behaviour feels more self-directed and personally meaningful.",
-            "Employees feel personally responsible for protecting organizational information and believe their actions directly impact security outcomes. Security behaviours are internally motivated and consistently applied across situations.",
-            "The organization actively supports employee autonomy by reducing unnecessary barriers and enabling confident decision-making. Employees are empowered to identify, assess, and respond to threats independently, functioning as proactive contributors to organizational resilience."
+            "“Not really, breaches happen anyway, and that's IT's problem.”",
+            "“We use them because we have to, not because they help.”",
+            "“Yes, they reduce specific risks in my work, and I understand why.”",
+            "“Definitely, I've seen them catch real threats.”",
+            "“Absolutely, we're regularly shown the measurable difference they make.”"
           ]
         },
         {
           "id": "psy-4",
-          "factor": "Intrinsic motivation",
-          "text": "How well does the maturity program shape employee commitment to following security policies based on personal values, responsibility, and professional pride rather than external rewards or fear of punishment?",
-          "guidance": "This factor measures whether employees are motivated to practice secure behaviour because they genuinely value cybersecurity and organizational protection (intrinsic motivation) or because they feel pressured by rules, monitoring, or consequences (extrinsic motivation).",
+          "factor": "Personal Agency",
+          "text": "How do employees relate to the security decisions in their role?",
+          "guidance": "Measures the employee's felt sense of agency over security decisions.",
           "descriptors": [
-            "Employees feel little to no personal connection to cybersecurity responsibilities. Security is viewed as irrelevant, frustrating, or solely the responsibility of technical teams, resulting in low engagement and minimal personal investment.",
-            "Employees follow security policies primarily to avoid punishment, satisfy mandatory requirements, or receive recognition. Security behaviours are viewed as obligations rather than personally meaningful actions.",
-            "Employees begin to understand the purpose behind security policies and recognize the personal and organizational value of secure behaviour. Acting securely may create a sense of accomplishment, competence, or responsibility.",
-            "Employees view cybersecurity as part of their professional identity and moral responsibility. Secure behaviour is reinforced through workplace culture, peer influence, and a shared sense of accountability for protecting organizational assets.",
-            "Security is deeply embedded into organizational values and everyday behaviour. Employees act proactively and consistently because they genuinely believe protecting information and systems is important, meaningful, and part of contributing to organizational success."
+            "As someone else's job, with no real control or responsibility.",
+            "As rules to follow because they're required, with no sense of ownership.",
+            "As choices they make through reflection once they understand the reasoning.",
+            "As their own responsibility: they believe their choices affect outcomes.",
+            "As proactive risk decisions they own and act on independently."
           ]
         },
         {
           "id": "psy-5",
-          "factor": "Moral Beliefs",
-          "text": "How effectively does the maturity program reinforce the belief that violating the organisation’s Information Security Policy (ISP) is morally wrong, regardless of whether it is detected or punished?",
-          "guidance": "This factor assesses the extent to which security compliance is driven by an internalised moral and ethical framework (a sense of right and wrong), rather than external controls such as monitoring, rules, or fear of sanctions.",
+          "factor": "Personal Agency",
+          "text": "When an employee wants to do the secure thing, how easy does your environment make it?",
+          "guidance": "Measures the organisational side of agency: whether the environment removes friction.",
           "descriptors": [
-            "Employees do not associate security violations with moral wrongdoing. Breaches may be viewed as normal, harmless, or unavoidable in modern digital environments, with little or no ethical reflection.",
-            "Employees follow security policies primarily to avoid consequences such as disciplinary action or reprimand. Violating policy is not necessarily seen as “wrong,” but as risky or punishable.",
-            "Employees begin to understand the rationale behind security policies and may view them as professionally responsible behaviour. However, moral conviction is still developing and can be overridden by convenience or workload pressures.",
-            "Employees perceive security violations as ethically wrong and inconsistent with professional integrity. Feelings such as guilt, discomfort, or embarrassment may arise when policies are breached, reinforcing compliance.",
-            "Security is fully internalized as a moral and professional duty. Employees actively uphold and advocate for secure behaviour, independently identifying and reporting risks because they believe it is the right thing to do and essential to organizational trust and integrity."
+            "Hard: friction and obstacles push them toward workarounds.",
+            "We add controls to meet requirements without caring how hard they are to follow.",
+            "We've removed the most obvious obstacles in common situations.",
+            "The secure choice is usually the easy choice, and we simplify based on feedback.",
+            "Secure-by-default pathways let people decide confidently with minimal effort."
           ]
         },
         {
           "id": "psy-6",
-          "factor": "Counter-neutrilization",
-          "text": "How effectively does the organisation identify and challenge the common reasons or justifications employees use to bypass security rules (e.g., “I was busy,” “it was harmless,” or “the policy doesn’t apply to my role”)?",
-          "guidance": "This factor measures how effectively the organisation reduces neutralisation behaviours—the psychological rationalisations employees use to justify non-compliance without experiencing guilt or accountability. Higher maturity reflects a shift from an “excuse-tolerant” environment to one where rationalisations are actively addressed and replaced with accountable, security-conscious thinking.",
+          "factor": "Intrinsic Motivation",
+          "text": "What mainly drives your employees to follow security policies?",
+          "guidance": "Measures whether secure behaviour is intrinsically or extrinsically motivated.",
           "descriptors": [
-            "Excuses for bypassing security rules are common and go unchallenged. Employees routinely justify non-compliance using beliefs such as “no harm was done” or “security isn’t my responsibility,” with little organisational pushback or accountability.",
-            "The organisation relies mainly on rules and sanctions, but employees easily neutralise these through justifications such as time pressure, workload, or perceived inefficiency. Rationalisations remain intact and largely unaddressed.",
-            "The organisation begins addressing rationalisations indirectly by explaining the purpose and importance of security policies. Employees are exposed to the reasoning behind controls, which starts to weaken common excuses but does not consistently prevent them.",
-            "Training and communications explicitly address common neutralisation techniques (e.g., “it’s just a small shortcut,” “I’ve never had an issue before,” or “everyone does it”). Employees are encouraged to recognise and question their own justifications in real time.",
-            "The organisation systematically identifies and counters rationalisations using behavioural insights, real-time prompts, and scenario-based training. Security culture reinforces accountability and ethical responsibility, making excuses harder to justify and encouraging reflective, security-aligned decision-making in the moment."
+            "Nothing much; they feel no connection to it at all.",
+            "Avoiding punishment or ticking the mandatory box.",
+            "A growing sense that secure behaviour is worthwhile and responsible.",
+            "Seeing it as part of their professional identity, reinforced by peers.",
+            "Genuine belief that protecting the organisation matters, whether or not anyone's watching."
           ]
         },
         {
           "id": "psy-7",
-          "factor": "Security Fatigue",
-          "text": "How effectively does the maturity program reduce mental fatigue and frustration caused by cybersecurity requirements, so employees are less likely to ignore guidance or take shortcuts?",
-          "guidance": "This factor measures security fatigue, defined as cognitive overload and emotional exhaustion resulting from repeated security demands. It evaluates whether employees can sustain secure behaviour without becoming overwhelmed, disengaged, or reliant on shortcuts. Higher maturity reflects a resilient, “relaxed alert” state where security is maintained without excessive cognitive burden.",
+          "factor": "Moral Beliefs",
+          "text": "Asked whether breaking the policy is “wrong” even if no one finds out, most employees would feel:",
+          "guidance": "Measures whether compliance is driven by an internalised ethical sense of right and wrong.",
           "descriptors": [
-            "Employees are overwhelmed to the point of disengagement. Security warnings and requirements are routinely ignored, and there is a sense of resignation or fatalism that security outcomes are outside their control or responsibility.",
-            "Employees attempt to comply but experience mental fatigue from repetitive or complex security tasks. When overloaded, they may resort to unsafe shortcuts (e.g., password reuse, ignoring prompts) as a way to cope with the perceived burden.",
-            "Employees are aware of security risks but feel overloaded by the volume and frequency of training, alerts, and reminders. While they generally comply, attention fatigue can lead to reduced engagement or selective ignoring of non-urgent guidance.",
-            "The organisation actively reduces cognitive burden by simplifying security processes and minimising unnecessary alerts or redundant training. Security communication is streamlined into clear, lightweight, and consistent cues that support sustained attention without overload.",
-            "Security is integrated into workflows in a way that preserves cognitive resources while maintaining high awareness. Automation, smart defaults, and Human Risk Management practices reduce unnecessary effort, enabling employees to remain calm, focused, and responsive to genuine threats without experiencing fatigue or overload."
+            "It's not wrong at all; breaches are normal and harmless.",
+            "It's risky or punishable, but not really wrong.",
+            "It's probably the irresponsible thing to do, though convenience can win.",
+            "It's wrong and against their integrity; they'd feel uncomfortable doing it.",
+            "It's a clear breach of duty; they uphold and advocate for doing the right thing."
           ]
         },
         {
           "id": "psy-8",
-          "factor": "Optimism Barriers",
-          "text": "To what extent do you believe that you are personally just as likely as anyone else in the organisation to be targeted by or affected by a cybersecurity incident (e.g., phishing, social engineering, malware, or data breaches)?",
-          "guidance": "This factor assesses the extent to which employees maintain a realistic perception of their personal cybersecurity risk. It measures the presence of optimism bias—the tendency to believe that cyber incidents are more likely to happen to others than to oneself. Higher maturity reflects balanced risk awareness and vigilance, while lower maturity reflects overconfidence and risk underestimation.",
+          "factor": "Counter-Neutralization",
+          "text": "When an employee justifies skipping a step with excuses such as “I was busy” or “it was harmless”, what does your organisation do?",
+          "guidance": "Measures how well the organisation surfaces and counters neutralisation rationalisations.",
           "descriptors": [
-            "Employees believe they are unlikely to become victims of cyber threats and perceive security incidents as problems that primarily affect others. This false sense of immunity leads to low vigilance and inconsistent security behaviour.",
-            "Employees complete required security activities but believe their skills, experience, or awareness make them less vulnerable than their peers. This overconfidence can reduce caution and increase susceptibility to sophisticated attacks.",
-            "Employees understand cybersecurity threats and acknowledge that attacks occur within organisations. However, they still underestimate their own likelihood of being targeted or fail to connect risks to their specific role and responsibilities.",
-            "Employees recognise that anyone, regardless of experience or technical expertise, can become a target. Simulations, real-world examples, and organisational learning experiences have helped translate abstract threats into personally relevant risks.",
-            "Employees maintain a realistic and healthy awareness of cyber risk without becoming fearful or complacent. They understand that cybersecurity incidents can affect anyone, remain consistently vigilant, and actively incorporate secure practices into their daily decision-making while maintaining confidence in their ability to respond effectively."
+            "Nothing. These excuses go unchallenged.",
+            "We rely on rules and penalties, which the excuses easily get around.",
+            "We explain the reasons behind the rules, which takes the wind out of some excuses.",
+            "We name these exact excuses in training and messages, and challenge them head on.",
+            "We plan for these excuses and counter them with well-timed prompts and realistic scenarios, so they no longer hold up."
           ]
         },
         {
           "id": "psy-9",
-          "factor": "Habituation",
-          "text": "How far does the maturity program ensure employees consciously review and consider security warnings, training messages, and policy reminders before responding to them, rather than dismissing them automatically due to familiarity or frequency?",
-          "guidance": "This factor assesses the extent to which employees remain attentive and responsive to cybersecurity communications despite repeated exposure. It measures habituation, where repeated security messages become so familiar that individuals begin to ignore them automatically. Higher maturity reflects sustained attention and engagement, while lower maturity reflects desensitisation and \"click-through\" behaviour.",
+          "factor": "Security Fatigue",
+          "text": "How much of a mental burden do your security rules put on employees?",
+          "guidance": "Measures the cognitive dimension of security fatigue.",
           "descriptors": [
-            "Employees routinely ignore security warnings, reminders, and training communications without consciously processing them. Security messages have effectively become background noise, resulting in minimal awareness and a high likelihood of missing genuine threats.",
-            "Employees acknowledge security prompts and communications but often dismiss, bypass, or click through them as quickly as possible. Security controls are viewed as interruptions to productivity rather than valuable decision-making tools.",
-            "Employees generally recognise the importance of security communications but may experience reduced attention due to message frequency or repetition. The organisation begins using varied formats and engagement strategies to maintain interest and reduce desensitisation.",
-            "Employees regularly pause to review and assess security-related information before acting. Interactive training, simulations, and feedback mechanisms encourage deliberate decision-making and help prevent automatic responses.",
-            "The organisation continuously adapts security communications to maintain relevance, visibility, and engagement. Employees remain attentive to security cues without feeling overloaded, demonstrating a consistent ability to identify and respond thoughtfully to genuine warnings and emerging threats."
+            "Too much. People are swamped and routinely ignore what's asked of them.",
+            "Heavy. They cope by cutting corners, like reusing passwords.",
+            "Manageable, but the sheer number of alerts and training sessions wears people down.",
+            "Light. We've simplified our processes and cut out unnecessary alerts.",
+            "Very low. Automation and sensible defaults keep the effort small and attention high."
           ]
         },
         {
           "id": "psy-10",
-          "factor": "Biases",
-          "text": "How structurally does the program identify and mitigate cognitive biases (e.g., optimism bias, anchoring, and framing) to move employees from automatic 'System 1' responses toward deliberate, security-conscious 'System 2' thinking?",
-          "guidance": "This factor assesses the extent to which employees and the organisation recognize and mitigate the influence of cognitive biases and heuristics on cybersecurity decision-making. Higher maturity reflects deliberate, evidence-based security decisions, while lower maturity reflects unconscious reliance on mental shortcuts that can increase vulnerability to cyber threats.",
+          "factor": "Security Fatigue",
+          "text": "How do employees feel about the constant stream of security demands?",
+          "guidance": "Measures the emotional dimension of security fatigue.",
           "descriptors": [
-            "Employees are largely unaware of how cognitive biases influence their security decisions. Judgments are made automatically, with little reflection, and biases such as overconfidence, optimism bias, and confirmation bias frequently contribute to risky behaviour.",
-            "Employees may have been exposed to information about common biases, but this awareness has little practical impact on behaviour. Security decisions continue to be heavily influenced by first impressions, assumptions, and intuitive judgments rather than deliberate evaluation.",
-            "The organisation begins incorporating behavioural insights into security communications and training. Employees are encouraged to recognize common decision-making traps, and security messaging is designed to make risks more concrete, relevant, and understandable.",
-            "Employees actively question assumptions, evaluate information critically, and recognise situations where biases may affect judgment. The organisation uses realistic scenarios, storytelling, and behavioural interventions to encourage deliberate and informed decision-making.",
-            "The organisation systematically applies behavioural science and Human Risk Management principles to reduce the impact of cognitive biases. Through personalised feedback, adaptive simulations, and secure-by-design processes, employees consistently make thoughtful security decisions and demonstrate strong resistance to common decision-making traps."
+            "Fed up or resentful. They've switched off entirely.",
+            "They go along with it grudgingly. Goodwill is low and frustration is building.",
+            "Generally willing, but weary when demands feel repetitive or unexplained.",
+            "Mostly fine. We space demands out and explain the reasons behind them.",
+            "Comfortable. The demands feel fair, so people stay willing to engage over the long run."
+          ]
+        },
+        {
+          "id": "psy-11",
+          "factor": "Optimism Barriers",
+          "text": "Asked about their own odds of being hit by a cyberattack, most employees would say:",
+          "guidance": "Measures optimism bias about personal risk.",
+          "descriptors": [
+            "“That happens to other people, not me.”",
+            "“I'm experienced, so I'm less likely than my colleagues to fall for it.”",
+            "“Attacks happen here, but I'm probably not a target.”",
+            "“Anyone can be targeted, including me.”",
+            "“I'm as much a target as anyone, and I stay alert without being paranoid.”"
+          ]
+        },
+        {
+          "id": "psy-12",
+          "factor": "Habituation",
+          "text": "A warning or MFA prompt appears mid-task. What does the typical employee do?",
+          "guidance": "Measures habituation to in-the-moment operational security cues.",
+          "descriptors": [
+            "Dismisses it automatically; it's just background noise now.",
+            "Clicks through as fast as possible to get on with work.",
+            "Usually notices its importance, though attention slips with frequency.",
+            "Pauses to assess it before acting, prompted by well-designed cues.",
+            "Reliably attends to genuine warnings without being numbed by routine ones."
+          ]
+        },
+        {
+          "id": "psy-13",
+          "factor": "Habituation",
+          "text": "How do employees engage with your ongoing security communications?",
+          "guidance": "Measures habituation to awareness communications over time.",
+          "descriptors": [
+            "They ignore them entirely.",
+            "They skim or dismiss them as routine corporate noise.",
+            "They value them, but attention fades as messages repeat.",
+            "They engage because content is varied, relevant, and well-timed.",
+            "They stay attentive long-term as we continuously refresh the messaging."
+          ]
+        },
+        {
+          "id": "psy-14",
+          "factor": "Biases",
+          "text": "When it comes to mental shortcuts shaping security decisions, your employees are:",
+          "guidance": "Measures individual awareness of cognitive bias in security decisions.",
+          "descriptors": [
+            "Unaware: judgements are automatic and bias drives risky choices.",
+            "Vaguely aware, but it changes nothing in practice.",
+            "Learning to spot common decision traps as we make risks more concrete.",
+            "Actively questioning their assumptions in risky moments.",
+            "Consistently catching themselves and pausing for deliberate evaluation."
+          ]
+        },
+        {
+          "id": "psy-15",
+          "factor": "Biases",
+          "text": "How well does your organisation set things up so people make safe choices without having to think hard?",
+          "guidance": "Measures whether the organisation designs its processes and messages to steer people toward safe choices, rather than leaving it to willpower.",
+          "descriptors": [
+            "It doesn't. Processes ignore how people actually make decisions.",
+            "It mentions these mental shortcuts in training but changes nothing about how things are set up.",
+            "It's starting to make risks clearer and remove the obvious traps.",
+            "It uses prompts, realistic scenarios, and small design changes to steer better decisions.",
+            "It builds the safe choice into the way things work by default, so people don't have to rely on willpower."
           ]
         }
       ]
@@ -156,144 +221,287 @@
         {
           "id": "des-1",
           "factor": "Just-In-Time Training",
-          "text": "To what extent does your security awareness program deliver corrective training at the moment an employee makes a security mistake, rather than through scheduled or retrospective sessions?",
-          "guidance": "Consider whether intervention is triggered by the mistake itself, is immediate and contextually relevant, and is part of a repeated cycle rather than a one-time correction.",
+          "text": "An employee clicks a phishing link. When does any learning reach them?",
+          "guidance": "Measures immediacy: whether correction lands at the teachable moment.",
           "descriptors": [
-            "No corrective training mechanism exists. Mistakes may trigger an incident response but generate no learning intervention for the employee involved.",
-            "Corrective action is retrospective, typically a reminder to complete the annual module or a follow-up email sent days after the event. The moment of receptiveness has passed.",
-            "The program uses phishing simulations with embedded landing pages that deliver immediate feedback when an employee clicks. Correction is timely but limited in format variety and not yet systematically cycled.",
-            "JIT correction is embedded across multiple risk scenarios, not just phishing. Cycles are spaced deliberately, varied in format, and designed to build habit rather than just flag a single mistake. Repeat behavior is tracked and used to target follow-up.",
-            "Corrective training is fully automated, contextual, and adaptive. The program monitors for early behavioral signals and triggers micro-interventions before mistakes become incidents. Cycle frequency, format, and content adjust dynamically based on individual and group performance data."
+            "Never: it triggers incident response but no learning for them.",
+            "Days later, as a reminder to finish the annual module; the moment's gone.",
+            "Right away, through a simulation landing page, at least for phishing.",
+            "Immediately, across many risk scenarios, not just phishing.",
+            "Before they even click: early signals trigger a micro-intervention."
           ]
         },
         {
           "id": "des-2",
-          "factor": "Continuous Reinforcement",
-          "text": "To what extent does your security awareness program deliver security learning through frequent, varied, short-form interventions distributed consistently across the year, rather than concentrated in periodic training events?",
-          "guidance": "Consider whether the program actively counters knowledge decay, avoids both under-exposure and habituation, and monitors employee engagement over time to calibrate intensity.",
+          "factor": "Just-In-Time Training",
+          "text": "When an employee makes a security mistake, is the corrective training a one-off, or is it repeated and varied over time?",
+          "guidance": "Measures whether correction is repeated and varied to build habit.",
           "descriptors": [
-            "Security learning occurs only in response to incidents. There is no structured reinforcement cadence and no recognition that knowledge requires ongoing maintenance.",
-            "Training is delivered in one or two concentrated blocks per year. The program relies on employees retaining information over long gaps with no reinforcement mechanism in place.",
-            "The program supplements primary training with periodic communications, newsletters, or micro-modules distributed across the year. Cadence exists but is not yet calibrated to engagement signals or designed to vary meaningfully in format.",
-            "Reinforcement is continuous, varied in format, and deliberately spaced to maintain engagement without causing fatigue. The program tracks participation and disengagement signals and adjusts delivery accordingly. Security feels present in daily work rather than episodic.",
-            "Reinforcement is dynamically managed at the individual and group level. Intervention frequency, format, and timing adapt in real time based on behavioral data, fatigue indicators, and emerging threat patterns. The program treats sustained engagement as an outcome to be actively managed, not assumed."
+            "It's a one-off, with no follow-up or repetition.",
+            "At most a single retrospective reminder, no cycle.",
+            "It's timely but not yet repeated or varied over time.",
+            "Cycles are spaced and varied to build habit, with repeats tracked.",
+            "Frequency, format, and content adapt to individual and group data."
           ]
         },
         {
           "id": "des-3",
-          "factor": "Drip-Feed Learning",
-          "text": "To what extent does your security awareness program structure content delivery as frequent, brief, distributed learning units rather than as concentrated training blocks, with the goal of building instinctive security behaviour over time?",
-          "guidance": "Consider whether the program deliberately breaks content into short-form units, maintains a consistent delivery cadence across the year, and is designed with habit formation as an explicit outcome rather than knowledge transfer alone.",
+          "factor": "Continuous Reinforcement",
+          "text": "Our security learning is delivered:",
+          "guidance": "Measures cadence: whether learning is distributed across the year.",
           "descriptors": [
-            "Content is delivered only when a problem demands it. There is no cadence, no structure, and no recognition that repetition over time is what produces lasting behavioural change.",
-            "Training is delivered in large annual or semi-annual blocks. Content volume may be adequate but the delivery model relies on short-term retention rather than distributed reinforcement.",
-            "The program has begun breaking content into shorter units delivered at regular intervals. A drip-feed cadence exists, though it may not yet be systematically designed around habit formation or spaced repetition principles.",
-            "Content is consistently delivered in brief, varied formats across the full year. The cadence is deliberate, the units are designed to reinforce the same core behaviours repeatedly, and the program tracks whether repeated exposure is translating into more instinctive responses.",
-            "Drip-feed delivery is personalised and adaptive. Unit frequency, format, and sequencing adjust based on individual retention data and behavioural signals. The program can demonstrate that distributed learning is producing measurable habit formation, not just sustained awareness."
+            "Only after incidents, with no cadence.",
+            "In one or two big blocks a year, nothing in between.",
+            "As primary training plus periodic micro-content across the year.",
+            "Continuously, varied and spaced, so it's present in daily work.",
+            "With frequency and timing adapting in real time to data and threats."
           ]
         },
         {
           "id": "des-4",
-          "factor": "Communications Strategy",
-          "text": "To what extent does your security awareness program operate as a structured, multi-channel communication campaign with consistent branding, varied formats, and content framed around audience relevance rather than corporate obligation?",
-          "guidance": "Consider whether the program maintains a deliberate frequency across channels, avoids over-reliance on any single format, applies consistent visual and tonal identity, and tailors messaging to resonate with different employee audiences.",
+          "factor": "Continuous Reinforcement",
+          "text": "How do you decide how much reinforcement is enough?",
+          "guidance": "Measures calibration to engagement and fatigue signals.",
           "descriptors": [
-            "Security communications are issued only in response to incidents or regulatory deadlines. There is no planned cadence, no channel strategy, and no consideration of how messaging lands with different audiences.",
-            "Communications exist but are limited in format, typically policy reminders or mandatory notification emails. Messaging is uniform, compliance-framed, and not designed to earn attention. Employees have learned to filter it out.",
-            "The program uses multiple channels and maintains a recognisable identity across touchpoints. A monthly or thematic cadence is in place. Content is beginning to be framed around relevance rather than obligation, though cultural and audience-specific tailoring remains limited.",
-            "Communications are managed like an internal brand campaign, with consistent design, varied formats, and messaging calibrated to different audience segments and cultural contexts. Frequency is sustained without tipping into noise, and engagement indicators are monitored to refine the approach.",
-            "The communications strategy is fully adaptive. Channel mix, messaging framing, and cadence are adjusted in real time based on engagement data, cultural feedback, and emerging threat priorities. The program can demonstrate a measurable link between communication quality and behavioural outcomes across employee segments."
+            "We don't; there's no sense that knowledge decays or that we'd monitor it.",
+            "Delivery is fixed and uniform regardless of exposure.",
+            "A cadence exists but isn't calibrated to engagement or fatigue.",
+            "We track engagement and disengagement and adjust to avoid decay and fatigue.",
+            "Intensity is managed per individual and group using fatigue and engagement data."
           ]
         },
         {
           "id": "des-5",
-          "factor": "Gamification",
-          "text": "To what extent does your security awareness program use gamification as a deliberate engagement mechanism, with scenario-based design and immediate feedback, embedded within a broader reinforcement cycle rather than deployed as a standalone activity?",
-          "guidance": "Consider whether gamification elements are designed to build decision-making skill and self-efficacy, whether they reflect realistic threat scenarios, and whether the program accounts for audience variation in receptiveness to game-based formats.",
+          "factor": "Drip-Feed Learning",
+          "text": "How is content broken up and delivered?",
+          "guidance": "Measures chunking and distribution of content.",
           "descriptors": [
-            "No gamification elements are present. Training is entirely passive, policy-based, or lecture-driven, with no mechanisms to actively engage employees in security decision-making.",
-            "Surface-level game mechanics may exist, such as progress bars or completion badges, but they are cosmetic additions to passive content. Scenarios are generic, feedback is delayed or absent, and the format is not designed to build skill.",
-            "The program incorporates scenario-based gamified content with immediate feedback. Employees are required to make decisions rather than absorb information passively. Gamification is recognised as an engagement tool, though it may not yet be systematically embedded in a reinforcement cycle or tailored to audience segments.",
-            "Gamification is one component of a broader, continuous programme. Scenarios are realistic, varied, and designed to build genuine self-efficacy. The program monitors engagement by audience segment and adjusts format where game-based approaches are not landing effectively with specific groups.",
-            "Gamification is fully integrated into the reinforcement architecture. Scenario complexity adapts based on individual performance data, and the program can demonstrate that gamified interventions are producing measurable improvements in threat recognition and response behaviour over time, not just short-term engagement spikes."
+            "Only when a problem forces it, with no structure.",
+            "In large annual or semi-annual blocks.",
+            "Beginning to be split into shorter units at regular intervals.",
+            "Consistently in brief, varied units across the year.",
+            "With unit frequency and sequencing personalised to individual data."
           ]
         },
         {
           "id": "des-6",
-          "factor": "Hands-On Simulations",
-          "text": "To what extent does your security awareness program use hands-on simulations that replicate realistic threat conditions, deliver immediate corrective feedback, and vary in format and complexity to prevent habituation and maintain valid behavioural measurement?",
-          "guidance": "Consider whether simulations are matched to audience and role, whether they function as both an evaluation and a learning tool, and whether the program actively manages the risks of overconfidence and predictability across simulation cycles.",
+          "factor": "Drip-Feed Learning",
+          "text": "Our approach of delivering security content in small, regular pieces over time is designed to:",
+          "guidance": "Measures whether delivery targets spaced repetition and habit formation.",
           "descriptors": [
-            "No simulations are in use. Employees encounter real threats without any prior experiential exposure. Vulnerability is unknown until an actual incident occurs.",
-            "Phishing simulations may exist but are infrequent, generic, and primarily used to generate click-rate statistics for reporting purposes. Immediate feedback is absent or minimal, and results are not used to drive targeted intervention.",
-            "The program runs regular phishing simulations with embedded corrective feedback triggered at the moment of failure. Simulations are beginning to vary in format and complexity, and results are used to identify vulnerable groups and inform training priorities.",
-            "Simulations extend beyond phishing to include role-appropriate formats such as role-playing scenarios, social engineering exercises, or technical wargames for relevant teams. Timing, context, and complexity are varied deliberately to prevent habituation and maintain realism.",
-            "The simulation programme is fully adaptive. Scenario selection, difficulty, and frequency adjust based on individual and group performance data. The program monitors for overconfidence effects and predictability patterns, and can demonstrate sustained improvement in threat detection and response behaviour across the workforce."
+            "Nothing deliberate; we don't think in terms of repetition over time.",
+            "Deliver information once and assume it sticks.",
+            "Space content out, though not yet around habit formation.",
+            "Reinforce the same core behaviours until responses become instinctive.",
+            "Produce measurable habit formation, not just sustained awareness."
           ]
         },
         {
           "id": "des-7",
-          "factor": "Storytelling",
-          "text": "To what extent does your security awareness program use narrative and storytelling as a deliberate design principle, embedding security concepts within relatable characters, realistic conflict, and emotional context rather than presenting them as abstract policy or procedural guidance?",
-          "guidance": "Consider whether content is built around recognisable scenarios and peer-like characters, whether emotional connection is treated as a learning mechanism rather than a creative addition, and whether storytelling is integrated across formats including video, simulation, and gamification.",
+          "factor": "Communications Strategy",
+          "text": "Which best describes your security communications as a whole?",
+          "guidance": "Measures campaign mechanics: cadence, format variety, identity.",
           "descriptors": [
-            "Content is entirely policy-driven and procedural. Security guidance is presented as rules and checklists with no narrative framing, character, or emotional context to aid recall or connection.",
-            "Training may include brief scenario examples but they are functional rather than narrative. Characters and situations are generic, employees do not see themselves in the material, and emotional engagement is not considered a design objective.",
-            "The program incorporates storytelling elements in at least some content, such as video vignettes or scenario-based modules featuring recognisable workplace situations. Narrative is used to increase engagement, though it may not yet be applied consistently across formats.",
-            "Storytelling is a core design principle across the program. Content features peer-like characters navigating realistic, multi-layered security dilemmas that mirror the decisions employees actually face. Emotional resonance is treated as a functional component of behaviour change.",
-            "Narrative design is fully embedded and continuously refined. Character relevance, scenario realism, and emotional framing are tested against behavioural outcomes and adjusted based on audience response data. The program can demonstrate that storytelling is producing measurable improvements in retention, self-efficacy, and real-world threat response."
+            "Ad hoc, only after incidents or deadlines.",
+            "Uniform policy reminders people filter out.",
+            "Multi-channel with a recognisable identity and a monthly cadence.",
+            "Run like an internal brand campaign, varied and sustained without becoming noise.",
+            "With channel, format, and cadence adapting in real time to data."
           ]
         },
         {
           "id": "des-8",
-          "factor": "Interactive Media",
-          "text": "To what extent does your security awareness program use interactive media formats that require employees to engage, analyse, and respond, rather than passively receive information, with complexity matched to audience needs and designed to build practical skill without triggering cognitive overload or reactance?",
-          "guidance": "Consider whether interactivity is purposeful rather than decorative, whether format complexity is calibrated to the learning objective and audience, and whether the program monitors for fatigue and reactance as actively as it monitors for engagement.",
+          "factor": "Communications Strategy",
+          "text": "How is your security messaging framed?",
+          "guidance": "Measures audience-relevant framing versus uniform obligation.",
           "descriptors": [
-            "Training is entirely passive. Employees read policies, watch slides, or click through static modules with no decisions to make, no consequences to experience, and no feedback to process.",
-            "Some interactive elements exist, such as multiple choice questions or click-through acknowledgements, but they serve completion tracking rather than skill development. Interaction is a structural requirement, not a learning mechanism.",
-            "The program incorporates meaningful interactive formats such as branching scenarios or decision-based modules. Employees are required to analyse situations and make choices, with feedback provided on their decisions. Format selection is intentional, though calibration against cognitive load is not yet systematic.",
-            "Interactive media is matched deliberately to audience, objective, and resource envelope. The program uses a range of formats and actively monitors for signs of fatigue or reactance that signal overload rather than engagement. Format decisions are informed by behavioural outcome data.",
-            "Interactive media deployment is fully adaptive. Format complexity, interaction frequency, and feedback design adjust dynamically based on individual engagement signals, skill development data, and reactance indicators. The program can demonstrate measurable gains in practical threat response capability."
+            "Without thought for how it lands on different people.",
+            "As uniform compliance notices, not designed to earn attention.",
+            "Beginning to be framed around relevance, though tailoring is limited.",
+            "Calibrated to different segments and cultures, refined by engagement data.",
+            "With a demonstrable link between message quality and behaviour across segments."
           ]
         },
         {
           "id": "des-9",
-          "factor": "Personal Life Relevance",
-          "text": "To what extent does your security awareness program frame security as personally relevant to employees' lives outside of work, using personal risk scenarios as an entry point to build engagement before transitioning to organisational security behaviours?",
-          "guidance": "Consider whether content addresses personal threats such as financial fraud or family account compromise, whether the program sequences personal relevance before corporate obligation, and whether the reciprocity effect is deliberately cultivated as a motivational lever.",
+          "factor": "Gamification",
+          "text": "If you use gamification, what does it actually do?",
+          "guidance": "Measures whether gamification builds real skill versus cosmetic mechanics.",
           "descriptors": [
-            "All security content is framed exclusively around organisational risk and compliance. There is no recognition that personal relevance drives engagement, and no attempt to connect security to employees' lives outside of work.",
-            "Content is corporate in tone and framing throughout. Personal examples may appear incidentally but are not a design principle. The program positions employees as security risks to be managed rather than individuals with a personal stake in staying safe.",
-            "The program deliberately incorporates personal life scenarios such as safe banking or social media privacy as part of its content mix. Personal relevance is recognised as an engagement driver, though it may not yet be used as a systematic entry point before transitioning to workplace content.",
-            "Personal relevance is a deliberate sequencing and framing strategy. The program opens with content that connects to employees' personal and family safety before building toward organisational behaviours. The reciprocity effect is intentionally cultivated.",
-            "Personal relevance framing is fully embedded and continuously refined. Content is personalised to employee life contexts where data permits, and the program can demonstrate that personally relevant entry points are producing measurable improvements in engagement, retention, and transfer of secure behaviours into the workplace."
+            "There's none; training is passive or lecture-style.",
+            "Cosmetic badges or progress bars on otherwise passive content.",
+            "Scenario-based content with immediate feedback that requires decisions.",
+            "Realistic, varied scenarios that build genuine decision-making skill.",
+            "Adaptive scenarios with demonstrable gains in threat recognition."
           ]
         },
         {
           "id": "des-10",
-          "factor": "Role-Based Scenarios",
-          "text": "To what extent does your security awareness program deliver role-specific training scenarios that reflect the actual threat landscape, access levels, and daily decisions of different employee groups, including elevated-risk roles such as executives, finance staff, and system administrators?",
-          "guidance": "Consider whether the program moves beyond a single generic module applied uniformly, whether risk profiling informs content depth and scenario design for different roles, and whether high-value target groups receive appropriately focused attention distinct from general workforce training.",
+          "factor": "Gamification",
+          "text": "How does gamification fit into the wider program and different audiences?",
+          "guidance": "Measures integration into reinforcement and audience fit.",
           "descriptors": [
-            "All employees receive identical training regardless of role, access level, or threat exposure. No distinction is made between a general user and a privileged account holder. Role-specific risk is not acknowledged as a design consideration.",
-            "Training is uniform and generic, designed to satisfy audit requirements across the workforce as a whole. Role differences may be acknowledged in policy but are not reflected in training content or scenario design. High-value targets receive no differentiated attention.",
-            "The program segments the workforce into broad tiers such as general staff, managers, technical roles, and executives, and delivers content appropriate to each tier's risk profile. Scenarios are beginning to reflect role-specific threats, though depth and customisation vary across groups.",
-            "Role-based design is systematic and grounded in risk profiling. Scenario content, depth, and framing are matched to the specific threats, decisions, and access levels of each employee group. Executives, finance teams, administrators, and operational staff each receive meaningfully differentiated training.",
-            "Role-based tailoring is continuously refined using threat intelligence and behavioural data. Content adapts as roles evolve, access levels change, or new threat patterns emerge. The program can demonstrate that role-specific scenarios are producing measurably better compliance and threat recognition outcomes among high-risk employee segments."
+            "There's nothing to integrate.",
+            "Any mechanics stand alone and are uniform across audiences.",
+            "It's an engagement tool, but not yet embedded or tailored.",
+            "It's part of a continuous program, adjusted where it underperforms by segment.",
+            "Fully integrated into reinforcement and tuned to audience response."
           ]
         },
         {
           "id": "des-11",
-          "factor": "Audience Segmentation",
-          "text": "To what extent does your security awareness program systematically segment its audience across multiple dimensions, including role, risk profile, cultural context, knowledge level, and demographics, and deliver differentiated content and communication styles to each segment rather than applying a single programme uniformly?",
-          "guidance": "Consider whether segmentation goes beyond organisational hierarchy to capture functional risk, whether cultural and environmental differences are reflected in both content and style, and whether the program actively identifies and addresses knowledge gaps across demographic groups.",
+          "factor": "Hands-On Simulations",
+          "text": "When employees participate in simulation exercises (like fake phishing emails), how realistic are they?",
+          "guidance": "Measures realism and immediate corrective feedback.",
           "descriptors": [
-            "No segmentation exists. Every employee receives identical content regardless of role, access level, cultural background, or existing knowledge. The program treats the workforce as a uniform group and makes no attempt to direct targeted interventions where they are most needed.",
-            "Segmentation is limited to basic organisational hierarchy at most. Content differences across groups are minimal and driven by access to systems rather than risk profile or cultural context. High-risk functional roles are not identified or treated differently.",
-            "The program applies a structured segmentation model, distinguishing executives, managers, IT staff, and end users with differentiated content for each tier. Functional risk roles are beginning to be identified. Cultural and demographic variation is acknowledged but not yet systematically reflected in content design.",
-            "Segmentation is multi-dimensional, covering organisational role, functional risk profile, cultural context, work environment, and knowledge level. Content and communication style are meaningfully differentiated across segments. The program actively identifies high-risk functional groups beyond seniority.",
-            "Segmentation is dynamic and continuously refined. Audience profiles update as roles change, new risk patterns emerge, or engagement data reveals underserved groups. The program can demonstrate measurable differences in behavioural outcomes across segments and adapts content, style, and channel accordingly in near real time."
+            "We don't run any, so people meet real threats with no practice first.",
+            "We run the odd basic test for the numbers, but people get little or no feedback.",
+            "We run them regularly, and people find out straight away when they get something wrong.",
+            "They feel realistic, come in different forms, and always give quick feedback.",
+            "We keep improving them, and we can show people are getting better at spotting threats."
+          ]
+        },
+        {
+          "id": "des-12",
+          "factor": "Hands-On Simulations",
+          "text": "How much do your simulations vary over time?",
+          "guidance": "Measures variation and validity to prevent habituation.",
+          "descriptors": [
+            "They don't, because there are none.",
+            "They're repetitive and predictable, so results aren't valid.",
+            "Starting to vary in format and complexity, informing priorities.",
+            "Timing, context, and complexity varied deliberately to prevent habituation.",
+            "Selection and difficulty adapt to data, with overconfidence monitored."
+          ]
+        },
+        {
+          "id": "des-13",
+          "factor": "Storytelling",
+          "text": "How is security content presented to employees?",
+          "guidance": "Measures narrative relatability versus abstract policy.",
+          "descriptors": [
+            "As rules and checklists, with no narrative.",
+            "With generic scenario examples people don't see themselves in.",
+            "With some storytelling, like video vignettes of real situations.",
+            "Around peer-like characters in realistic dilemmas, as a core principle.",
+            "With character and scenario realism tested against outcomes and refined."
+          ]
+        },
+        {
+          "id": "des-14",
+          "factor": "Storytelling",
+          "text": "What role does emotion play in your content design?",
+          "guidance": "Measures emotional resonance as a deliberate learning mechanism.",
+          "descriptors": [
+            "None; there's no emotional context to aid recall.",
+            "It's not treated as a design objective.",
+            "Used to boost engagement, but not consistently across formats.",
+            "Treated as a functional part of behaviour change across formats.",
+            "Tested against retention and behaviour data and tuned to audiences."
+          ]
+        },
+        {
+          "id": "des-15",
+          "factor": "Interactive Media",
+          "text": "Our training mostly asks employees to:",
+          "guidance": "Measures purposeful interactivity versus passive consumption.",
+          "descriptors": [
+            "Read, watch, or click through passively.",
+            "Answer quizzes that track completion, not skill.",
+            "Work through branching scenarios and make decisions with feedback.",
+            "Engage with formats matched deliberately to objective and audience.",
+            "Use interactions that adapt to their engagement and skill in real time."
+          ]
+        },
+        {
+          "id": "des-16",
+          "factor": "Interactive Media",
+          "text": "How do you keep interactive training from wearing people out?",
+          "guidance": "Measures whether interactive elements are used in the right amount, so they help people learn rather than tiring them or making them tune out.",
+          "descriptors": [
+            "We don't. There's either too little to hold attention or so much that people switch off.",
+            "We add interactive parts because we feel we should, without thinking about whether it's too much.",
+            "We pick formats on purpose, but we don't really check whether people find it a slog.",
+            "We watch for signs people are getting tired or tuning out, just as closely as we watch engagement.",
+            "The amount of interaction adjusts to each person, easing off when someone starts to disengage."
+          ]
+        },
+        {
+          "id": "des-17",
+          "factor": "Personal Life Relevance",
+          "text": "How much does your content touch employees' personal and home security?",
+          "guidance": "Measures personal relevance beyond organisational risk.",
+          "descriptors": [
+            "Not at all; it's framed purely around organisational risk.",
+            "Personal examples appear by chance, not by design.",
+            "Personal scenarios like safe banking are deliberately included.",
+            "Personal and family safety are used as a deliberate engagement strategy.",
+            "Personalised to life contexts, with gains in engagement and transfer."
+          ]
+        },
+        {
+          "id": "des-18",
+          "factor": "Personal Life Relevance",
+          "text": "How do you use personal relevance to draw employees in?",
+          "guidance": "Measures sequencing of personal relevance and reciprocity.",
+          "descriptors": [
+            "We don't; there's no sense it drives engagement.",
+            "Framing stays corporate; personal relevance isn't an entry point.",
+            "Recognised as a driver, but not used systematically up front.",
+            "We open with personal safety before moving to workplace behaviours.",
+            "Personal entry points are refined and shown to improve transfer to work."
+          ]
+        },
+        {
+          "id": "des-19",
+          "factor": "Role-Based Scenarios",
+          "text": "How tailored is training to different employee groups?",
+          "guidance": "Measures role differentiation of scenarios.",
+          "descriptors": [
+            "Not at all; everyone gets the same module.",
+            "Uniform and generic to satisfy audits.",
+            "Broad tiers get content matched to their risk profile.",
+            "Content and depth matched to each group's threats, decisions, and access.",
+            "Continuously refined with threat intel and behaviour data as roles change."
+          ]
+        },
+        {
+          "id": "des-20",
+          "factor": "Role-Based Scenarios",
+          "text": "How do high-value targets (executives, finance, admins) get trained?",
+          "guidance": "Measures focused attention on elevated-risk roles.",
+          "descriptors": [
+            "The same as everyone else; no special attention.",
+            "Acknowledged in policy, but not in training.",
+            "They get scenarios reflecting their specific threats.",
+            "They get meaningfully differentiated, focused training.",
+            "They show measurably better outcomes, with content adapting to their risk."
+          ]
+        },
+        {
+          "id": "des-21",
+          "factor": "Audience Segmentation",
+          "text": "How is your audience divided for training and comms?",
+          "guidance": "Measures breadth of segmentation dimensions.",
+          "descriptors": [
+            "It isn't; everyone gets identical content.",
+            "Only by basic hierarchy and system access.",
+            "By role tiers, with functional risk starting to be identified.",
+            "Across role, functional risk, culture, environment, and knowledge.",
+            "Dynamically, with profiles updating as roles change and gaps appear."
+          ]
+        },
+        {
+          "id": "des-22",
+          "factor": "Audience Segmentation",
+          "text": "How different is what each segment actually receives?",
+          "guidance": "Measures differentiated delivery per segment.",
+          "descriptors": [
+            "Not different; content and style are uniform.",
+            "Barely, and driven by access rather than need.",
+            "Differentiated by tier, but not yet by culture or demographics.",
+            "Meaningfully differentiated in content and style, high-risk groups identified.",
+            "Content, style, and channel adapt per segment with measurable differences."
           ]
         }
       ]
@@ -308,131 +516,287 @@
         {
           "id": "org-1",
           "factor": "Visible Commitment",
-          "text": "How visibly and actively does senior leadership demonstrate commitment to cybersecurity through their actions, communication, and resource allocation?",
-          "guidance": "Assess whether leadership treats cybersecurity as a strategic business enabler and shared organisational responsibility, rather than solely a technical issue or compliance requirement.",
+          "text": "Which best describes how senior leaders talk about cybersecurity?",
+          "guidance": "Measures whether leaders signal that security matters as a business priority.",
           "descriptors": [
-            "Senior leaders have little awareness of cybersecurity risks and view security as exclusively an IT responsibility. Support is largely absent until a significant incident occurs, prompting reactive and short-term responses rather than proactive planning. Security receives minimal attention, investment, or executive oversight.",
-            "Leadership provides only the support necessary to satisfy regulatory, audit, or compliance obligations. Executives approve required budgets and policies but rarely engage with cybersecurity initiatives directly. Security is viewed primarily as a cost of compliance rather than a strategic business function",
-            "Cybersecurity is recognized as a formal organisational priority and incorporated into strategic planning. Senior leaders communicate the importance of security, establish clear expectations, and support the development and enforcement of policies. Regular messaging helps employees understand emerging risks and the rationale behind security requirements.",
-            "Executives move beyond sponsorship to visible participation in cybersecurity initiatives. Leaders consistently model secure behaviours, actively support awareness activities, and demonstrate personal accountability for security practices. Their engagement reinforces the message that cybersecurity is a shared organisational value and responsibility.",
-            "Leadership adopts a Human Risk Management (HRM) approach that integrates cybersecurity into broader business objectives and decision-making processes. Executives and security teams share a common language of risk, regularly review behavioural metrics and key performance indicators, and use data-driven insights to evaluate security effectiveness, optimise investments, and continuously improve organisational resilience."
+            "They rarely mention it, so people assume it doesn't matter.",
+            "They mention it only when audits or compliance require.",
+            "They name security as a formal priority and explain why it matters.",
+            "They speak about it regularly and personally as a shared value.",
+            "They frame it as a strategic enabler in a shared language of risk, backed by data."
           ]
         },
         {
           "id": "org-2",
-          "factor": "Resource Allocation",
-          "text": "How adequately are financial resources, skilled personnel, and employee time allocated to support the effectiveness, sustainability, and continuous improvement of the program?",
-          "guidance": "Assess the extent to which resource allocation evolves from reactive and minimal investment toward a proactive, risk-based, and data-driven approach that maximizes organizational value and reduces human-related security risks.",
+          "factor": "Visible Commitment",
+          "text": "Beyond talking, what do your leaders actually do about security?",
+          "guidance": "Measures whether leaders model secure behaviour and participate themselves.",
           "descriptors": [
-            "No dedicated budget, personnel, or structured time allocation exists for security awareness activities. Investment occurs only in response to major security incidents and is typically limited to short-term corrective actions rather than sustained program development. Security awareness is viewed as a discretionary expense rather than an organizational necessity.",
-            "Resources are allocated primarily to satisfy regulatory, audit, or contractual requirements. Funding supports only basic awareness activities, such as annual mandatory training, with limited customization or ongoing engagement. Responsibility for program delivery is often assigned as an additional duty rather than supported by dedicated personnel or strategic oversight.",
-            "The organization establishes a formal budget and dedicated resources for security awareness and behavior-change initiatives. Personnel are assigned clear program management responsibilities, and funding supports role-based training, targeted awareness campaigns, and risk-prioritized educational activities. Resource allocation aligns with identified organizational risks and strategic objectives.",
-            "Resources support a culture of shared responsibility through initiatives such as Security Champion networks, cross-functional collaboration, and behaviour-focused interventions. The organization formally allocates employee work time for training and security-related activities, recognizing that competing operational demands can undermine participation and increase security fatigue. Investments are designed to promote sustained behavioural change rather than one-time compliance outcomes.",
-            "Resource allocation is guided by Human Risk Management (HRM) principles and informed by measurable outcomes. Investments are justified through risk reduction metrics, Return on Security Investment (ROSI), and behavioural performance indicators. Automated and adaptive awareness technologies deliver targeted, just-in-time interventions that reduce cognitive burden while maximizing effectiveness. Resource decisions are continuously refined based on organizational risk, business priorities, and program performance data."
+            "Nothing visible; they don't follow security practices themselves.",
+            "They approve initiatives but don't take part or model the behaviour.",
+            "They support initiatives and model expected behaviour when prompted.",
+            "They consistently model secure behaviour and join awareness activities.",
+            "They treat their own secure behaviour as non-negotiable and actively sponsor it."
           ]
         },
         {
           "id": "org-3",
-          "factor": "Policy Sponsorship",
-          "text": "To what extent is the Information Security Policy (ISP) actively sponsored by senior leadership and aligned with organizational objectives, rather than being treated solely as a technical, regulatory, or compliance requirement?",
-          "guidance": "Assess the degree to which senior leadership visibly champions the Information Security Policy, integrates it into organizational decision-making, and provides the authority, resources, and accountability mechanisms necessary for effective implementation and enforcement.",
+          "factor": "Resource Allocation",
+          "text": "Which best describes the budget behind your awareness program?",
+          "guidance": "Measures the financial dimension of resourcing.",
           "descriptors": [
-            "No formal Information Security Policy exists, or policies are developed only in response to security incidents or external pressures. Senior leadership has limited awareness of cybersecurity risks and delegates responsibility entirely to technical staff. Security governance is fragmented, reactive, and lacks executive oversight.",
-            "Policies exist primarily to satisfy regulatory, audit, or certification requirements. Senior leadership formally approves the policy but demonstrates limited engagement beyond compliance obligations. Communication regarding policy expectations is minimal, resulting in a disconnect between documented requirements and day-to-day employee behaviour.",
-            "Leadership recognizes the Information Security Policy as an important governance mechanism and aligns it with organizational objectives. Executive management communicates the purpose and value of policy requirements, emphasizing their role in managing risk and supporting business operations. Responsibility for policy oversight is formally assigned, and leadership provides the authority needed to support implementation and enforcement.",
-            "Senior leaders visibly champion the Information Security Policy through their actions, communications, and participation in security initiatives. Executives model compliant behaviours, reinforce policy expectations, and actively support awareness and behaviour-change programs. Leadership sponsors cross-functional security initiatives, such as Security Champion networks, ensuring policy requirements are translated into role-specific practices across the organization.",
-            "The Information Security Policy is fully integrated into organizational governance, culture, and Human Risk Management (HRM) practices. Leadership, security teams, and business units operate using a shared understanding of risk and organizational objectives. Policy requirements are embedded throughout the employee lifecycle, including recruitment, onboarding, performance management, professional development, and offboarding. Policy effectiveness is continuously evaluated through behavioural metrics, risk indicators, and business outcomes, enabling ongoing refinement and strategic alignment."
+            "No budget: we only spend reactively after an incident.",
+            "Bare minimum: just enough to satisfy audits.",
+            "Dedicated budget: funds role-based training and targeted campaigns.",
+            "Sustained investment: funds continuous, behaviour-focused initiatives.",
+            "Optimised: we base the budget on the risks it reduces and the value it returns, and we adjust it as results come in."
           ]
         },
         {
           "id": "org-4",
-          "factor": "Security ownership",
-          "text": "How fully is responsibility for information security embedded across the organization, with employees actively demonstrating ownership of information assets and cyber risk?",
-          "guidance": "Assess how responsibility for security shifts from IT ownership to shared organizational accountability, where employees actively participate in identifying, preventing, and responding to risk.",
+          "factor": "Resource Allocation",
+          "text": "Who runs your security awareness program?",
+          "guidance": "Measures the personnel dimension of resourcing.",
           "descriptors": [
-            "Employees see security as outside their role. Responsibility is unclear, reporting is rare, and failures are addressed through blame after incidents.",
-            "Employees follow rules to meet mandatory requirements. Ownership is minimal and driven by enforcement rather than engagement.",
-            "Security responsibilities are clearly defined and communicated. Employees understand their role but engagement remains task-focused rather than proactive.",
-            "Employees actively support secure behaviours, report issues, and reinforce good practice. Psychological safety enables open reporting and peer accountability.",
-            "Employees act as proactive security contributors and risk sensors. Ownership is reinforced through HRM integration, feedback loops, and performance alignment."
+            "No one; activities happen ad hoc with no owner.",
+            "Someone does it on the side, as an extra duty with no real time or skill.",
+            "Named, skilled staff hold clear program-management responsibility.",
+            "Dedicated staff plus a wider champion network deliver across functions.",
+            "We focus our skilled people where the risk is greatest, and use automation to extend their reach across the organisation."
           ]
         },
         {
           "id": "org-5",
-          "factor": "Psychological Safety",
-          "text": "How consistently does the organization enable psychologically safe reporting of security mistakes and near-misses across all levels?",
-          "guidance": "Assess the extent to which the organization transitions from a blame-driven environment that suppresses error reporting to a psychologically safe culture where reporting is encouraged, normalized, and treated as a key contributor to organizational learning and resilience.",
+          "factor": "Resource Allocation",
+          "text": "How much work time do employees actually get for security activities?",
+          "guidance": "Measures the time dimension of resourcing.",
           "descriptors": [
-            "A punitive culture discourages transparency. Employees hide mistakes to avoid shame or disciplinary action. Security incidents are treated as individual failures, resulting in underreporting and significant visibility gaps for security teams.",
-            "Formal reporting processes exist but are driven by compliance and enforcement. Employees report only when required, as fear of sanctions outweighs perceived benefits of disclosure. Near-misses and minor mistakes are frequently unreported.",
-            "Leadership communicates the importance of reporting errors and frames it as a professional responsibility. Basic training and awareness initiatives support reporting behaviours, but psychological safety is inconsistent across teams and departments.",
-            "A supportive reporting culture is actively reinforced by managers and peer networks. Leaders emphasize learning over punishment, and Security Champions help normalize transparency. Reporting mistakes is reframed as responsible behaviour that strengthens collective security.",
-            "Employees function as an integrated human sensor network, proactively reporting incidents, anomalies, and near-misses. Reporting is embedded in Human Risk Management (HRM) systems with rapid, constructive feedback loops. Positive reinforcement and continuous learning ensure that each report strengthens organizational resilience and trust."
+            "None; training loses out to daily work every time.",
+            "Just enough, grudgingly, for mandatory training.",
+            "We formally allocate work time for required training and activities.",
+            "Protected time is built into workflows for training and champion work.",
+            "Security time is woven into work through low-friction, just-in-time moments."
           ]
         },
         {
           "id": "org-6",
-          "factor": "Social Norms",
-          "text": "How strongly are secure behaviours reinforced as social norms within teams through peer and managerial influence?",
-          "guidance": "Assess the degree to which cybersecurity behaviours are shaped by social influence within teams, ranging from indifference and isolation to strong collective norms where peers actively model, reinforce, and expect secure conduct.",
+          "factor": "Policy Sponsorship",
+          "text": "How actively does senior leadership stand behind the organisation's security policy?",
+          "guidance": "Measures whether leaders genuinely own and back the security policy, giving it real authority and accountability, rather than rubber-stamping it as a technical document.",
           "descriptors": [
-            "Security is not socially reinforced. Employees perceive no peer or managerial expectations around secure behaviour and view cybersecurity as the responsibility of IT. Risky behaviours go unchallenged, and there is little to no visible modelling of secure practices within teams.",
-            "Social influence is primarily driven by fear of audits, monitoring, or disciplinary consequences. Employees comply to avoid sanctions rather than due to shared professional norms. Security is viewed as a procedural obligation rather than a valued behavioural standard.",
-            "Security expectations are formally communicated and increasingly recognized as part of professional conduct. Employees begin to view secure behaviour as a workplace standard, and informal peer-to-peer sharing of security information starts to emerge within teams.",
-            "Secure behaviour becomes a visible and reinforced social norm. Peer influence plays a central role, with employees actively encouraging one another, challenging unsafe practices, and sharing responsibility for maintaining secure behaviour. Security Champions and informal leaders help embed these norms across teams.",
-            "Secure behaviour is fully internalized as a default social expectation. Employees function as a distributed “human sensor network,” where adherence to security practices is self-reinforcing and deviations generate immediate social feedback. Norms are sustained through strong peer modelling, leadership participation, and continuous reinforcement, making the culture highly resilient to manipulation and social engineering."
+            "There's no real security policy, or it's left entirely to the technical team.",
+            "Leaders sign it off to meet requirements, but do nothing more with it.",
+            "Leaders treat it as important, put someone in charge of it, and give it real authority.",
+            "Leaders visibly stand behind it and hold people accountable for following it.",
+            "Following the policy is a shared responsibility across leadership, security, and the wider business."
           ]
         },
         {
           "id": "org-7",
-          "factor": "Work force management/ integration",
-          "text": "How fully is cybersecurity integrated into workforce management processes across the employee lifecycle, including recruitment, onboarding, role design, training, and performance evaluation?",
-          "guidance": "Assess the extent to which cybersecurity is embedded within HR and workforce management systems as a core professional competency rather than a standalone or periodic training requirement. Evaluate whether security is consistently reinforced through employee lifecycle processes, role expectations, and performance structures.",
+          "factor": "Policy Sponsorship",
+          "text": "How connected is your security policy to the way the business actually runs?",
+          "guidance": "Measures whether the security policy is woven into business goals and everyday decisions, rather than sitting on its own as a compliance document.",
           "descriptors": [
-            "Cybersecurity is treated as an IT responsibility with minimal or no involvement from HR or workforce management functions. Training and awareness activities occur only in response to incidents, and there is no structured integration into employee lifecycle processes.",
-            "Security is introduced as a mandatory onboarding requirement and annual training obligation. Content is generic, standardized, and designed primarily to satisfy regulatory or audit requirements, with little alignment to role-specific risks or responsibilities.",
-            "Cybersecurity responsibilities are formally incorporated into job descriptions and organizational policies. Leadership communicates security as a professional expectation and business requirement. However, implementation remains largely awareness-based rather than behaviour- or lifecycle-driven.",
-            "Security training and interventions are tailored to job function and risk exposure, with targeted programs for high-risk roles such as finance, IT, and executive leadership. Security objectives are integrated into performance management processes, including appraisals and, where applicable, incentive structures, reinforcing accountability and behavioural expectations.",
-            "Cybersecurity is fully embedded across the employee lifecycle, from recruitment and onboarding through to role transitions and offboarding. Human Risk Management (HRM) approaches enable continuous, data-driven, and context-aware interventions delivered through workflow-integrated “just-in-time” support mechanisms. Security is operationalized as an ongoing, adaptive capability that aligns human behaviour with organizational risk in real time."
+            "There isn't one, or it has nothing to do with what we actually do.",
+            "It exists for compliance, separate from real business decisions.",
+            "It lines up with our goals and is explained in terms of managing risk.",
+            "It's turned into practical expectations for each role and built into how projects run.",
+            "It runs through the whole employee journey and our decision-making, and we keep refining it."
           ]
         },
         {
           "id": "org-8",
-          "factor": "Role-Specific Ownership",
-          "text": "How clearly are cybersecurity responsibilities defined within employees’ specific roles, and how strongly do employees feel personally accountable for managing the security risks associated with their daily tasks?",
-          "guidance": "Assess the degree to which cybersecurity ownership shifts from generic, organization-wide expectations to role-specific accountability embedded within job functions. Evaluate whether employees understand, accept, and actively integrate security responsibilities into their day-to-day work activities rather than treating them as external or technical obligations.",
+          "factor": "Security Ownership",
+          "text": "Who is responsible for information security in your organisation?",
+          "guidance": "Measures whether responsibility is distributed across the organisation, not just IT.",
           "descriptors": [
-            "Employees have little to no understanding of their individual responsibilities in relation to cybersecurity. Security is perceived as the responsibility of IT or specialist teams, and actions are only taken in response to incidents. There is no clear linkage between job roles and security outcomes.",
-            "Security responsibilities are communicated through standardized, one-size-fits-all policies and training programs (e.g., Acceptable Use Policies). These expectations are not tailored to job function or access level and are primarily designed to meet compliance requirements rather than support day-to-day role performance.",
-            "Cybersecurity responsibilities are formally embedded into job descriptions and organizational documentation. Targeted training is provided for higher-risk roles, helping employees understand their obligations in handling sensitive data and systems. However, ownership remains largely procedural rather than deeply integrated into daily decision-making.",
-            "Employees understand and internalize the rationale behind role-specific security responsibilities. Security expectations are viewed as an integral part of professional performance rather than external rules. Peer influence and Security Champion networks reinforce appropriate behaviours at the departmental level, strengthening local accountability and behavioural consistency.",
-            "Cybersecurity ownership is continuously adapted through Human Risk Management (HRM) approaches that align responsibilities with real-time risk exposure, role changes, and behavioural insights. Security expectations are embedded across the employee lifecycle and integrated into performance management systems, ensuring that accountability evolves alongside job function, access privileges, and organizational risk conditions."
+            "It's unclear, and defaults to IT by assumption.",
+            "People follow rules to comply, but ownership is minimal.",
+            "Responsibilities are clearly defined and understood across roles.",
+            "Responsibility is genuinely shared, with peers reinforcing good practice.",
+            "Ownership is distributed and embedded through HRM and performance alignment."
           ]
         },
         {
           "id": "org-9",
-          "factor": "User-centric Design",
-          "text": "How effectively are security awareness materials and related tools designed around user needs, job contexts, and cognitive load to support usability, engagement, and long-term behavioural retention?",
-          "guidance": "Assess the extent to which program design evolves from generic, compliance-driven content delivery to a human-centred, adaptive experience that accounts for user context, cognitive limitations, and behavioural engagement. Evaluate whether design choices reduce friction, support usability, and promote sustained attention and learning retention.",
+          "factor": "Security Ownership",
+          "text": "When an employee spots a possible security risk, what usually happens?",
+          "guidance": "Measures active employee participation in identifying and responding to risk.",
           "descriptors": [
-            "Security materials are generic, jargon-heavy, and poorly aligned with user needs or job contexts. Training is delivered as infrequent, one-off sessions focused on information delivery rather than behavioural change, resulting in low engagement and poor retention.",
-            "Design is driven primarily by audit and regulatory requirements. Organizations rely on off-the-shelf training modules that provide minimal relevance to users’ roles or workflows. Communication is one-directional and treated as a procedural obligation rather than an engagement tool.",
-            "The program introduces basic audience segmentation (e.g., IT vs. non-IT users or broad functional groups) to improve relevance. Content begins to incorporate relatable examples, storytelling, or scenario-based learning to improve understanding and contextual awareness, though design remains largely standardized.",
-            "Security content is delivered through more engaging, continuous, and bite-sized formats that reduce cognitive overload and reinforce retention over time. Programs incorporate usability principles, accessibility standards, and inclusive design practices. Learning experiences may include simulations, interactive scenarios, and behavioural nudges to support habit formation and sustained awareness.",
-            "Security awareness is fully integrated into daily workflows through Human Risk Management (HRM) systems that deliver real-time, context-aware interventions. Design is dynamically personalized based on user behaviour, role, and risk exposure. Systems are intentionally simplified to reduce friction and cognitive burden, enabling employees to focus on high-value decision-making while maintaining secure behaviour as a natural default."
+            "Nothing; risks surface only after an incident, often met with blame.",
+            "They act only if required to.",
+            "They know how to report it, though participation is task-focused.",
+            "They report it and actively support secure behaviour around them.",
+            "They act as a proactive sensor network, consistently flagging and helping respond."
           ]
         },
         {
           "id": "org-10",
-          "factor": "Accessibility",
-          "text": "Whats the degree of inclusive and accessible engagement enabled by cybersecurity awareness materials and tools across diverse employee abilities, cognition, and backgrounds.",
-          "guidance": "Assess the extent to which the program actively removes barriers to participation and learning. Consider compliance with accessibility standards, the use of inclusive language and representation, and the adaptation of content to accommodate diverse cognitive, cultural, and educational needs. Evaluate whether accessibility is treated as a foundational design principle or a compliance afterthought.",
+          "factor": "Psychological Safety",
+          "text": "Asked how they'd feel reporting their own security mistake, most employees would say:",
+          "guidance": "Measures the felt safety to disclose mistakes without fear of blame.",
           "descriptors": [
-            "No meaningful consideration is given to accessibility or inclusion. Materials are designed as one-size-fits-all content, often dense, jargon-heavy, and delivered in formats that are not accessible to assistive technologies or diverse learning needs. Individuals with disabilities or different cognitive profiles are effectively excluded from equitable participation.",
-            "Accessibility is addressed only to meet basic legal or audit requirements. Limited features such as alt text or captions may be present, but inclusivity is not integrated into design strategy. Training remains standardized and does not account for cultural, demographic, or ability-based differences among employees.",
-            "The organization adopts recognized accessibility standards (e.g., WCAG) and begins offering content in multiple formats such as text, audio, and interactive modules. Language is simplified to improve clarity across diverse literacy levels, and foundational efforts are made to support multilingual and multicultural workforces.",
-            "Accessibility becomes embedded in design and development processes. Training content reflects diverse perspectives, including gender and cultural representation, and incorporates scenario testing across different user groups. Security Champions and employee feedback loops are used to identify barriers and improve inclusivity continuously.",
-            "Accessibility is fully integrated into Human Risk Management (HRM) strategy and treated as a core design requirement rather than an accommodation. Learning experiences are adaptive, context-aware, and delivered through micro-learning and just-in-time interventions that reduce cognitive overload and security fatigue. Effectiveness is continuously evaluated using accessibility- and demographic-sensitive metrics to ensure equitable impact across the entire workforce."
+            "“I'd hide it; owning up gets you blamed.”",
+            "“I'd report only if I had to; the risk of sanctions isn't worth it.”",
+            "“I know I'm supposed to report it, though it depends on my manager.”",
+            "“I'd report it; we're encouraged to and it's treated as normal.”",
+            "“I'd report it without a second thought; it's safe and expected here.”"
+          ]
+        },
+        {
+          "id": "org-11",
+          "factor": "Psychological Safety",
+          "text": "When a mistake is reported, how does your organisation respond?",
+          "guidance": "Measures whether reports drive learning rather than blame.",
+          "descriptors": [
+            "It's treated as an individual failure to be punished.",
+            "It's logged for compliance but rarely used to improve anything.",
+            "It informs basic improvements and awareness.",
+            "It's consistently treated as a learning opportunity that strengthens security.",
+            "It feeds rapid feedback loops that measurably improve resilience."
+          ]
+        },
+        {
+          "id": "org-12",
+          "factor": "Social Norms",
+          "text": "Among colleagues, how is secure behaviour treated socially?",
+          "guidance": "Measures peer-level social influence on secure behaviour.",
+          "descriptors": [
+            "It's not; risky behaviour goes unchallenged.",
+            "Any pressure comes from fear of audits, not shared norms.",
+            "It's increasingly seen as a workplace standard, with informal sharing.",
+            "Peers encourage each other and challenge unsafe practices.",
+            "It's a self-reinforcing default; lapses draw immediate peer feedback."
+          ]
+        },
+        {
+          "id": "org-13",
+          "factor": "Social Norms",
+          "text": "Within teams, how do managers handle secure behaviour?",
+          "guidance": "Measures managerial social influence on secure behaviour.",
+          "descriptors": [
+            "They neither model nor expect it; it's IT's concern.",
+            "They enforce rules only to avoid consequences.",
+            "They communicate security expectations as part of professional conduct.",
+            "They consistently model it and reinforce it as a team standard.",
+            "Their modelling is continuous and visible, anchoring it as the norm."
+          ]
+        },
+        {
+          "id": "org-14",
+          "factor": "Workforce Integration",
+          "text": "For a new joiner, security shows up:",
+          "guidance": "Measures whether security enters the lifecycle at recruitment and onboarding.",
+          "descriptors": [
+            "Not at all; they get no security grounding.",
+            "As a generic, one-off mandatory onboarding module.",
+            "As formal onboarding expectations linked to policy.",
+            "As onboarding tailored to their role and risk from day one.",
+            "From recruitment onward, feeding continuous, risk-aware support."
+          ]
+        },
+        {
+          "id": "org-15",
+          "factor": "Workforce Integration",
+          "text": "How does security feature in job descriptions and role expectations?",
+          "guidance": "Measures whether security is built into how roles are defined.",
+          "descriptors": [
+            "It doesn't appear in them at all.",
+            "It's referenced generically to meet policy, not built into expectations.",
+            "Responsibilities are formally written into job descriptions.",
+            "Expectations include security objectives tailored by function and risk.",
+            "Expectations adapt continuously to role, access, and risk changes."
+          ]
+        },
+        {
+          "id": "org-16",
+          "factor": "Workforce Integration",
+          "text": "Across performance reviews, role moves, and exits, how is security handled?",
+          "guidance": "Measures whether security is sustained through performance and offboarding.",
+          "descriptors": [
+            "It never features; offboarding ignores it.",
+            "Any link to performance is nominal and compliance-driven.",
+            "It appears in performance talks, with basic steps at transitions.",
+            "It's built into appraisals and incentives, with secure transitions and offboarding.",
+            "Accountability evolves with the role in real time, including disciplined offboarding."
+          ]
+        },
+        {
+          "id": "org-17",
+          "factor": "Role-Specific Ownership",
+          "text": "How clearly do employees know the security responsibilities specific to their role?",
+          "guidance": "Measures clarity of role-tailored security responsibilities.",
+          "descriptors": [
+            "They don't; it all defaults to IT.",
+            "They get one-size-fits-all policies not tailored to their role.",
+            "Responsibilities are in job descriptions, with extra guidance for higher-risk roles.",
+            "Role-specific responsibilities are clear and reinforced by champions.",
+            "They adapt continuously to role, access, and emerging risk."
+          ]
+        },
+        {
+          "id": "org-18",
+          "factor": "Role-Specific Ownership",
+          "text": "Asked who's accountable for the security risks in their daily tasks, most employees would say:",
+          "guidance": "Measures felt accountability for role-specific risks.",
+          "descriptors": [
+            "“Not me; that's IT's job.”",
+            "“Me, but only as far as the rules require.”",
+            "“Me, for the sensitive data and systems I handle.”",
+            "“Me; it's part of doing my job well.”",
+            "“Me, and what I own shifts as my role and access change.”"
+          ]
+        },
+        {
+          "id": "org-19",
+          "factor": "User-Centric Design",
+          "text": "How well do your awareness materials fit employees' actual roles and work?",
+          "guidance": "Measures relevance of materials to user roles and contexts.",
+          "descriptors": [
+            "Poorly; they're generic and jargon-heavy.",
+            "Off-the-shelf content with little relevance to real work.",
+            "Basic segmentation and relatable examples improve relevance.",
+            "Content is closely matched to roles, contexts, and real decisions.",
+            "Content is dynamically personalised to behaviour, role, and risk."
+          ]
+        },
+        {
+          "id": "org-20",
+          "factor": "User-Centric Design",
+          "text": "How easy are your awareness materials to absorb and act on?",
+          "guidance": "Measures usability and cognitive-load reduction.",
+          "descriptors": [
+            "Hard; dense one-off sessions that overwhelm.",
+            "Built for audit, not usability; load isn't considered.",
+            "Clearer, scenario-based formats ease comprehension.",
+            "Bite-sized, accessible formats cut load and aid retention.",
+            "Intentionally simplified, surfacing the right support at the right moment."
+          ]
+        },
+        {
+          "id": "org-21",
+          "factor": "Accessibility",
+          "text": "Where is your organisation on accessibility for different abilities and assistive tech?",
+          "guidance": "Measures accessibility for ability and assistive-technology needs.",
+          "descriptors": [
+            "Not considered; some users are effectively excluded.",
+            "Minimal alt text or captions, only to meet legal requirements.",
+            "Recognised standards (e.g., WCAG) and multiple formats adopted.",
+            "Accessibility is embedded in design, tested across user groups.",
+            "A core design requirement, with adaptive delivery and accessibility metrics."
+          ]
+        },
+        {
+          "id": "org-22",
+          "factor": "Accessibility",
+          "text": "How well do materials work across cultural, language, and literacy differences?",
+          "guidance": "Measures inclusivity across cultural, linguistic, and literacy needs.",
+          "descriptors": [
+            "Not at all; one dense format serves everyone.",
+            "Inclusivity isn't part of design; content stays standardised.",
+            "Language is simplified, with foundational multilingual and multicultural support.",
+            "Content reflects diverse representation and is tested across groups.",
+            "Inclusive design is continuous and data-informed, with demographic-sensitive metrics."
           ]
         }
       ]
@@ -447,79 +811,170 @@
         {
           "id": "mea-1",
           "factor": "Independent Observations",
-          "text": "To what extent does your security awareness program incorporate independent observation methods, such as physical walkabouts or silent monitoring, to capture actual employee security behaviour in everyday conditions, and uses findings to benchmark and inform programme improvement?",
-          "guidance": "Consider whether observations are conducted discretely to avoid the Hawthorne effect, whether results are quantified to provide comparable benchmarks over time, and whether the program manages the cultural and resource trade-offs of observation-based evaluation alongside other measurement methods.",
+          "text": "How do you find out how employees really behave day to day?",
+          "guidance": "Measures discreet observation of real everyday behaviour.",
           "descriptors": [
-            "No observation-based evaluation takes place. Behavioural compliance is unknown until an incident reveals a gap. There is no mechanism for assessing how employees behave during standard daily operations.",
-            "Physical security checks may occur occasionally, such as during audits, but they are announced, infrequent, and not designed to capture true everyday behaviour. Results are recorded for compliance purposes rather than used to inform programme design.",
-            "The program conducts periodic independent observations such as workspace walkabouts on an unannounced basis. Findings are documented and used to identify behavioural gaps. Observations complement other evaluation methods, though they are not yet systematically quantified into benchmarks.",
-            "Independent observations are a structured component of the evaluation framework, conducted regularly, discretely, and consistently enough to generate comparable data over time. Findings are quantified into behavioural benchmarks and triangulated with survey and simulation data.",
-            "Observation-based evaluation is fully integrated into a multi-method measurement system. Frequency, scope, and method vary deliberately to maintain validity and manage cultural impact. Behavioural benchmarks feed directly into programme adaptation, and the program can demonstrate longitudinal improvement in observed compliance."
+            "We don't; behaviour is unknown until an incident.",
+            "Occasional announced audit checks, not real everyday behaviour.",
+            "Periodic unannounced walkabouts, documented to find gaps.",
+            "Discreet, regular observations generating comparable data over time.",
+            "Method and frequency varied deliberately to stay valid and manage culture."
           ]
         },
         {
           "id": "mea-2",
-          "factor": "Phishing Simulations",
-          "text": "To what extent does your security awareness program use phishing simulations as both a behavioural measurement tool and a corrective learning mechanism, tracking click rates and reporting rates across repeated cycles, with sufficient realism and variation to produce valid and improving results over time?",
-          "guidance": "Consider whether a baseline was established before training began, whether reporting rate is tracked alongside click rate as an indicator of cultural shift, whether embedded corrective feedback is triggered at the moment of failure, and whether simulation design actively manages the risks of predictability and trust erosion.",
+          "factor": "Independent Observations",
+          "text": "What do you do with what you learn from watching how people behave?",
+          "guidance": "Measures whether observation feeds benchmarks and improvement.",
           "descriptors": [
-            "No phishing simulations are conducted. Workforce vulnerability to phishing is unknown until a real incident occurs. There is no behavioural baseline and no mechanism for corrective intervention at the moment of failure.",
-            "Phishing simulations may be run occasionally, primarily to generate click rate statistics for audit or reporting purposes. Templates are generic and repeated, embedded corrective feedback is absent or minimal, and reporting rates are not tracked.",
-            "The program runs regular phishing simulations with embedded corrective training triggered at the point of failure. A baseline has been established and click rates are tracked across cycles. Reporting rates are beginning to be monitored alongside click rates.",
-            "Simulations are conducted in structured cycles with deliberate variation in timing, template, and complexity to maintain realism and prevent habituation. Both click rates and reporting rates are tracked as complementary indicators of individual improvement and cultural shift.",
-            "The simulation programme is fully adaptive and continuously refined. Template selection, difficulty, and frequency adjust based on workforce performance data and emerging phishing trends. The program uses simulation results as a primary input into broader programme adaptation, treating the data as a real-time read on human risk."
+            "Nothing usable comes of it.",
+            "It's recorded for compliance, not used to improve.",
+            "It's documented and used to spot gaps, but not benchmarked.",
+            "It's turned into benchmarks and triangulated with other data.",
+            "Benchmarks drive program change, with demonstrable improvement over time."
           ]
         },
         {
           "id": "mea-3",
-          "factor": "Validated Questionnaires",
-          "text": "To what extent does your security awareness program use validated measurement instruments to assess employee knowledge, attitude, and self-reported behaviour, and triangulates those results with behavioural data to build a more complete and reliable picture of programme effectiveness?",
-          "guidance": "Consider whether the program uses psychometrically validated tools rather than generic feedback forms, whether social desirability bias and the knowing-doing gap are acknowledged and mitigated in the evaluation design, and whether questionnaire results are combined with simulation and observation data rather than treated as a standalone measure.",
+          "factor": "Phishing Simulations",
+          "text": "How do you track what your fake phishing tests tell you?",
+          "guidance": "Measures simulations as a measurement tool tracking click and reporting rates.",
           "descriptors": [
-            "No structured measurement of knowledge, attitude, or behaviour exists. Programme effectiveness is assumed rather than evaluated. There are no questionnaires, feedback forms, or instruments of any kind in use.",
-            "Post-training feedback forms or basic knowledge quizzes are used to record completion and satisfaction. Instruments are not validated, results are not comparable over time, and no attempt is made to distinguish between what employees know and how they actually behave.",
-            "The program uses structured questionnaires to measure knowledge and self-reported behaviour before and after training. Instruments may be adapted from published sources though full psychometric validation is not confirmed. Results are tracked over time and used to identify gaps.",
-            "The program uses validated instruments such as the HAIS-Q to measure knowledge, attitude, and behaviour consistently across the workforce. Social desirability bias is acknowledged as a structural limitation and questionnaire results are routinely triangulated with phishing simulation data and observation findings.",
-            "Validated questionnaires are fully embedded in a multi-method evaluation architecture. Instruments are selected or adapted for cultural and organisational fit, administered longitudinally, and their predictive validity is monitored against actual behavioural outcomes. The program can demonstrate that questionnaire scores correlate meaningfully with simulation performance and observed compliance."
+            "We don't run them, so vulnerability is unknown, with no baseline.",
+            "We run the odd one for click-rate stats, no baseline or reporting rate.",
+            "Regular runs tracked against a baseline; reporting rate is creeping in.",
+            "Click and reporting rates tracked across cycles as paired indicators.",
+            "Results drive adaptation in real time, with difficulty tuned to performance."
           ]
         },
         {
           "id": "mea-4",
-          "factor": "Incident Reduction",
-          "text": "To what extent does your security awareness program track incident-related metrics in a way that distinguishes between confirmed breaches and reported incidents, accounts for the reporting paradox, and avoids treating incident trends as a standalone measure of programme effectiveness?",
-          "guidance": "Consider whether the program interprets an initial rise in reported incidents as a positive signal of growing vigilance rather than a failure, whether confirmed breach trends are tracked separately from reporting volume, and whether incident data is triangulated with behavioural and attitudinal metrics before conclusions are drawn about programme impact.",
+          "factor": "Phishing Simulations",
+          "text": "When someone fails a phishing simulation, what do they get?",
+          "guidance": "Measures simulations as a corrective learning mechanism.",
           "descriptors": [
-            "No incident tracking exists in relation to the awareness programme. Security events are handled reactively by IT with no connection made to training activity or human behaviour patterns.",
-            "Incident counts are recorded for audit or regulatory purposes but are not analysed in relation to programme activity. A rise in reported incidents would likely be interpreted as a failure rather than a sign of improved vigilance. No distinction is made between confirmed breaches and employee-reported suspicious activity.",
-            "The program tracks incident trends over time and is beginning to differentiate between confirmed breaches and reported incidents. The reporting paradox is understood, and an initial spike in reports following programme launch is interpreted correctly as a positive signal. However, incident data is not yet consistently triangulated with behavioural or attitudinal metrics.",
-            "Incident metrics are used as one component of a multi-measure evaluation framework. Confirmed breach rates and employee reporting rates are tracked separately, and trends are interpreted in context alongside phishing simulation data, behavioural observations, and validated questionnaire results. The program avoids drawing causal conclusions from incident data alone.",
-            "Incident tracking is sophisticated and fully integrated into the programme's measurement architecture. Reporting rates are monitored as a leading indicator of cultural shift, confirmed breach trends are analysed alongside threat environment data to control for external variables, and the program can demonstrate a coherent, evidence-based account of how incident patterns relate to specific training interventions over time."
+            "Nothing; there's no intervention at the moment of failure.",
+            "Little or nothing; a failure just becomes a statistic.",
+            "Corrective training triggered right at the point of the click.",
+            "Consistent, meaningful feedback that turns failure into learning.",
+            "Adaptive correction tied to performance and the wider program."
           ]
         },
         {
           "id": "mea-5",
-          "factor": "Behavioural Change",
-          "text": "To what extent does your security awareness program measure behavioural change directly, using simulation data, audit metrics, and observation, rather than relying on knowledge scores or attendance records as proxies for success?",
-          "guidance": "Consider whether the program tracks both click rates and reporting rates as complementary behavioural indicators, whether shadow security behaviours and policy non-compliance are monitored over time, and whether measurement is structured around a recognised behaviour change framework rather than generic post-training evaluation.",
+          "factor": "Phishing Simulations",
+          "text": "How varied and realistic are your phishing simulations?",
+          "guidance": "Measures design validity: realism, variation, and trust.",
           "descriptors": [
-            "No behavioural measurement exists. Programme success is undefined or assumed. There is no mechanism to distinguish between employees who attended training and employees who changed how they act as a result of it.",
-            "Success is measured through completion rates, attendance records, and end-of-module quiz scores. These capture whether employees were present and whether they retained information in the short term, but provide no evidence of behavioural change. The knowing-doing gap is not acknowledged as a measurement problem.",
-            "The program tracks at least one direct behavioural indicator, most commonly phishing simulation click rates, alongside knowledge metrics. The distinction between knowledge acquisition and behaviour change is understood, and there is a deliberate effort to move measurement toward what employees do rather than what they know. Shadow security behaviours and policy non-compliance are beginning to be monitored.",
-            "Behavioural measurement is multi-dimensional. Click rates and reporting rates from phishing simulations are tracked across cycles as complementary indicators. Audit metrics capture non-compliant behaviour trends over time. The program uses a recognised framework such as the Behaviour Change Wheel to structure measurement around capability, opportunity, and motivation rather than knowledge alone.",
-            "Behavioural measurement is rigorous, longitudinal, and organisation-specific. The program combines simulation data, audit metrics, observational findings, and culturally adapted instruments to build a continuously updated picture of where behaviour is shifting and where gaps persist. Shadow security behaviours are actively identified and addressed. The program can demonstrate sustained behavioural change across varied employee segments and over extended timeframes."
+            "There's no real design to assess.",
+            "Generic, repeated templates that are predictable and low-validity.",
+            "Templates starting to vary in format and complexity.",
+            "Timing, template, and complexity varied to stay realistic.",
+            "Design adapts to new phishing trends while protecting employee trust."
           ]
         },
         {
           "id": "mea-6",
-          "factor": "Knowledge Retention",
-          "text": "To what extent does your security awareness program measure knowledge retention over time, using longitudinal evaluation methods and Learning Management System data, rather than relying solely on immediate post-training assessments?",
-          "guidance": "Consider whether the program distinguishes between short-term recall captured immediately after training and genuine long-term retention measured weeks or months later, whether format choices are informed by what retention outcome is being optimised for, and whether retention metrics are paired with behavioural measures rather than treated as a standalone indicator of programme success.",
+          "factor": "Validated Questionnaires",
+          "text": "What do you use to measure knowledge, attitude, and behaviour?",
+          "guidance": "Measures instrument rigour versus generic feedback forms.",
           "descriptors": [
-            "No knowledge measurement exists at any point. There is no baseline, no post-training assessment, and no mechanism to determine whether employees retained anything from security training.",
-            "Knowledge is assessed through end-of-module quizzes taken immediately after training. Results are recorded for completion purposes but are not repeated over time, not tracked longitudinally, and not connected to behavioural outcomes. Short-term recall is treated as sufficient evidence of learning.",
-            "The program goes beyond immediate post-training testing by repeating assessments at intervals after the original training. LMS data is used to aggregate individual and team performance over time. Retention trends are beginning to inform decisions about reinforcement frequency and format, though retention metrics are not yet consistently paired with behavioural indicators.",
-            "Longitudinal retention measurement is systematic and built into the programme architecture. LMS data provides a continuous picture of how knowledge holds up across the workforce between training cycles. Format decisions are informed by evidence about which delivery methods produce stronger retention for specific content types. Retention data is routinely triangulated with behavioural metrics rather than reported in isolation.",
-            "Knowledge retention is monitored as a dynamic indicator across the full workforce. The program identifies individuals and groups where retention is declining and triggers targeted reinforcement before knowledge decay translates into behavioural risk. Retention trends are analysed alongside simulation performance and incident data to build a predictive picture of where human risk is rising, and programme content and cadence adapt accordingly."
+            "Nothing structured.",
+            "Basic feedback forms or quizzes, not validated or comparable.",
+            "Structured pre/post questionnaires adapted from published sources.",
+            "We use a recognised, tested questionnaire consistently across the workforce.",
+            "We tailor the questionnaire to our context, repeat it over time, and check it stays accurate."
+          ]
+        },
+        {
+          "id": "mea-7",
+          "factor": "Validated Questionnaires",
+          "text": "How do you handle the gap between what people say and what they do?",
+          "guidance": "Measures triangulation of self-report with behavioural data.",
+          "descriptors": [
+            "We don't; there's nothing to triangulate.",
+            "We take self-report at face value.",
+            "We track results over time but don't yet cross-check with behaviour.",
+            "We acknowledge bias and triangulate with simulation and observation data.",
+            "Questionnaire scores are shown to track with real behaviour."
+          ]
+        },
+        {
+          "id": "mea-8",
+          "factor": "Incident Reduction",
+          "text": "If reported incidents suddenly rose after a campaign, how would you read it?",
+          "guidance": "Measures correct interpretation of the reporting paradox.",
+          "descriptors": [
+            "We wouldn't notice; incidents aren't linked to the program.",
+            "As a failure, and we don't separate breaches from reports.",
+            "Often correctly, as growing vigilance, and we're starting to separate the two.",
+            "As vigilance, tracking confirmed breaches and reports separately in context.",
+            "As a leading indicator of culture, with breaches read against the threat landscape."
+          ]
+        },
+        {
+          "id": "mea-9",
+          "factor": "Incident Reduction",
+          "text": "How do you use incident data to judge the program?",
+          "guidance": "Measures triangulation of incident data rather than standalone use.",
+          "descriptors": [
+            "We don't connect it to behaviour or training.",
+            "Counts stand alone, with no link to program activity.",
+            "Tracked, but not yet combined with behavioural or attitudinal data.",
+            "One input among several, avoiding causal claims from counts alone.",
+            "Tied to specific interventions over time in an evidence-based account."
+          ]
+        },
+        {
+          "id": "mea-10",
+          "factor": "Behavioural Change",
+          "text": "How do you know whether behaviour has actually changed?",
+          "guidance": "Measures direct behavioural measurement versus proxies.",
+          "descriptors": [
+            "We don't; success is assumed or undefined.",
+            "By completion, attendance, and quiz scores.",
+            "By at least one direct indicator, often click rate, alongside knowledge.",
+            "From click rates, reporting rates, and audit checks tracked over repeated rounds.",
+            "By simulation, audit, and observation data combined into a live dashboard."
+          ]
+        },
+        {
+          "id": "mea-11",
+          "factor": "Behavioural Change",
+          "text": "How complete is your view of behaviour, and what frames it?",
+          "guidance": "Measures breadth of behaviours and grounding in a framework.",
+          "descriptors": [
+            "No framework, and no sense of the knowing-doing gap.",
+            "Just presence and short-term recall.",
+            "We're starting to track hidden workarounds and rule-breaking.",
+            "Built around a recognised model that looks at people's ability, opportunity, and motivation to change.",
+            "We tackle hidden workarounds and can show lasting change across different groups."
+          ]
+        },
+        {
+          "id": "mea-12",
+          "factor": "Knowledge Retention",
+          "text": "When do you measure whether training knowledge stuck?",
+          "guidance": "Measures longitudinal retention versus immediate recall.",
+          "descriptors": [
+            "Never; there's no measurement at all.",
+            "Only right after training, treated as proof of learning.",
+            "At intervals after training, aggregated via LMS data.",
+            "Continuously between training rounds, as a built-in part of the program.",
+            "Continuously across the workforce, so we catch fading knowledge before it becomes a risk."
+          ]
+        },
+        {
+          "id": "mea-13",
+          "factor": "Knowledge Retention",
+          "text": "Once you know how well knowledge sticks, what do you do with that?",
+          "guidance": "Measures whether retention data is paired with behaviour and acted on.",
+          "descriptors": [
+            "Nothing; there's no data to act on.",
+            "Record it for completion, disconnected from behaviour.",
+            "Use trends to inform reinforcement frequency and format.",
+            "Let it shape format choices and triangulate with behaviour.",
+            "Analyse it with simulation and incident data to predict and pre-empt risk."
           ]
         }
       ]

@@ -5,23 +5,37 @@ import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, R
 // Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
 const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
 
-// How many questions to ask from a dimension's pool (capped at pool size).
-const askN = (d) => Math.min(d.askCount ?? d.questions.length, d.questions.length);
+// Distinct factors in a dimension.
+const factorCount = (d) => new Set(d.questions.map(q => q.factor)).size;
+
+// How many factors to ask per dimension (one question each), capped at available factors.
+const askN = (d) => Math.min(d.askCount ?? factorCount(d), factorCount(d));
+
+const shuffle = (arr) => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 // Points for a chosen descriptor. Normal: top->bottom = 1..5. reverse: top->bottom = 5..1
 // (use reverse for negatively-keyed items whose descriptors are authored most-mature-first).
 const pointsFor = (q, idx) => q.reverse ? (q.descriptors.length - idx) : (idx + 1);
 
-// Random subset per dimension (Fisher-Yates), returns flat list of chosen question ids.
+// Draw askN distinct factors per dimension, then one random question from each.
 const generateSelection = (assessment) => {
   const ids = [];
   for (const d of assessment.dimensions) {
-    const pool = [...d.questions];
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
+    const byFactor = new Map();
+    for (const q of d.questions) {
+      if (!byFactor.has(q.factor)) byFactor.set(q.factor, []);
+      byFactor.get(q.factor).push(q);
     }
-    ids.push(...pool.slice(0, askN(d)).map(q => q.id));
+    for (const f of shuffle([...byFactor.keys()]).slice(0, askN(d))) {
+      const qs = byFactor.get(f);
+      ids.push(qs[Math.floor(Math.random() * qs.length)].id);
+    }
   }
   return ids;
 };
@@ -138,8 +152,9 @@ function AssessmentScreen() {
           const total = data.dimensions.reduce((s, d) => s + (d.askCount ?? d.questions.length), 0);
           if (total !== 25) console.warn(`assessment.json: askCount sums to ${total}, expected 25`);
           data.dimensions.forEach(d => {
-            if ((d.askCount ?? 0) > d.questions.length)
-              console.warn(`assessment.json: "${d.label}" pool has ${d.questions.length} questions but askCount is ${d.askCount}`);
+            const nf = new Set(d.questions.map(q => q.factor)).size;
+            if ((d.askCount ?? 0) > nf)
+              console.warn(`assessment.json: "${d.label}" has ${nf} factors but askCount is ${d.askCount}`);
           });
         }
         setAssessment(data);
@@ -151,12 +166,15 @@ function AssessmentScreen() {
   // question set (content changed, or it's an old partial draw), discard it.
   useEffect(() => {
     if (!assessment || selectedIds.length === 0) return;
-    const dimOf = new Map();
-    assessment.dimensions.forEach(d => d.questions.forEach(q => dimOf.set(q.id, d.key)));
-    const counts = {};
-    selectedIds.forEach(id => { const k = dimOf.get(id); if (k) counts[k] = (counts[k] || 0) + 1; });
-    const valid = selectedIds.every(id => dimOf.has(id))
-      && assessment.dimensions.every(d => (counts[d.key] || 0) === askN(d));
+    const meta = new Map();
+    assessment.dimensions.forEach(d => d.questions.forEach(q => meta.set(q.id, { key: d.key, factor: q.factor })));
+    const byDim = {};
+    selectedIds.forEach(id => { const m = meta.get(id); if (m) (byDim[m.key] ??= []).push(m.factor); });
+    const valid = selectedIds.every(id => meta.has(id))
+      && assessment.dimensions.every(d => {
+        const facs = byDim[d.key] || [];
+        return facs.length === askN(d) && new Set(facs).size === facs.length; // right count, distinct factors
+      });
     if (!valid) { setSelectedIds([]); setAnswers({}); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assessment]);
