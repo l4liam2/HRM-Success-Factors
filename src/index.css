@@ -889,7 +889,7 @@ body.dark-mode .driver-item:hover {
     position: absolute;
     left: 2rem;
     top: 0;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--node-fill);
     border: 1px solid var(--panel-border);
     padding: 0.5rem 1rem;
     border-radius: 999px;
@@ -904,7 +904,7 @@ body.dark-mode .driver-item:hover {
 }
 
 .back-btn:hover {
-    background: white;
+    background: var(--panel-bg);
     color: var(--text-primary);
     transform: translateX(-3px);
 }
@@ -930,9 +930,9 @@ body.dark-mode .driver-item:hover {
 }
 
 .question-card {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--panel-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--panel-border);
     border-radius: 20px;
     padding: 2rem;
     box-shadow: var(--shadow-sm);
@@ -1037,9 +1037,9 @@ body.dark-mode .driver-item:hover {
 }
 
 .results-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--panel-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--panel-border);
     border-radius: 24px;
     padding: 4rem 2rem;
     text-align: center;
@@ -1409,6 +1409,26 @@ body.dark-mode .driver-item:hover {
     color: var(--text-primary);
 }
 
+.results-cta {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 1rem auto 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--panel-border);
+}
+
+.results-cta a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.results-cta a:hover {
+    text-decoration: underline;
+}
+
 /* "I'm not sure" — excluded from scoring */
 .option-dk {
     align-self: flex-start;
@@ -1444,20 +1464,74 @@ body.dark-mode .driver-item:hover {
 
 /* ===== Print / Save as PDF ===== */
 @media print {
+    @page { margin: 1.5cm; }
+
+    /* Always print light, whatever the on-screen theme is */
+    :root, body.dark-mode {
+        --bg-color: #F8FAFC;
+        --text-primary: #0F172A;
+        --text-secondary: #475569;
+        --node-fill: #FFFFFF;
+        --panel-bg: #FFFFFF;
+        --panel-border: rgba(15, 23, 42, 0.15);
+        --accent-color: #4F46E5;
+        --accent-glow: rgba(79, 70, 229, 0.10);
+        --secondary-accent: #0D9488;
+    }
+    body { background: #FFFFFF !important; }
+
+    /* Hide anything interactive or not part of the scorecard */
     .back-btn,
     .theme-toggle-btn,
     .quiz-progress,
     .quiz-nav,
     .results-actions,
     .btn-select-level,
-    .toggle-arrow {
+    .toggle-arrow,
+    .self-assessment-banner,
+    .timeline-roadmap {
         display: none !important;
     }
+
+    /* Let content flow onto pages instead of being trapped in the scroll containers */
     .assessment-container {
         padding: 0 !important;
         height: auto !important;
         overflow: visible !important;
     }
+    .assessment-layout {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+    .assessment-intro { margin: 0 0 1.5rem !important; }
+
+    /* Gradient-clipped headings render as blank ink in print — force solid */
+    .assessment-intro h2 {
+        -webkit-text-fill-color: var(--text-primary) !important;
+        color: var(--text-primary) !important;
+        background: none !important;
+    }
+
+    /* Keep result blocks whole across page breaks; drop screen shadows */
+    .results-hero,
+    .dim-result-card,
+    .results-cta {
+        break-inside: avoid;
+    }
+    .results-hero,
+    .dim-result-card {
+        box-shadow: none !important;
+    }
+    .results-summary {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+    .results-cta {
+        margin-top: 2rem !important;
+    }
+
     * {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;

@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, R
 // Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
 const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
 
-// Sentinel for "I'm not sure" — excluded from scoring (dropped from the dimension's denominator).
+// Sentinel for "I'm not sure": excluded from scoring (dropped from the dimension's denominator).
 const DK = 'dk';
 
 // Distinct factors in a dimension.
@@ -287,12 +287,12 @@ function AssessmentScreen() {
 
   const summaryText = () => {
     if (!results) return '';
-    const lines = ['Security Awareness Program — Maturity Assessment', ''];
+    const lines = ['Security Awareness Program Maturity Assessment', ''];
     results.dims.forEach(d => lines.push(d.level != null
       ? `• ${d.label}: Level ${d.level} (${d.score}/${d.max}${d.skipped ? `, ${d.skipped} not sure` : ''})`
       : `• ${d.label}: not enough answers`));
     lines.push('', results.overallLevel != null
-      ? `Overall: Level ${results.overallLevel} — ${Math.round(results.overallPct * 100)}% maturity`
+      ? `Overall: Level ${results.overallLevel} (${Math.round(results.overallPct * 100)}% maturity)`
       : 'Overall: not enough answers to score');
     return lines.join('\n');
   };
@@ -340,11 +340,11 @@ function AssessmentScreen() {
             <div className="success-icon"><ClipboardCheck size={48} /></div>
             <h2 style={{ marginBottom: '1rem' }}>{totalAsked} questions · about {estMinutes} minutes</h2>
             <div className="intro-instructions">
-              <p>This assessment gauges how mature your organisation's security-awareness program is, across four dimensions. For each question, pick the statement that best reflects how things <em>actually</em> work at your organisation today — not how you'd like them to.</p>
+              <p>This assessment gauges how mature your organisation's security-awareness program is, across four dimensions. For each question, pick the statement that best reflects how things <em>actually</em> work at your organisation today, not how you'd like them to.</p>
               <ul>
-                <li>Answer <strong>honestly and to the best of your ability</strong>. This measures your program, not you — there are no right or wrong answers.</li>
+                <li>Answer <strong>honestly and to the best of your ability</strong>. This measures your program, not you. There are no right or wrong answers.</li>
                 <li>You'll go one dimension at a time. Progress saves automatically, so you can pause and resume where you left off.</li>
-                <li>If you genuinely don't know, choose <strong>"I'm not sure"</strong> — that question is set aside rather than counted against you.</li>
+                <li>If you genuinely don't know, choose <strong>"I'm not sure"</strong>. That question is set aside rather than counted against you.</li>
               </ul>
             </div>
             <button className="submit-btn" style={{ maxWidth: 320 }} onClick={startQuiz}>
@@ -353,7 +353,7 @@ function AssessmentScreen() {
           </div>
         )}
 
-        {/* QUIZ — one dimension at a time */}
+        {/* QUIZ: one dimension at a time */}
         {phase === 'quiz' && assessment && section && (
           showHalftime ? (
             <div className="results-card halftime-card" style={{ padding: '3rem 2rem' }}>
@@ -421,7 +421,7 @@ function AssessmentScreen() {
           )
         )}
 
-        {/* RESULTS — animated radar + overall, dimension cards, export */}
+        {/* RESULTS: animated radar + overall, dimension cards, export */}
         {phase === 'results' && results && (
           <>
             <div className="results-hero">
@@ -437,16 +437,16 @@ function AssessmentScreen() {
                         <div className="results-overall-framing">
                           {results.overallLevel < 5
                             ? `One step from ${getCleanLevelName(maturityLevels[results.overallLevel].name)}.`
-                            : `You've reached the top tier — focus on sustainment.`}
+                            : `You've reached the top tier. Focus on sustainment.`}
                         </div>
                       </>
                     )}
                   </>
                 ) : (
                   <>
-                    <div className="results-overall-pct">—</div>
+                    <div className="results-overall-pct">N/A</div>
                     <div className="results-overall-sub">overall maturity</div>
-                    <div className="results-overall-framing">Not enough answered questions to produce an overall level — retake and answer a few more.</div>
+                    <div className="results-overall-framing">Not enough answered questions to produce an overall level. Retake and answer a few more.</div>
                   </>
                 )}
               </div>
@@ -464,7 +464,7 @@ function AssessmentScreen() {
                     </>
                   ) : (
                     <>
-                      <div className="dim-result-level" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>—</div>
+                      <div className="dim-result-level" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>N/A</div>
                       <div className="dim-result-score">Not enough answers</div>
                     </>
                   )}
@@ -561,6 +561,12 @@ function AssessmentScreen() {
               );
             })}
           </div>
+        )}
+
+        {phase === 'results' && (
+          <p className="results-cta">
+            Looking to strengthen your program? I provide consulting to help organisations close these gaps. Reach out at <a href="mailto:liam@edurisk.ca?subject=Security%20awareness%20program%20consulting">liam@edurisk.ca</a>.
+          </p>
         )}
       </div>
     </div>
