@@ -1381,6 +1381,62 @@ body.dark-mode .driver-item:hover {
     margin-bottom: 1.5rem;
 }
 
+.intro-instructions {
+    text-align: left;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+    color: var(--text-secondary);
+}
+
+.intro-instructions p {
+    margin: 0 0 1rem;
+    line-height: 1.6;
+}
+
+.intro-instructions ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.intro-instructions li {
+    line-height: 1.5;
+}
+
+.intro-instructions strong {
+    color: var(--text-primary);
+}
+
+/* "I'm not sure" — excluded from scoring */
+.option-dk {
+    align-self: flex-start;
+    margin-top: 0.35rem;
+    background: none;
+    border: 1px dashed var(--panel-border);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: Inter, sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-dk:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+.option-dk.selected {
+    border-style: solid;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: var(--accent-glow);
+}
+
 @keyframes halftimePop {
     from { opacity: 0; transform: scale(0.92) translateY(12px); }
     to   { opacity: 1; transform: none; }

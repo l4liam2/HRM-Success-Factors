@@ -5,6 +5,9 @@ import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, R
 // Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
 const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
 
+// Sentinel for "I'm not sure" — excluded from scoring (dropped from the dimension's denominator).
+const DK = 'dk';
+
 // Distinct factors in a dimension.
 const factorCount = (d) => new Set(d.questions.map(q => q.factor)).size;
 
@@ -50,7 +53,7 @@ const polyPoints = (pts) => pts.map(p => p.join(',')).join(' ');
 
 function RadarChart({ dims, revealed }) {
   const n = dims.length;
-  const dataPts = dims.map((d, i) => radarPoint(i, n, (d.level / 5) * RADAR_R));
+  const dataPts = dims.map((d, i) => radarPoint(i, n, ((d.level || 0) / 5) * RADAR_R));
   return (
     <svg className="radar-chart" viewBox="0 0 300 300" role="img" aria-label="Maturity level by dimension">
       {[1, 2, 3, 4, 5].map(L => (
@@ -71,7 +74,7 @@ function RadarChart({ dims, revealed }) {
         return (
           <text key={i} className="radar-label" x={x} y={y} textAnchor={anchor} dominantBaseline="middle">
             {d.label}
-            <tspan className="radar-label-lvl" x={x} dy="14">Level {d.level}</tspan>
+            <tspan className="radar-label-lvl" x={x} dy="14">{d.level ? `Level ${d.level}` : 'n/a'}</tspan>
           </text>
         );
       })}
@@ -207,7 +210,7 @@ function AssessmentScreen() {
 
   useEffect(() => {
     if (phase !== 'results' || !results) return;
-    const target = Math.round(results.overallPct * 100);
+    const target = results.overallPct != null ? Math.round(results.overallPct * 100) : 0;
     setCountPct(0);
     let raf, start;
     const step = (t) => {
@@ -246,21 +249,26 @@ function AssessmentScreen() {
 
   const computeResults = () => {
     const dims = quiz.map(d => {
-      const score = d.questions.reduce((s, q) => s + pointsFor(q, answers[q.id]), 0);
-      const max = d.questions.length * 5;
+      const scored = d.questions.filter(q => answers[q.id] !== DK); // "not sure" drops out of the denominator
+      const max = scored.length * 5;
+      const score = scored.reduce((s, q) => s + pointsFor(q, answers[q.id]), 0);
+      const has = scored.length > 0;
       return {
         key: d.key, label: d.label, dataName: d.dataName, weight: d.weight,
-        score, max, level: bandLevel(score, max), pct: max ? score / max : 0,
+        score, max, skipped: d.questions.length - scored.length,
+        level: has ? bandLevel(score, max) : null,
+        pct: has ? score / max : null,
       };
     });
-    const totalW = dims.reduce((s, d) => s + d.weight, 0) || 1;
-    // Overall = weight-averaged dimension levels (weights = each dimension's factor proportion).
-    const overallAvg = dims.reduce((s, d) => s + d.weight * d.level, 0) / totalW;
-    const overallPct = dims.reduce((s, d) => s + d.weight * d.pct, 0) / totalW;
-    const overallLevel = Math.min(5, Math.max(1, Math.round(overallAvg)));
+    // Overall weights only dimensions that have at least one scored answer.
+    const scoredDims = dims.filter(d => d.level != null);
+    const totalW = scoredDims.reduce((s, d) => s + d.weight, 0) || 1;
+    const overallAvg = scoredDims.reduce((s, d) => s + d.weight * d.level, 0) / totalW;
+    const overallPct = scoredDims.reduce((s, d) => s + d.weight * d.pct, 0) / totalW;
+    const overallLevel = scoredDims.length ? Math.min(5, Math.max(1, Math.round(overallAvg))) : null;
     setResults({ dims, overallAvg, overallPct, overallLevel });
-    setSelectedLevelIdx(overallLevel - 1);
-    setExpandedLevels({ [overallLevel - 1]: true, [overallLevel]: true });
+    setSelectedLevelIdx(overallLevel != null ? overallLevel - 1 : null);
+    setExpandedLevels(overallLevel != null ? { [overallLevel - 1]: true, [overallLevel]: true } : { 0: true });
     setPhase('results');
     scrollTop();
   };
@@ -280,8 +288,12 @@ function AssessmentScreen() {
   const summaryText = () => {
     if (!results) return '';
     const lines = ['Security Awareness Program — Maturity Assessment', ''];
-    results.dims.forEach(d => lines.push(`• ${d.label}: Level ${d.level} (${d.score}/${d.max})`));
-    lines.push('', `Overall: Level ${results.overallLevel} — ${Math.round(results.overallPct * 100)}% maturity`);
+    results.dims.forEach(d => lines.push(d.level != null
+      ? `• ${d.label}: Level ${d.level} (${d.score}/${d.max}${d.skipped ? `, ${d.skipped} not sure` : ''})`
+      : `• ${d.label}: not enough answers`));
+    lines.push('', results.overallLevel != null
+      ? `Overall: Level ${results.overallLevel} — ${Math.round(results.overallPct * 100)}% maturity`
+      : 'Overall: not enough answers to score');
     return lines.join('\n');
   };
   const copySummary = async () => {
@@ -326,10 +338,15 @@ function AssessmentScreen() {
         {phase === 'intro' && assessment && (
           <div className="results-card" style={{ padding: '3rem 2rem' }}>
             <div className="success-icon"><ClipboardCheck size={48} /></div>
-            <h2 style={{ marginBottom: '0.5rem' }}>{totalAsked} questions · about {estMinutes} minutes</h2>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: 480, marginBottom: '2rem' }}>
-              A random set is drawn from each of the four dimensions. You'll move through one dimension at a time — answers save automatically as you go.
-            </p>
+            <h2 style={{ marginBottom: '1rem' }}>{totalAsked} questions · about {estMinutes} minutes</h2>
+            <div className="intro-instructions">
+              <p>This assessment gauges how mature your organisation's security-awareness program is, across four dimensions. For each question, pick the statement that best reflects how things <em>actually</em> work at your organisation today — not how you'd like them to.</p>
+              <ul>
+                <li>Answer <strong>honestly and to the best of your ability</strong>. This measures your program, not you — there are no right or wrong answers.</li>
+                <li>You'll go one dimension at a time. Progress saves automatically, so you can pause and resume where you left off.</li>
+                <li>If you genuinely don't know, choose <strong>"I'm not sure"</strong> — that question is set aside rather than counted against you.</li>
+              </ul>
+            </div>
             <button className="submit-btn" style={{ maxWidth: 320 }} onClick={startQuiz}>
               {answeredCount > 0 ? `Resume (${answeredCount}/${allQuestions.length})` : 'Start Assessment'}
             </button>
@@ -375,6 +392,12 @@ function AssessmentScreen() {
                         <span className="option-row-text">{desc}</span>
                       </button>
                     ))}
+                    <button
+                      className={`option-dk ${answers[q.id] === DK ? 'selected' : ''}`}
+                      onClick={() => selectAnswer(q.id, DK)}
+                    >
+                      I'm not sure
+                    </button>
                   </div>
                 </div>
               ))}
@@ -404,16 +427,26 @@ function AssessmentScreen() {
             <div className="results-hero">
               <RadarChart dims={results.dims} revealed={revealed} />
               <div className="results-hero-overall">
-                <div className="results-overall-pct">{countPct}<span>%</span></div>
-                <div className="results-overall-sub">overall maturity</div>
-                {maturityLevels.length > 0 && (
+                {results.overallLevel != null ? (
                   <>
-                    <div className="results-overall-level">Level {results.overallLevel}: {getCleanLevelName(maturityLevels[results.overallLevel - 1].name)}</div>
-                    <div className="results-overall-framing">
-                      {results.overallLevel < 5
-                        ? `One step from ${getCleanLevelName(maturityLevels[results.overallLevel].name)}.`
-                        : `You've reached the top tier — focus on sustainment.`}
-                    </div>
+                    <div className="results-overall-pct">{countPct}<span>%</span></div>
+                    <div className="results-overall-sub">overall maturity</div>
+                    {maturityLevels.length > 0 && (
+                      <>
+                        <div className="results-overall-level">Level {results.overallLevel}: {getCleanLevelName(maturityLevels[results.overallLevel - 1].name)}</div>
+                        <div className="results-overall-framing">
+                          {results.overallLevel < 5
+                            ? `One step from ${getCleanLevelName(maturityLevels[results.overallLevel].name)}.`
+                            : `You've reached the top tier — focus on sustainment.`}
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="results-overall-pct">—</div>
+                    <div className="results-overall-sub">overall maturity</div>
+                    <div className="results-overall-framing">Not enough answered questions to produce an overall level — retake and answer a few more.</div>
                   </>
                 )}
               </div>
@@ -421,11 +454,20 @@ function AssessmentScreen() {
 
             <div className="results-summary">
               {results.dims.map(d => (
-                <div key={d.key} className={`dim-result-card level-${d.level}`}>
+                <div key={d.key} className={`dim-result-card level-${d.level || 0}`}>
                   <div className="dim-result-label">{d.label}</div>
-                  <div className="dim-result-level">Level {d.level}</div>
-                  <div className="dim-result-bar"><div className="dim-result-bar-fill" style={{ width: revealed ? `${d.pct * 100}%` : '0%' }} /></div>
-                  <div className="dim-result-score">{d.score} / {d.max} pts</div>
+                  {d.level != null ? (
+                    <>
+                      <div className="dim-result-level">Level {d.level}</div>
+                      <div className="dim-result-bar"><div className="dim-result-bar-fill" style={{ width: revealed ? `${d.pct * 100}%` : '0%' }} /></div>
+                      <div className="dim-result-score">{d.score} / {d.max} pts{d.skipped ? ` · ${d.skipped} not sure` : ''}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="dim-result-level" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>—</div>
+                      <div className="dim-result-score">Not enough answers</div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
