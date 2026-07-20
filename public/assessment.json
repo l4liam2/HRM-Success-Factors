@@ -146,7 +146,7 @@
         },
         {
           "id": "psy-11",
-          "factor": "Optimism Barriers",
+          "factor": "Optimism Bias",
           "text": "Asked about their own odds of being hit by a cyberattack, most employees would say:",
           "guidance": "Measures optimism bias about personal risk.",
           "descriptors": [
