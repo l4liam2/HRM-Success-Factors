@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Network, ClipboardCheck, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Network, ClipboardCheck, ArrowRight, Sun, Moon, Info } from 'lucide-react';
+import AboutModal from './AboutModal';
 
 function LandingPage() {
   const navigate = useNavigate();
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -54,6 +56,27 @@ function LandingPage() {
         <div className="landing-header">
           <h1>Security Awareness Program Success Factors</h1>
           <p>Explore the success factors of security culture or assess your organization's maturity.</p>
+          <button
+            onClick={() => setIsAboutOpen(true)}
+            style={{
+              marginTop: '1rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'var(--node-fill)',
+              border: '1px solid var(--panel-border)',
+              borderRadius: '999px',
+              padding: '0.5rem 1.25rem',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              fontSize: '0.9rem',
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <Info size={16} />
+            About the Project
+          </button>
         </div>
 
         <div className="cards-container">
@@ -82,6 +105,7 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <div className="copyright-notice" style={{ position: 'absolute', bottom: '1.5rem' }}>
         &copy; 2026 <a href="https://www.edurisk.ca/" target="_blank" rel="noopener noreferrer">EduRisk</a> Inc. All Rights Reserved
       </div>
