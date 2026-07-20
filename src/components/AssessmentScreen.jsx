@@ -261,6 +261,9 @@ function AssessmentScreen() {
   const section = quiz[sectionIdx];
   const sectionLeft = section ? section.questions.filter(q => answers[q.id] == null).length : 0;
   const isLastSection = sectionIdx >= quiz.length - 1;
+  // The first unanswered question in the section is the focal point; other open,
+  // unanswered cards recede slightly (re-expanded answered cards keep full emphasis).
+  const activeQid = section?.questions.find(q => answers[q.id] == null)?.id;
 
   // Animate the results in: scale the radar/bars, count the overall % up.
   useEffect(() => {
@@ -486,7 +489,7 @@ function AssessmentScreen() {
         </button>
       </div>
 
-      <div className="assessment-layout" ref={layoutRef}>
+      <div className={`assessment-layout ${phase === 'quiz' ? 'quiz-active' : ''}`} ref={layoutRef}>
         <div className="assessment-intro">
           <h2 style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {assessment?.intro?.title || 'Program Maturity Assessment'}
@@ -554,15 +557,17 @@ function AssessmentScreen() {
 
             <div className="quiz-dimension-group">
               <h3 className="quiz-dimension-title">{section.label}</h3>
-              {section.questions.map(q => {
+              {section.questions.map((q, qi) => {
                 const isCollapsed = !!collapsedQs[q.id] && answers[q.id] != null;
                 const expand = () => setCollapsedQs(prev => ({ ...prev, [q.id]: false }));
+                const isDimmed = !isCollapsed && answers[q.id] == null && q.id !== activeQid;
                 return (
                   <div
                     key={q.id}
                     id={`q-${q.id}`}
                     tabIndex={-1}
-                    className={`question-card ${isCollapsed ? 'collapsed' : ''}`}
+                    className={`question-card ${isCollapsed ? 'collapsed' : ''} ${isDimmed ? 'dimmed' : ''}`}
+                    style={{ animationDelay: `${qi * 70}ms` }}
                     onClick={isCollapsed ? expand : undefined}
                   >
                     <button className="question-summary" onClick={expand} inert={!isCollapsed || undefined}>
@@ -573,6 +578,7 @@ function AssessmentScreen() {
                           {answers[q.id] === DK ? "I'm not sure" : q.descriptors[answers[q.id]]}
                         </span>
                       </span>
+                      {q.factor && <span className="question-summary-factor">{q.factor}</span>}
                       <ChevronDown size={16} className="question-summary-chevron" aria-hidden="true" />
                     </button>
                     <div className="question-full" inert={isCollapsed || undefined}>
