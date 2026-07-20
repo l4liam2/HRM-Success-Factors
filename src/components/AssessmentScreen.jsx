@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Download } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Award, CheckCircle, ChevronDown, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Download, Zap } from 'lucide-react';
 
 // Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
 const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
@@ -14,6 +14,30 @@ const factorCount = (d) => new Set(d.questions.map(q => q.factor)).size;
 // How many factors to ask per dimension (one question each), capped at available factors.
 const askN = (d) => Math.min(d.askCount ?? factorCount(d), factorCount(d));
 
+// Assessment lengths. 'full' uses the askCounts from assessment.json; 'quick' scales them
+// down to QUICK_TOTAL proportionally (largest-remainder rounding), keeping the same draw logic.
+const QUICK_TOTAL = 12;
+const askCountsFor = (assessment, mode) => {
+  const counts = {};
+  assessment.dimensions.forEach(d => { counts[d.key] = askN(d); });
+  if (mode !== 'quick') return counts;
+  const keys = assessment.dimensions.map(d => d.key);
+  const full = keys.map(k => counts[k]);
+  const total = full.reduce((s, n) => s + n, 0) || 1;
+  const quotas = full.map(n => (n * QUICK_TOTAL) / total);
+  const base = quotas.map(Math.floor);
+  const left = QUICK_TOTAL - base.reduce((s, n) => s + n, 0);
+  [...quotas.keys()]
+    .sort((a, b) => (quotas[b] - base[b]) - (quotas[a] - base[a]))
+    .slice(0, Math.max(0, left))
+    .forEach(i => { base[i] += 1; });
+  keys.forEach((k, i) => { counts[k] = Math.min(base[i], factorCount(assessment.dimensions[i])); });
+  return counts;
+};
+const totalFor = (assessment, mode) =>
+  Object.values(askCountsFor(assessment, mode)).reduce((s, n) => s + n, 0);
+const minutesFor = (n) => Math.max(1, Math.round((n * 36) / 60)); // ~36s/question
+
 const shuffle = (arr) => {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -26,8 +50,8 @@ const shuffle = (arr) => {
 // (use reverse for negatively-keyed items whose descriptors are authored most-mature-first).
 const pointsFor = (q, idx) => q.reverse ? (q.descriptors.length - idx) : (idx + 1);
 
-// Draw askN distinct factors per dimension, then one random question from each.
-const generateSelection = (assessment) => {
+// Draw the mode's count of distinct factors per dimension, then one random question from each.
+const generateSelection = (assessment, counts) => {
   const ids = [];
   for (const d of assessment.dimensions) {
     const byFactor = new Map();
@@ -35,7 +59,7 @@ const generateSelection = (assessment) => {
       if (!byFactor.has(q.factor)) byFactor.set(q.factor, []);
       byFactor.get(q.factor).push(q);
     }
-    for (const f of shuffle([...byFactor.keys()]).slice(0, askN(d))) {
+    for (const f of shuffle([...byFactor.keys()]).slice(0, counts[d.key])) {
       const qs = byFactor.get(f);
       ids.push(qs[Math.floor(Math.random() * qs.length)].id);
     }
@@ -127,6 +151,8 @@ function AssessmentScreen() {
     try { return JSON.parse(localStorage.getItem('assessmentSelectedIds')) || []; }
     catch { return []; }
   });
+  // Which length was chosen: 'quick' (12 questions) or 'full' (25).
+  const [mode, setMode] = useState(() => localStorage.getItem('assessmentMode') || 'full');
   const [results, setResults] = useState(null);
   const [showHalftime, setShowHalftime] = useState(false);
   const [halftimeSeen, setHalftimeSeen] = useState(false);
@@ -135,6 +161,10 @@ function AssessmentScreen() {
   const [copied, setCopied] = useState(false);
   const [selectedLevelIdx, setSelectedLevelIdx] = useState(null);
   const [expandedLevels, setExpandedLevels] = useState({ 0: true });
+  // Answered questions collapse to a compact summary row (qid -> collapsed).
+  const [collapsedQs, setCollapsedQs] = useState({});
+  const advanceTimers = useRef([]);
+  const quizNavRef = useRef(null);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
@@ -156,6 +186,9 @@ function AssessmentScreen() {
   useEffect(() => {
     localStorage.setItem('assessmentSelectedIds', JSON.stringify(selectedIds));
   }, [selectedIds]);
+  useEffect(() => {
+    localStorage.setItem('assessmentMode', mode);
+  }, [mode]);
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
@@ -198,6 +231,7 @@ function AssessmentScreen() {
   // question set (content changed, or it's an old partial draw), discard it.
   useEffect(() => {
     if (!assessment || selectedIds.length === 0) return;
+    const counts = askCountsFor(assessment, mode);
     const meta = new Map();
     assessment.dimensions.forEach(d => d.questions.forEach(q => meta.set(q.id, { key: d.key, factor: q.factor })));
     const byDim = {};
@@ -205,7 +239,7 @@ function AssessmentScreen() {
     const valid = selectedIds.every(id => meta.has(id))
       && assessment.dimensions.every(d => {
         const facs = byDim[d.key] || [];
-        return facs.length === askN(d) && new Set(facs).size === facs.length; // right count, distinct factors
+        return facs.length === counts[d.key] && new Set(facs).size === facs.length; // right count, distinct factors
       });
     if (!valid) { setSelectedIds([]); setAnswers({}); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,8 +255,6 @@ function AssessmentScreen() {
   }, [assessment, selectedIds]);
 
   const allQuestions = quiz.flatMap(d => d.questions);
-  const totalAsked = assessment ? assessment.dimensions.reduce((s, d) => s + askN(d), 0) : 0;
-  const estMinutes = Math.max(1, Math.round((totalAsked * 15) / 60)); // ~15s/question
   const answeredCount = allQuestions.filter(q => answers[q.id] != null).length;
   const allAnswered = allQuestions.length > 0 && answeredCount === allQuestions.length;
 
@@ -254,15 +286,57 @@ function AssessmentScreen() {
 
   const scrollTop = () => layoutRef.current?.scrollTo({ top: 0 });
 
-  const startQuiz = () => {
-    if (selectedIds.length === 0) setSelectedIds(generateSelection(assessment));
+  // Entering a section (start, resume, back/next): already-answered questions render collapsed.
+  useEffect(() => {
+    if (phase !== 'quiz' || !quiz[sectionIdx]) return;
+    const next = {};
+    quiz[sectionIdx].questions.forEach(q => { next[q.id] = answers[q.id] != null; });
+    setCollapsedQs(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, sectionIdx, quiz]);
+
+  useEffect(() => () => advanceTimers.current.forEach(clearTimeout), []);
+
+  // Start (or resume) the chosen length. Switching lengths discards any saved progress,
+  // after a confirm if answers would be lost.
+  const startQuiz = (m) => {
+    const switching = m !== mode;
+    if (switching && answeredCount > 0 &&
+      !window.confirm('Switching assessment length clears your current progress. Start fresh?')) return;
+    if (switching || selectedIds.length === 0) {
+      setAnswers({});
+      setSelectedIds(generateSelection(assessment, askCountsFor(assessment, m)));
+    }
+    setMode(m);
     setSectionIdx(0);
     setShowHalftime(false);
     setHalftimeSeen(false);
     setPhase('quiz');
   };
 
-  const selectAnswer = (qid, idx) => setAnswers(prev => ({ ...prev, [qid]: idx }));
+  // Record the answer, then (after a beat so the selection registers visually) collapse the
+  // card and glide to the next unanswered question — or to the nav once the section is done.
+  const selectAnswer = (qid, idx) => {
+    const nextAnswers = { ...answers, [qid]: idx };
+    setAnswers(nextAnswers);
+    const qs = quiz[sectionIdx]?.questions ?? [];
+    const at = qs.findIndex(q => q.id === qid);
+    const target = qs.slice(at + 1).find(q => nextAnswers[q.id] == null)
+      ?? qs.find(q => nextAnswers[q.id] == null); // wrap to earlier skipped questions
+    advanceTimers.current.push(setTimeout(() => {
+      setCollapsedQs(prev => ({ ...prev, [qid]: true }));
+      // Scroll once the collapse is mostly done, so the target isn't still shifting.
+      advanceTimers.current.push(setTimeout(() => {
+        if (target) {
+          const el = document.getElementById(`q-${target.id}`);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el?.focus({ preventScroll: true });
+        } else {
+          quizNavRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 250));
+    }, 300));
+  };
 
   const goNext = () => {
     const target = Math.min(sectionIdx + 1, quiz.length - 1);
@@ -321,7 +395,7 @@ function AssessmentScreen() {
 
   const retake = () => {
     setAnswers({});
-    setSelectedIds(generateSelection(assessment)); // draw a fresh random set
+    setSelectedIds(generateSelection(assessment, askCountsFor(assessment, mode))); // draw a fresh random set
     setResults(null);
     setSectionIdx(0);
     setShowHalftime(false);
@@ -424,7 +498,7 @@ function AssessmentScreen() {
         {phase === 'intro' && assessment && (
           <div className="results-card" style={{ padding: '3rem 2rem' }}>
             <div className="success-icon"><ClipboardCheck size={48} /></div>
-            <h2 style={{ marginBottom: '1rem' }}>{totalAsked} questions · about {estMinutes} minutes</h2>
+            <h2 style={{ marginBottom: '1rem' }}>Choose your assessment</h2>
             <div className="intro-instructions">
               <p>This assessment gauges how mature your organisation's security-awareness program is, across four dimensions. For each question, pick the statement that best reflects how things <em>actually</em> work at your organisation today, not how you'd like them to.</p>
               <ul>
@@ -433,9 +507,26 @@ function AssessmentScreen() {
                 <li>If you genuinely don't know, choose <strong>"I'm not sure"</strong>. That question is set aside rather than counted against you.</li>
               </ul>
             </div>
-            <button className="submit-btn" style={{ maxWidth: 320 }} onClick={startQuiz}>
-              {answeredCount > 0 ? `Resume (${answeredCount}/${allQuestions.length})` : 'Start Assessment'}
-            </button>
+            <div className="intro-choice-grid">
+              {[
+                { m: 'quick', title: 'Quick check', icon: <Zap size={26} />, blurb: 'A fast pulse-check that samples every dimension.' },
+                { m: 'full', title: 'Full assessment', icon: <ClipboardCheck size={26} />, blurb: 'The complete picture, covering each dimension in depth.' },
+              ].map(({ m, title, icon, blurb }) => {
+                const n = totalFor(assessment, m);
+                const resumable = m === mode && answeredCount > 0;
+                return (
+                  <div key={m} className="intro-choice-card">
+                    <div className="intro-choice-icon">{icon}</div>
+                    <div className="intro-choice-title">{title}</div>
+                    <div className="intro-choice-meta">{n} questions · about {minutesFor(n)} minutes</div>
+                    <div className="intro-choice-blurb">{blurb}</div>
+                    <button className="submit-btn intro-choice-btn" onClick={() => startQuiz(m)}>
+                      {resumable ? `Resume (${answeredCount}/${allQuestions.length})` : 'Start'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -463,33 +554,57 @@ function AssessmentScreen() {
 
             <div className="quiz-dimension-group">
               <h3 className="quiz-dimension-title">{section.label}</h3>
-              {section.questions.map(q => (
-                <div key={q.id} id={`q-${q.id}`} className="question-card">
-                  {q.factor && <span className="question-factor">{q.factor}</span>}
-                  <div className="question-text">{q.text}</div>
-                  <div className="options-grid descriptors">
-                    {q.descriptors.map((desc, idx) => (
-                      <button
-                        key={idx}
-                        className={`option-btn option-row ${answers[q.id] === idx ? 'selected' : ''}`}
-                        onClick={() => selectAnswer(q.id, idx)}
-                      >
-                        <span className="option-radio" aria-hidden="true" />
-                        <span className="option-row-text">{desc}</span>
-                      </button>
-                    ))}
-                    <button
-                      className={`option-dk ${answers[q.id] === DK ? 'selected' : ''}`}
-                      onClick={() => selectAnswer(q.id, DK)}
-                    >
-                      I'm not sure
+              {section.questions.map(q => {
+                const isCollapsed = !!collapsedQs[q.id] && answers[q.id] != null;
+                const expand = () => setCollapsedQs(prev => ({ ...prev, [q.id]: false }));
+                return (
+                  <div
+                    key={q.id}
+                    id={`q-${q.id}`}
+                    tabIndex={-1}
+                    className={`question-card ${isCollapsed ? 'collapsed' : ''}`}
+                    onClick={isCollapsed ? expand : undefined}
+                  >
+                    <button className="question-summary" onClick={expand} inert={!isCollapsed || undefined}>
+                      <CheckCircle size={18} className="question-summary-check" aria-hidden="true" />
+                      <span className="question-summary-main">
+                        <span className="question-summary-text">{q.text}</span>
+                        <span className="question-summary-answer">
+                          {answers[q.id] === DK ? "I'm not sure" : q.descriptors[answers[q.id]]}
+                        </span>
+                      </span>
+                      <ChevronDown size={16} className="question-summary-chevron" aria-hidden="true" />
                     </button>
+                    <div className="question-full" inert={isCollapsed || undefined}>
+                      <div className="question-full-inner">
+                        {q.factor && <span className="question-factor">{q.factor}</span>}
+                        <div className="question-text">{q.text}</div>
+                        <div className="options-grid descriptors">
+                          {q.descriptors.map((desc, idx) => (
+                            <button
+                              key={idx}
+                              className={`option-btn option-row ${answers[q.id] === idx ? 'selected' : ''}`}
+                              onClick={() => selectAnswer(q.id, idx)}
+                            >
+                              <span className="option-radio" aria-hidden="true" />
+                              <span className="option-row-text">{desc}</span>
+                            </button>
+                          ))}
+                          <button
+                            className={`option-dk ${answers[q.id] === DK ? 'selected' : ''}`}
+                            onClick={() => selectAnswer(q.id, DK)}
+                          >
+                            I'm not sure
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div className="quiz-nav">
+            <div className="quiz-nav" ref={quizNavRef}>
               <button className="quiz-nav-btn" onClick={goBack} disabled={sectionIdx === 0}>
                 <ArrowLeft size={16} /> Back
               </button>

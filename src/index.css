@@ -936,11 +936,104 @@ body.dark-mode .driver-item:hover {
     border-radius: 20px;
     padding: 2rem;
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s, padding 0.4s ease;
 }
 
 .question-card:hover {
     box-shadow: var(--shadow-md);
+}
+
+.question-card:focus {
+    outline: none;
+}
+
+/* ===== Collapsed (answered) question cards ===== */
+.question-card.collapsed {
+    padding: 0.9rem 1.5rem;
+    cursor: pointer;
+}
+
+/* Compact summary row: check, question + chosen answer, expand hint. Hidden until collapsed. */
+.question-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.25s ease 0.15s, max-height 0.4s ease;
+}
+
+.question-card.collapsed .question-summary {
+    opacity: 1;
+    max-height: 80px;
+}
+
+.question-summary-check {
+    flex-shrink: 0;
+    color: var(--secondary-accent);
+}
+
+.question-summary-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.question-summary-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.question-summary-answer {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.question-summary-chevron {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+}
+
+.question-card.collapsed:hover .question-summary-chevron {
+    transform: translateY(2px);
+}
+
+/* Full question body collapses via the grid-rows 1fr -> 0fr trick */
+.question-full {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+
+.question-full-inner {
+    overflow: hidden;
+    min-height: 0;
+    /* 2px slack so selected-option rings aren't clipped by overflow:hidden */
+    padding: 2px;
+    margin: -2px;
+}
+
+.question-card.collapsed .question-full {
+    grid-template-rows: 0fr;
+    opacity: 0;
 }
 
 /* Brief pulse on the question the user jumped to via "Answer all (N left)" */
@@ -1417,6 +1510,70 @@ body.dark-mode .driver-item:hover {
 
 .intro-instructions strong {
     color: var(--text-primary);
+}
+
+/* ===== Intro: assessment length choice ===== */
+.intro-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 640px;
+}
+
+.intro-choice-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--node-fill);
+    border: 1px solid var(--panel-border);
+    border-radius: 18px;
+    padding: 1.75rem 1.5rem 1.5rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.intro-choice-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.intro-choice-icon {
+    color: var(--accent-color);
+    background: var(--accent-glow, rgba(79, 70, 229, 0.1));
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.9rem;
+}
+
+.intro-choice-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.intro-choice-meta {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin: 0.25rem 0 0.6rem;
+}
+
+.intro-choice-blurb {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+}
+
+.intro-choice-card .submit-btn.intro-choice-btn {
+    margin-top: auto;
+    padding: 0.85rem;
 }
 
 .results-cta {
