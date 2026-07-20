@@ -289,13 +289,14 @@ function AssessmentScreen() {
 
   const scrollTop = () => layoutRef.current?.scrollTo({ top: 0 });
 
-  // Entering a section (start, resume, back/next): already-answered questions render collapsed.
+  // Entering a section (start, resume, back/next): every card starts reduced — answered
+  // questions as collapsed summary rows, unanswered ones as upcoming stubs. The active
+  // (first unanswered) question is excluded from reduction at render time, so it opens.
   useEffect(() => {
     if (phase !== 'quiz' || !quiz[sectionIdx]) return;
     const next = {};
-    quiz[sectionIdx].questions.forEach(q => { next[q.id] = answers[q.id] != null; });
+    quiz[sectionIdx].questions.forEach(q => { next[q.id] = true; });
     setCollapsedQs(next);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sectionIdx, quiz]);
 
   useEffect(() => () => advanceTimers.current.forEach(clearTimeout), []);
@@ -322,6 +323,9 @@ function AssessmentScreen() {
   const selectAnswer = (qid, idx) => {
     const nextAnswers = { ...answers, [qid]: idx };
     setAnswers(nextAnswers);
+    // Keep the just-answered card open for a beat (it may have been reduced by the
+    // section-entry effect) so the selection is visible before the collapse timer fires.
+    setCollapsedQs(prev => ({ ...prev, [qid]: false }));
     const qs = quiz[sectionIdx]?.questions ?? [];
     const at = qs.findIndex(q => q.id === qid);
     const target = qs.slice(at + 1).find(q => nextAnswers[q.id] == null)
@@ -558,18 +562,26 @@ function AssessmentScreen() {
             <div className="quiz-dimension-group">
               <h3 className="quiz-dimension-title">{section.label}</h3>
               {section.questions.map((q, qi) => {
-                const isCollapsed = !!collapsedQs[q.id] && answers[q.id] != null;
+                const answered = answers[q.id] != null;
+                const isCollapsed = !!collapsedQs[q.id] && answered;
+                // Not-yet-reached questions render as slim stubs until active or clicked open.
+                const isStub = !!collapsedQs[q.id] && !answered && q.id !== activeQid;
                 const expand = () => setCollapsedQs(prev => ({ ...prev, [q.id]: false }));
-                const isDimmed = !isCollapsed && answers[q.id] == null && q.id !== activeQid;
+                const isDimmed = !isCollapsed && !isStub && !answered && q.id !== activeQid;
                 return (
                   <div
                     key={q.id}
                     id={`q-${q.id}`}
                     tabIndex={-1}
-                    className={`question-card ${isCollapsed ? 'collapsed' : ''} ${isDimmed ? 'dimmed' : ''}`}
+                    className={`question-card ${isCollapsed ? 'collapsed' : ''} ${isStub ? 'stub' : ''} ${isDimmed ? 'dimmed' : ''}`}
                     style={{ animationDelay: `${qi * 70}ms` }}
-                    onClick={isCollapsed ? expand : undefined}
+                    onClick={(isCollapsed || isStub) ? expand : undefined}
                   >
+                    <button className="question-stub" onClick={expand} inert={!isStub || undefined}>
+                      <span className="question-stub-dot" aria-hidden="true" />
+                      <span className="question-stub-text">{q.text}</span>
+                      <ChevronDown size={16} className="question-summary-chevron" aria-hidden="true" />
+                    </button>
                     <button className="question-summary" onClick={expand} inert={!isCollapsed || undefined}>
                       <CheckCircle size={18} className="question-summary-check" aria-hidden="true" />
                       <span className="question-summary-main">
@@ -581,7 +593,7 @@ function AssessmentScreen() {
                       {q.factor && <span className="question-summary-factor">{q.factor}</span>}
                       <ChevronDown size={16} className="question-summary-chevron" aria-hidden="true" />
                     </button>
-                    <div className="question-full" inert={isCollapsed || undefined}>
+                    <div className="question-full" inert={isCollapsed || isStub || undefined}>
                       <div className="question-full-inner">
                         {q.factor && <span className="question-factor">{q.factor}</span>}
                         <div className="question-text">{q.text}</div>
