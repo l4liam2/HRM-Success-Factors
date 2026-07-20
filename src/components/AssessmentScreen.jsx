@@ -276,6 +276,23 @@ function AssessmentScreen() {
   };
   const goBack = () => { setSectionIdx(i => Math.max(i - 1, 0)); scrollTop(); };
 
+  // Jump to (and briefly highlight) the first unanswered question, switching section if needed.
+  const goToFirstUnanswered = () => {
+    for (let i = 0; i < quiz.length; i++) {
+      const q = quiz[i].questions.find(q => answers[q.id] == null);
+      if (!q) continue;
+      setSectionIdx(i);
+      setTimeout(() => {
+        const el = document.getElementById(`q-${q.id}`);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('flash-missing');
+        setTimeout(() => el.classList.remove('flash-missing'), 1600);
+      }, 60);
+      return;
+    }
+  };
+
   const computeResults = () => {
     const dims = quiz.map(d => {
       const scored = d.questions.filter(q => answers[q.id] !== DK); // "not sure" drops out of the denominator
@@ -379,9 +396,21 @@ function AssessmentScreen() {
         <span>Back to Home</span>
       </button>
 
-      <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle dark mode" style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10, background: 'var(--node-fill)', border: '1px solid var(--panel-border)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)', color: 'var(--text-primary)', transition: 'all 0.2s ease' }}>
-        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-      </button>
+      <div style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {phase !== 'intro' && (
+          <button
+            className="back-btn"
+            onClick={() => { if (window.confirm('Restart the assessment? Your current answers will be cleared.')) retake(); }}
+            style={{ position: 'static', boxShadow: 'var(--shadow-sm)', height: '40px' }}
+          >
+            <RotateCcw size={16} />
+            <span>Restart Assessment</span>
+          </button>
+        )}
+        <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle dark mode" style={{ background: 'var(--node-fill)', border: '1px solid var(--panel-border)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)', color: 'var(--text-primary)', transition: 'all 0.2s ease' }}>
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
+      </div>
 
       <div className="assessment-layout" ref={layoutRef}>
         <div className="assessment-intro">
@@ -435,7 +464,7 @@ function AssessmentScreen() {
             <div className="quiz-dimension-group">
               <h3 className="quiz-dimension-title">{section.label}</h3>
               {section.questions.map(q => (
-                <div key={q.id} className="question-card">
+                <div key={q.id} id={`q-${q.id}`} className="question-card">
                   {q.factor && <span className="question-factor">{q.factor}</span>}
                   <div className="question-text">{q.text}</div>
                   <div className="options-grid descriptors">
@@ -465,11 +494,11 @@ function AssessmentScreen() {
                 <ArrowLeft size={16} /> Back
               </button>
               {!isLastSection ? (
-                <button className="submit-btn quiz-nav-next" disabled={sectionLeft > 0} onClick={goNext}>
+                <button className="submit-btn quiz-nav-next" onClick={sectionLeft > 0 ? goToFirstUnanswered : goNext}>
                   {sectionLeft > 0 ? `Answer all (${sectionLeft} left)` : <>Next dimension <ArrowRight size={16} style={{ verticalAlign: 'middle' }} /></>}
                 </button>
               ) : (
-                <button className="submit-btn quiz-nav-next" disabled={!allAnswered} onClick={computeResults}>
+                <button className="submit-btn quiz-nav-next" onClick={allAnswered ? computeResults : goToFirstUnanswered}>
                   {allAnswered ? 'See My Results' : `Answer all (${allQuestions.length - answeredCount} left)`}
                 </button>
               )}

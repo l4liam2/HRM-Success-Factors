@@ -943,6 +943,16 @@ body.dark-mode .driver-item:hover {
     box-shadow: var(--shadow-md);
 }
 
+/* Brief pulse on the question the user jumped to via "Answer all (N left)" */
+.question-card.flash-missing {
+    animation: flash-missing 1.6s ease;
+}
+
+@keyframes flash-missing {
+    0%, 60% { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 30%, transparent); }
+    100% { border-color: var(--panel-border); box-shadow: var(--shadow-sm); }
+}
+
 .question-factor {
     display: inline-block;
     font-size: 0.75rem;
