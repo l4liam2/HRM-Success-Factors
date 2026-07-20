@@ -105,6 +105,9 @@ function LandingPage() {
       </div>
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <div className="copyright-notice" style={{ position: 'absolute', bottom: '1.5rem' }}>
+        <span style={{ display: 'block', marginBottom: '0.25rem' }}>
+          Free to use · In active development · <a href="https://www.linkedin.com/in/liamstock-rabbat/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Connect on LinkedIn</a>
+        </span>
         &copy; 2026 <a href="https://www.edurisk.ca/" target="_blank" rel="noopener noreferrer">EduRisk</a> Inc. All Rights Reserved
       </div>
     </div>
