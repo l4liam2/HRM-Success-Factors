@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Printer } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Award, CheckCircle, Sun, Moon, ClipboardCheck, RotateCcw, Copy, Download } from 'lucide-react';
 
 // Maturity band: equal fifths of the max score -> Level 1..5 (matches the table's point bands).
 const bandLevel = (score, max) => Math.min(5, Math.max(1, Math.ceil(score / (max / 5))));
@@ -81,6 +81,35 @@ function RadarChart({ dims, revealed }) {
     </svg>
   );
 }
+
+// --- Minimal single-page PDF of a text summary (no dependency) ---
+const pdfEsc = (s) => s.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+const pdfAscii = (s) => s
+  .replace(/[•]/g, '-')
+  .replace(/[–—]/g, '-')          // en/em dash
+  .replace(/[‘’]/g, "'")           // curly single quotes
+  .replace(/[“”]/g, '"')           // curly double quotes
+  .replace(/[^\x20-\x7E]/g, '');             // keep ASCII so byte offsets == char offsets
+const buildSummaryPdf = (title, lines) => {
+  let content = 'BT\n/F1 16 Tf 72 760 Td (' + pdfEsc(pdfAscii(title)) + ') Tj\n/F1 11 Tf 0 -30 Td 16 TL\n';
+  content += lines.map(s => '(' + pdfEsc(pdfAscii(s)) + ') Tj T*\n').join('');
+  content += 'ET';
+  const objs = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    '<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream',
+  ];
+  let pdf = '%PDF-1.4\n';
+  const offsets = [];
+  objs.forEach((body, i) => { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\n${body}\nendobj\n`; });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`
+    + offsets.map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('')
+    + `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  return pdf;
+};
 
 function AssessmentScreen() {
   const navigate = useNavigate();
@@ -304,6 +333,34 @@ function AssessmentScreen() {
     } catch { /* clipboard unavailable */ }
   };
 
+  const downloadPdf = () => {
+    if (!results) return;
+    const lines = [
+      `Generated ${new Date().toLocaleDateString('en-CA')}`,
+      '',
+      results.overallLevel != null
+        ? `Overall maturity:  Level ${results.overallLevel}  (${Math.round(results.overallPct * 100)}%)`
+        : 'Overall maturity:  not enough answers',
+      '',
+      'By dimension:',
+      ...results.dims.map(d => d.level != null
+        ? `   ${d.label}:  Level ${d.level}  (${d.score}/${d.max}${d.skipped ? `, ${d.skipped} not sure` : ''})`
+        : `   ${d.label}:  not enough answers`),
+      '',
+      'Looking to strengthen your program? I provide consulting to help',
+      'organisations close these gaps. Reach out: liam@edurisk.ca',
+    ];
+    const blob = new Blob([buildSummaryPdf('Security Awareness Program Maturity Assessment', lines)], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'maturity-assessment.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   const toggleExpand = (idx) => setExpandedLevels(prev => ({ ...prev, [idx]: !prev[idx] }));
 
   const handleSelectLevel = (idx) => {
@@ -476,8 +533,8 @@ function AssessmentScreen() {
               <button className="back-btn" onClick={copySummary} style={pillStyle}>
                 <Copy size={16} /><span>{copied ? 'Copied!' : 'Copy summary'}</span>
               </button>
-              <button className="back-btn" onClick={() => window.print()} style={pillStyle}>
-                <Printer size={16} /><span>Print / Save PDF</span>
+              <button className="back-btn" onClick={downloadPdf} style={pillStyle}>
+                <Download size={16} /><span>Save as PDF</span>
               </button>
               <button className="back-btn" onClick={retake} style={pillStyle}>
                 <RotateCcw size={16} /><span>Retake</span>
