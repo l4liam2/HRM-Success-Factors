@@ -28,3 +28,10 @@ public/plugins/situ-design/situImport.bundle.js
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Citation-audit working files and reports (local only)
+.citation-audit/
+CITATION_AUDIT.md
+PROPOSED_EDITS.md
+PROPOSED_EDITS.docx
+~$*.docx
