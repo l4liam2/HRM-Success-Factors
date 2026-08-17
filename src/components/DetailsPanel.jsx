@@ -1,23 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { findCitation } from './bibliographyData';
+import { findCitation, autoLinkCitations } from './bibliographyData';
 
 const DetailsPanel = ({ node, isOpen, onClose }) => {
     const [hoveredCitation, setHoveredCitation] = useState(null);
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-    const [isExpanded, setIsExpanded] = useState(false);
+    // Tracked by node name rather than as a bare boolean, so opening another factor
+    // starts collapsed instead of inheriting the previous one's "Show Less" state.
+    const [expandedFor, setExpandedFor] = useState(null);
     const [shouldTruncate, setShouldTruncate] = useState(false);
     const contentRef = useRef(null);
     const descriptionRef = useRef(null);
 
+    const nodeName = node?.data?.name;
+    const isExpanded = expandedFor != null && expandedFor === nodeName;
+
+    // Citations left as plain text in the content get the same link + tooltip treatment
+    // as the hand-tagged ones.
+    const linkedDescription = useMemo(() => autoLinkCitations(node?.data?.description), [node?.data?.description]);
+    const linkedExamples = useMemo(() => autoLinkCitations(node?.data?.examples), [node?.data?.examples]);
+    const linkedTldr = useMemo(() => autoLinkCitations(node?.data?.tldr), [node?.data?.tldr]);
 
     // Check if overview description overflows after rendering or when description changes
     useEffect(() => {
         if (!isOpen || !node || !descriptionRef.current) return;
-        
+
         const handleResize = () => {
             if (descriptionRef.current) {
                 // 130px threshold for description height
@@ -42,8 +52,11 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                         {...props}
                         onMouseEnter={(e) => {
                             const linkText = e.currentTarget.textContent || "";
-                            const parentText = e.currentTarget.parentElement ? e.currentTarget.parentElement.textContent : "";
-                            const sourceText = findCitation(linkText, parentText);
+                            // Only the text immediately after the link, for narrative citations that
+                            // leave the year outside it. The whole paragraph would drag in every
+                            // other citation's year and resolve to the wrong entry.
+                            const trailing = (e.currentTarget.nextSibling?.textContent || "").slice(0, 24);
+                            const sourceText = findCitation(linkText, trailing);
                             if (sourceText) {
                                 setHoveredCitation(sourceText);
                                 const rect = e.currentTarget.getBoundingClientRect();
@@ -129,7 +142,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                     <div id="panel-content" ref={contentRef}>
                         {tldr && (
                             <div className="tldr-box">
-                                <strong>TL;DR:</strong> <span dangerouslySetInnerHTML={{ __html: tldr }} />
+                                <strong>TL;DR:</strong> <span dangerouslySetInnerHTML={{ __html: linkedTldr }} />
                             </div>
                         )}
 
@@ -145,13 +158,13 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                                             overflow: 'hidden'
                                         }}
                                     >
-                                        <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{description}</ReactMarkdown>
+                                        <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{linkedDescription}</ReactMarkdown>
                                     </div>
                                 </div>
                                 {shouldTruncate && (
                                     <button 
                                         className="overview-expand-btn"
-                                        onClick={() => setIsExpanded(!isExpanded)}
+                                        onClick={() => setExpandedFor(isExpanded ? null : nodeName)}
                                         aria-expanded={isExpanded}
                                     >
                                         {isExpanded ? (
@@ -176,7 +189,7 @@ const DetailsPanel = ({ node, isOpen, onClose }) => {
                             <div className="content-section">
                                 <h3 className="section-title">Practical Examples</h3>
                                 <div className="description markdown-body">
-                                    <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{examples}</ReactMarkdown>
+                                    <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>{linkedExamples}</ReactMarkdown>
                                 </div>
                             </div>
                         )}

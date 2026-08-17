@@ -16,8 +16,7 @@ const MindMap = ({ onNodeSelect }) => {
 
         const svg = d3.select(svgRef.current)
             .attr('width', width)
-            .attr('height', height)
-            .on('dblclick.zoom', null); // Disable double click zoom
+            .attr('height', height);
 
         const g = svg.append('g');
 
@@ -28,6 +27,9 @@ const MindMap = ({ onNodeSelect }) => {
             });
 
         svg.call(zoom);
+        // Must come after svg.call(zoom), which installs its own dblclick handler:
+        // clearing it first just gets it put straight back.
+        svg.on('dblclick.zoom', null);
 
         // Initial transform
         // Initial transform
@@ -180,14 +182,8 @@ const MindMap = ({ onNodeSelect }) => {
                 .attr('y', -40)
                 .attr('rx', 12)
                 .attr('ry', 12)
-                .style("fill", d => {
-                    const color = d3.color(getTrackColor(d));
-                    if (color) {
-                        color.opacity = 0.08;
-                        return color;
-                    }
-                    return "#FFFFFF";
-                })
+                // Fill is left to `.node rect` in CSS so the cards follow the theme;
+                // an inline fill here would be overwritten on the first update anyway.
                 .style("stroke", d => getTrackColor(d))
                 .style("stroke-width", "2px")
                 .style("filter", "drop-shadow(0 4px 6px rgba(0,0,0,0.05))");
@@ -247,7 +243,6 @@ const MindMap = ({ onNodeSelect }) => {
                 .attr('transform', d => `translate(${d.y},${d.x})`);
 
             nodeUpdate.select('rect')
-                .style("fill", null)
                 .attr('cursor', 'pointer');
 
             nodeUpdate.select('text')

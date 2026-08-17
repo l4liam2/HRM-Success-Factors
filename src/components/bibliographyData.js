@@ -70,56 +70,158 @@ export const bibliography = [
   "Zamani, M., Razali, R., & Singh, D. (2021). Organisational Information Security Management Maturity Model. International Journal of Advanced Computer Science and Applications, 12(9), 107–115."
 ];
 
-export const findCitation = (text, parentText = "") => {
+// Every citation in data.json points at the same source notebook.
+export const CITATION_HREF =
+  "https://notebooklm.google.com/notebook/2560eec5-1422-4fd9-9eec-48effc939ab0?source=dd94c09b-700b-4eb3-b0be-8423acd2e7ad";
+
+const YEAR_RE = /\b(19\d{2}|20\d{2})\b/g;
+
+// Tokens that appear in every citation and so distinguish nothing.
+const CITATION_NOISE = new Set([
+  "al", "et", "and", "the", "page", "pages", "vol", "iss", "no", "pp", "in", "of",
+]);
+
+// Lowercase, strip accents, and turn everything that isn't a letter or digit into a
+// space, so "Kő," "Prümmer" and "Hu" survive as whole comparable tokens.
+const normalise = (str) =>
+  str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const tokenCache = new Map();
+const entryTokens = (entry) => {
+  let tokens = tokenCache.get(entry);
+  if (!tokens) {
+    tokens = new Set(normalise(entry).split(" "));
+    tokenCache.set(entry, tokens);
+  }
+  return tokens;
+};
+
+export const findCitation = (text, context = "") => {
   if (!text) return null;
-  
-  // Clean text and extract alphanumeric words of length > 2
-  const clean = (str) => str.toLowerCase().replace(/[^\w\s]/g, "");
-  const words = clean(text).split(/\s+/).filter(w => w.length > 2);
-  
-  // Extract years (4-digit numbers) from link text and surrounding parent text
-  const yearRegex = /\b(19\d{2}|20\d{2})\b/g;
-  const years = new Set();
-  
-  let match;
-  while ((match = yearRegex.exec(text)) !== null) {
-    years.add(match[0]);
+
+  // Fold accents away so "Prümmer" matches "Prummer" and "Kő" matches "Ko", and
+  // reduce punctuation to spaces so surnames stay whole, separate tokens.
+  const words = normalise(text).split(" ").filter(w => w && !CITATION_NOISE.has(w) && !/^\d+$/.test(w));
+
+  // Years carry most of the signal, so they must come from this citation only.
+  // Falling back to the surrounding text is for narrative citations that leave the
+  // year outside the link ("Baral and Arachchilage" + "(2019)"); pass a short
+  // trailing slice, never a whole paragraph, or every other citation's year
+  // leaks in and outscores the real entry.
+  const years = new Set(text.match(YEAR_RE) || []);
+  if (years.size === 0 && context) {
+    (context.match(YEAR_RE) || []).forEach(y => years.add(y));
   }
-  if (parentText) {
-    while ((match = yearRegex.exec(parentText)) !== null) {
-      years.add(match[0]);
-    }
-  }
+
+  if (words.length === 0 || years.size === 0) return null;
 
   let bestMatch = null;
   let maxScore = 0;
 
   bibliography.forEach(entry => {
-    const cleanEntry = entry.toLowerCase();
-    let score = 0;
-    
-    // Check word matches
-    words.forEach(word => {
-      // Avoid matching generic citation terms
-      if (["al", "and", "the", "page", "vol", "iss"].includes(word)) return;
-      if (cleanEntry.includes(word)) {
-        score += 2;
-      }
-    });
+    const tokens = entryTokens(entry);
+    // Only the publication year counts: matching anywhere in the string would let a
+    // DOI like "ICS-08-2022-0133" pose as a 2022 paper.
+    if (![...years].some(y => tokens.has(y))) return;
 
-    // Check year matches
-    years.forEach(year => {
-      if (cleanEntry.includes(year)) {
-        score += 5; // Strong signal
-      }
-    });
+    // A citation leads with its first author, so that name must be present. A year
+    // alone is not evidence: every paper from that year would look equally good, and
+    // matching only a later co-author links sources that aren't in the list at all
+    // (e.g. "Sasse and Nurse, 2019" is not the same work as "Bada & Nurse, 2019").
+    if (!tokens.has(words[0])) return;
 
+    const hits = words.filter(w => tokens.has(w));
+    const score = hits.length * 2;
     if (score > maxScore) {
       maxScore = score;
       bestMatch = entry;
     }
   });
 
-  // Require a minimum score of 4 to prevent false positives
-  return maxScore >= 4 ? bestMatch : null;
+  return bestMatch;
+};
+
+// --- Auto-linking of citations left as plain text in data.json ---------------
+// Most of the prose cites sources inline without any markup, so only the hand-
+// tagged ones got the citation styling and hover tooltip. Rather than editing
+// hundreds of references into the content by hand, recognise the citation shapes
+// at render time and wrap the ones that actually resolve to a bibliography entry.
+
+const NAME = "[A-Z][A-Za-z\\u00C0-\\u024F'’-]+";
+// Text already inside markup — anchors and any other tag — must be left alone.
+const PROTECTED_RE = /<a\b[^>]*>[\s\S]*?<\/a>|<[^>]+>/gi;
+// "(Hanus & Wu, 2016; Bulgurcu et al., 2010)" — a parenthetical, possibly listing several sources.
+const PARENTHETICAL_RE = /\(([^()]*?\b(?:19|20)\d{2}[a-z]?\b[^()]*?)\)/g;
+// "Baral and Arachchilage (2019)" / "Hu et al. (2022)" — the narrative form.
+const NARRATIVE_RE = new RegExp(
+  `\\b(${NAME}(?:\\s+(?:and|&)\\s+${NAME})?(?:\\s+et\\s+al\\.?)?)(\\s*)\\((\\d{4}[a-z]?)\\)`,
+  "g"
+);
+// Trailing locators ride outside the link, matching how the tagged citations are written.
+const LOCATOR_RE = /(,\s*(?:pp?\.|para\.|ch\.)\s*[\d–-]+\s*)$/;
+// Capitalised words that start a sentence rather than name an author.
+const NOT_A_NAME = new Set([
+  "the", "this", "that", "these", "those", "and", "but", "for", "with", "from",
+  "their", "when", "while", "which", "see", "also", "since", "after", "before",
+  "level", "figure", "table", "section", "research", "studies", "study", "both",
+]);
+
+const looksLikeCitation = (s) => {
+  if (!/\b(?:19|20)\d{2}[a-z]?\b/.test(s)) return false;
+  const names = s.match(new RegExp(NAME, "g")) || [];
+  return names.some(n => !NOT_A_NAME.has(n.toLowerCase()));
+};
+
+const wrapCitation = (text) =>
+  `<a href="${CITATION_HREF}" target="_blank" rel="noopener noreferrer" class="citation">${text}</a>`;
+
+// Link `text` only when it resolves to a real entry, so an unknown source stays plain
+// rather than becoming a link to the wrong paper.
+const linkIfResolvable = (text) => {
+  const [, locator = ""] = text.match(LOCATOR_RE) || [];
+  const core = locator ? text.slice(0, -locator.length) : text;
+  if (!looksLikeCitation(core) || !findCitation(core)) return null;
+  return wrapCitation(core) + locator;
+};
+
+// Run `fn` over the stretches of `html` that sit outside any tag or existing anchor.
+const mapFreeText = (html, fn) => {
+  let out = "", last = 0, m;
+  PROTECTED_RE.lastIndex = 0;
+  while ((m = PROTECTED_RE.exec(html)) !== null) {
+    out += fn(html.slice(last, m.index)) + m[0];
+    last = m.index + m[0].length;
+  }
+  return out + fn(html.slice(last));
+};
+
+export const autoLinkCitations = (html) => {
+  if (!html || typeof html !== "string") return html;
+
+  const parentheticals = mapFreeText(html, (text) =>
+    text.replace(PARENTHETICAL_RE, (whole, inner) => {
+      // A parenthetical can list several sources; link each one that resolves.
+      let linkedAny = false;
+      const parts = inner.split(";").map((part) => {
+        const [, lead = "", body = "", tail = ""] = part.match(/^(\s*)(.*?)(\s*)$/s) || [];
+        const linked = linkIfResolvable(body);
+        if (linked) linkedAny = true;
+        return lead + (linked || body) + tail;
+      });
+      return linkedAny ? `(${parts.join(";")})` : whole;
+    })
+  );
+
+  return mapFreeText(parentheticals, (text) =>
+    text.replace(NARRATIVE_RE, (whole, names, gap, year) => {
+      const label = `${names}${gap}(${year})`;
+      if (!looksLikeCitation(label) || !findCitation(label)) return whole;
+      return wrapCitation(label);
+    })
+  );
 };

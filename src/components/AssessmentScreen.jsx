@@ -69,6 +69,9 @@ const generateSelection = (assessment, counts) => {
 
 // --- Radar chart (hand-rolled SVG, no dependency) ---
 const RADAR_C = 150, RADAR_R = 108;
+// Axis labels sit outside the plot, so the viewBox needs side room for them —
+// without it the left- and right-hand dimension names are clipped mid-word.
+const RADAR_PAD = 70;
 const radarPoint = (i, n, r) => {
   const a = (-90 + (i * 360) / n) * (Math.PI / 180);
   return [RADAR_C + r * Math.cos(a), RADAR_C + r * Math.sin(a)];
@@ -79,7 +82,7 @@ function RadarChart({ dims, revealed }) {
   const n = dims.length;
   const dataPts = dims.map((d, i) => radarPoint(i, n, ((d.level || 0) / 5) * RADAR_R));
   return (
-    <svg className="radar-chart" viewBox="0 0 300 300" role="img" aria-label="Maturity level by dimension">
+    <svg className="radar-chart" viewBox={`${-RADAR_PAD} 0 ${300 + RADAR_PAD * 2} 300`} role="img" aria-label="Maturity level by dimension">
       {[1, 2, 3, 4, 5].map(L => (
         <polygon key={L} className="radar-grid"
           points={polyPoints(dims.map((_, i) => radarPoint(i, n, (L / 5) * RADAR_R)))} />
@@ -463,12 +466,17 @@ function AssessmentScreen() {
 
   const handleSelectLevel = (idx) => {
     setSelectedLevelIdx(idx);
-    setExpandedLevels(prev => ({ ...prev, [idx]: true, [idx + 1]: idx < 4 ? true : prev[idx + 1] }));
+    const hasNext = idx < maturityLevels.length - 1;
+    setExpandedLevels(prev => ({ ...prev, [idx]: true, [idx + 1]: hasNext ? true : prev[idx + 1] }));
   };
 
   const getCleanLevelName = (name) => name.includes(':') ? name.split(':')[1].trim() : name;
 
   const pillStyle = { position: 'static', boxShadow: 'var(--shadow-sm)' };
+
+  // The roadmap doubles as an explorer, so the selected level can drift off the
+  // computed one; the banner has to say which of the two it is showing.
+  const isPreviewingLevel = results?.overallLevel != null && selectedLevelIdx !== results.overallLevel - 1;
 
   return (
     <div className="assessment-container" style={{ minHeight: '100vh', padding: '2rem 1.5rem', position: 'relative' }}>
@@ -650,11 +658,11 @@ function AssessmentScreen() {
                   <>
                     <div className="results-overall-pct">{countPct}<span>%</span></div>
                     <div className="results-overall-sub">overall maturity</div>
-                    {maturityLevels.length > 0 && (
+                    {maturityLevels[results.overallLevel - 1] && (
                       <>
                         <div className="results-overall-level">Level {results.overallLevel}: {getCleanLevelName(maturityLevels[results.overallLevel - 1].name)}</div>
                         <div className="results-overall-framing">
-                          {results.overallLevel < 5
+                          {maturityLevels[results.overallLevel]
                             ? `One step from ${getCleanLevelName(maturityLevels[results.overallLevel].name)}.`
                             : `You've reached the top tier. Focus on sustainment.`}
                         </div>
@@ -709,13 +717,24 @@ function AssessmentScreen() {
         {phase === 'results' && maturityLevels.length > 0 && selectedLevelIdx !== null && (
           <div className="self-assessment-banner" style={{ background: 'linear-gradient(135deg, var(--accent-color), var(--secondary-accent))' }}>
             <div className="self-assessment-info">
-              <h3>Overall: {getCleanLevelName(maturityLevels[selectedLevelIdx].name)}</h3>
-              {selectedLevelIdx < 4 ? (
+              {/* "Set Active" can preview any level, so only call it your result when it is one. */}
+              <h3>{isPreviewingLevel ? 'Previewing' : 'Overall'}: {getCleanLevelName(maturityLevels[selectedLevelIdx].name)}</h3>
+              {isPreviewingLevel && (
                 <p style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                  Weighted across dimensions you are at Level {selectedLevelIdx + 1}. To reach <strong>{getCleanLevelName(maturityLevels[selectedLevelIdx + 1].name)}</strong>, focus on the Level {selectedLevelIdx + 2} action items below.
+                  Your assessed result is <strong>Level {results.overallLevel}</strong>; you're previewing the roadmap from Level {selectedLevelIdx + 1}.
+                </p>
+              )}
+              {selectedLevelIdx < maturityLevels.length - 1 ? (
+                <p style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                  {!isPreviewingLevel && <>Weighted across dimensions you are at Level {selectedLevelIdx + 1}. </>}
+                  To reach <strong>{getCleanLevelName(maturityLevels[selectedLevelIdx + 1].name)}</strong>, focus on the Level {selectedLevelIdx + 2} action items below.
                 </p>
               ) : (
-                <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Congratulations! Your program is fully optimized. Focus on data-driven sustainment and adaptive learning.</p>
+                <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                  {isPreviewingLevel
+                    ? 'This is the top tier: data-driven sustainment and adaptive learning.'
+                    : 'Congratulations! Your program is fully optimized. Focus on data-driven sustainment and adaptive learning.'}
+                </p>
               )}
             </div>
             <div className="self-assessment-result">
