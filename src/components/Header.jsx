@@ -155,20 +155,20 @@ const Header = ({ onAboutClick, onBibliographyClick, onResetZoom }) => {
                 </div>
             </div>
             <div className="controls" style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <button id="home-btn" className="btn" onClick={() => navigate('/Home')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <button id="home-btn" className="btn" onClick={() => navigate('/Home')} aria-label="Home" title="Home" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <Home size={14} />
                     <span>Home</span>
                 </button>
-                <button id="about-btn" className="btn" onClick={onAboutClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <button id="about-btn" className="btn" onClick={onAboutClick} aria-label="About the project" title="About the project" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <Info size={14} />
                     <span>About</span>
                 </button>
 
-                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <button id="nav-assess-btn" className="btn" onClick={() => navigate('/assessment')} aria-label="Maturity assessment" title="Maturity assessment" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <ClipboardCheck size={14} />
                     <span>Assessment</span>
                 </button>
-                <button id="reset-zoom" className="btn" onClick={onResetZoom} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <button id="reset-zoom" className="btn" onClick={onResetZoom} aria-label="Reset view" title="Reset view" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                     <RefreshCw size={14} />
                     <span>Reset View</span>
                 </button>

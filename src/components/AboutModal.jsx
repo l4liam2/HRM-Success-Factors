@@ -11,8 +11,9 @@ const AboutModal = ({ isOpen, onClose }) => {
                     <p>This site helps you understand and evaluate what makes a security awareness program
                         succeed.</p>
                     <p>The interactive mind map visualizes the key success factors, like Gamification, Culture, and
-                        Communication, and how they connect to build a robust security posture. Double-click nodes to
-                        expand or collapse them, and click a node to view detailed information in the side panel.</p>
+                        Communication, and how they connect to build a robust security posture. Click a node to
+                        expand or collapse its branch, and click the ⓘ icon to open detailed information in the side
+                        panel. Drag to pan and scroll to zoom.</p>
                     <p>The maturity assessment asks a short set of questions across the same success factors, scores
                         your program on a five-level maturity scale, and lets you download your results as a PDF.</p>
                     <p>This resource is free to use. It is in active development, so content and features will
