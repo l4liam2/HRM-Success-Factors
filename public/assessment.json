@@ -237,7 +237,7 @@
           "text": "When an employee makes a security mistake, is the corrective training a one-off, or is it repeated and varied over time?",
           "guidance": "Measures whether correction is repeated and varied to build habit.",
           "descriptors": [
-            "It's a one-off, with no follow-up or repetition.",
+            "Nothing follows, or a one-off correction with no repetition.",
             "At most a single retrospective reminder, no cycle.",
             "It's timely but not yet repeated or varied over time.",
             "Cycles are spaced and varied to build habit, with repeats tracked.",
