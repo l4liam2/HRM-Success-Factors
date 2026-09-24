@@ -460,20 +460,22 @@ function AssessmentScreen() {
 
   return (
     <div className="assessment-container" style={{ minHeight: '100vh', padding: '2rem 1.5rem', position: 'relative' }}>
-      <button className="back-btn" onClick={() => navigate('/Home')} style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 10, background: 'var(--node-fill)', border: '1px solid var(--panel-border)', padding: '0.5rem 1.2rem', borderRadius: '999px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', boxShadow: 'var(--shadow-sm)', fontFamily: 'Inter, sans-serif', transition: 'all 0.2s ease' }}>
+      {/* Labels shorten on phones (.hide-sm) so the two sides of the header don't collide. */}
+      <button className="back-btn assessment-home-btn" onClick={() => navigate('/Home')} aria-label="Back to Home" style={{ background: 'var(--node-fill)', border: '1px solid var(--panel-border)', padding: '0.5rem 1.2rem', borderRadius: '999px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', boxShadow: 'var(--shadow-sm)', fontFamily: 'Inter, sans-serif', transition: 'all 0.2s ease' }}>
         <ArrowLeft size={16} />
-        <span>Back to Home</span>
+        <span><span className="hide-sm">Back to </span>Home</span>
       </button>
 
-      <div style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div className="assessment-header-actions">
         {phase !== 'intro' && (
           <button
             className="back-btn"
             onClick={() => { if (window.confirm('Restart the assessment? Your current answers will be cleared.')) retake(); }}
+            aria-label="Restart Assessment"
             style={{ position: 'static', boxShadow: 'var(--shadow-sm)', height: '40px' }}
           >
             <RotateCcw size={16} />
-            <span>Restart Assessment</span>
+            <span>Restart<span className="hide-sm"> Assessment</span></span>
           </button>
         )}
         <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle dark mode" style={{ background: 'var(--node-fill)', border: '1px solid var(--panel-border)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)', color: 'var(--text-primary)', transition: 'all 0.2s ease' }}>

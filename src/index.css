@@ -928,6 +928,42 @@ body.dark-mode .driver-item:hover {
     transform: translateX(-3px);
 }
 
+/* Assessment page header: Home on the left; Restart and the theme toggle on the right */
+.assessment-home-btn,
+.assessment-header-actions {
+    position: absolute;
+    top: 2rem;
+    z-index: 10;
+}
+
+.assessment-home-btn {
+    left: 2rem;
+    height: 40px; /* same height as the Restart pill and theme toggle, so the row lines up */
+}
+
+.assessment-header-actions {
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Phones: shorter labels and tighter side offsets so the two sides never overlap */
+@media (max-width: 640px) {
+    .assessment-home-btn {
+        left: 1rem;
+    }
+
+    .assessment-header-actions {
+        right: 1rem;
+        gap: 0.5rem;
+    }
+
+    .hide-sm {
+        display: none;
+    }
+}
+
 .assessment-header h1 {
     font-size: 2.5rem;
 }
