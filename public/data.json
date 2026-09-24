@@ -23,7 +23,11 @@
                 "Self-reported confidence levels in handling security incidents before and after training",
                 "Completion rates of interactive/practical security challenges",
                 "Reduction in helpdesk tickets related to basic security procedures"
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Out of their depth. Employees avoid security tasks and freeze or guess under pressure. There is no practice to build confidence.",
+                "level5": "Confident under pressure. Regular practice and feedback keep skills current as tools change. Staff handle unfamiliar threats, not just familiar ones."
+              }
             },
             {
               "name": "Response Efficacy",
@@ -39,7 +43,11 @@
                 "Adoption rate of optional security tools (e.g., password managers)",
                 "Percentage of employees reporting simulated phishing emails",
                 "Survey scores measuring employee belief in the effectiveness of company security controls"
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Security feels futile. Employees believe breaches happen anyway and that protection is IT's job. Tools like MFA feel pointless.",
+                "level5": "Proven countermeasures. Employees are regularly shown the measurable difference tools like MFA and reporting make. Reports that stopped real attacks are celebrated."
+              }
             },
             {
               "name": "Personal Agency",
@@ -55,7 +63,11 @@
                 "Number of proactive security improvements suggested by non-IT staff",
                 "Reduction in policy workarounds or 'shadow IT' usage",
                 "Scores on 'personal responsibility for security' in annual culture surveys"
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Someone else's job. Employees feel no control over security outcomes. Friction and obstacles push them toward workarounds.",
+                "level5": "Empowered decision-makers. Employees own their security choices and act on threats independently. Secure-by-default pathways make the right decision easy."
+              }
             }
           ]
         },
@@ -80,7 +92,11 @@
                 "Attitude and motivation scores from validated questionnaires (e.g., HAIS-Q) measured pre- and post-intervention.",
                 "Ratio of proactively self-reported incidents and near misses versus those detected by technical controls.",
                 "Engagement with non-mandatory awareness content (opens, completions, repeat visits)."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "No personal connection. Employees see security as irrelevant, frustrating, or IT's job. Nothing is done to show why it matters.",
+                "level5": "Self-driven security. Employees protect the organisation because they believe it matters, even when no one is watching. Sanctions are rarely needed."
+              }
             },
             {
               "name": "Moral beliefs",
@@ -99,7 +115,11 @@
                 "Reduction in policy violations where a deliberate workaround or justification was recorded as the root cause.",
                 "Share of employees agreeing that violating security policy is 'wrong regardless of consequences' in culture surveys.",
                 "Rate of employees challenging or reporting observed non-compliance by peers."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "No moral weight. Breaking policy is seen as normal and harmless. No one explains the ethical case for security.",
+                "level5": "A matter of integrity. Employees see violations as a breach of duty, even if no one would find out. They uphold and advocate for secure behaviour."
+              }
             },
             {
               "name": "Counter-neutralization",
@@ -118,7 +138,11 @@
                 "Reduction in policy violations where the root cause was a deliberate justification or workaround.",
                 "Pre/post training shift in scenario-based assessments where employees must reject common excuses.",
                 "Incident reporting rate maintained or rising alongside declining violations, indicating deterrence without a blame culture."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Excuses go unchallenged. \"I was busy\" and \"no harm done\" are accepted reasons to skip steps. No training addresses them.",
+                "level5": "Excuses anticipated and disarmed. Common justifications are identified and countered with timely prompts and realistic scenarios. Content is refreshed as new excuses emerge."
+              }
             }
           ]
         },
@@ -167,7 +191,11 @@
                 "Perceived personal likelihood of being targeted versus perceived likelihood for colleagues in surveys (the optimism gap).",
                 "Simulation failure rate among employees who rate themselves 'confident' or 'very confident'.",
                 "Leadership engagement indicators: executive simulation participation and pre-incident awareness budget approvals."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "False sense of immunity. Employees and leaders assume attacks happen to others. Warnings are discounted and vigilance is low.",
+                "level5": "Realistic self-awareness. Employees see themselves as targets and stay alert without paranoia. Simulations keep confidence matched to actual performance."
+              }
             },
             {
               "name": "Habituation",
@@ -186,7 +214,11 @@
                 "Response-rate difference between novel (polymorphic) and standard warnings in A/B tests.",
                 "Knowledge retention scores at 30/60/90 days after drip-feed versus one-off training.",
                 "Proportion of genuinely risky prompts acted on correctly (e.g., reported rather than dismissed)."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Background noise. Warnings are dismissed on autopilot and security messages go unread. Every prompt looks the same.",
+                "level5": "Attention preserved. Interruptive warnings are reserved for real risk and vary in design and timing. Messaging is refreshed continuously, so employees stay alert."
+              }
             },
             {
               "name": "Cognitive Biases",
@@ -205,7 +237,11 @@
                 "Simulation failure rates under time pressure versus normal conditions, showing how strongly heuristics take over.",
                 "Adoption rate of secure defaults and one-click secure options versus manual workarounds.",
                 "Pre/post shift in scenario-based judgement tests that probe specific biases (anchoring, discounting, availability)."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Bias on autopilot. Mental shortcuts drive security decisions unnoticed. Processes ignore how people actually decide under pressure.",
+                "level5": "Designed for how people think. Secure defaults make the safe choice the easy one. Employees recognise their own biases and pause to think deliberately."
+              }
             }
           ]
         }
@@ -235,8 +271,8 @@
                 "Reduction in click-through rate over six JIT cycles"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "No learning moment. A mistake triggers incident response, but the employee involved learns nothing from it. There is no follow-up.",
+                "level5": "Ahead of the mistake. Early risk signals trigger micro-interventions before an incident occurs. Timing, format, and content adapt to individual and group data."
               }
             },
             {
@@ -255,8 +291,8 @@
                 "Frequency of insecure behaviors (e.g., sharing unencrypted files) pre- and post-nudging"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Incident-driven only. Security learning happens after something goes wrong, with no regular cadence. Knowledge decay is not recognised.",
+                "level5": "Adaptive reinforcement. Short, varied learning moments run year-round. Frequency and intensity adjust to engagement, fatigue, and threat data."
               }
             },
             {
@@ -275,8 +311,8 @@
                 "Daily active participation in optional quick-quiz challenges"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "No structure. Content appears only when a problem forces it. There is no planned repetition over time.",
+                "level5": "Personalised micro-learning. Short units are sequenced and spaced to each person's retention data. The programme can show measurable habit formation."
               }
             },
             {
@@ -295,8 +331,8 @@
                 "Employee adoption rate of personal security tips (e.g. download rate of recommended home antivirus tools)"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Ad hoc messaging. Communications go out only after incidents or deadlines. No thought is given to how they land with different audiences.",
+                "level5": "Data-driven campaign. A recognisable security brand runs across channels, tuned in real time to engagement data. Messaging is shown to change behaviour."
               }
             }
           ]
@@ -321,8 +357,8 @@
                 "Pre- and post-test self-efficacy scores evaluating user confidence in threat detection"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Passive learning. Training is lectures and policy reading with no game elements. Employees make no decisions and get no feedback.",
+                "level5": "Integrated and adaptive. Branching game scenarios adjust to each player's performance and are woven into ongoing reinforcement. Gains in threat recognition are measured."
               }
             },
             {
@@ -341,8 +377,8 @@
                 "Reduction in repeat-fail rates across simulation cycles"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "No practice. Employees meet real threats with no prior rehearsal. Vulnerability stays unknown until an incident exposes it.",
+                "level5": "Adaptive rehearsal. Scenario selection and difficulty adjust to performance data, with overconfidence monitored. Detection skills measurably improve over time."
               }
             },
             {
@@ -361,8 +397,8 @@
                 "Self-reported changes in security behavior inspired by specific training stories"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Rules and checklists. Security guidance has no narrative, characters, or emotional context. Little of it is remembered.",
+                "level5": "Stories that stick. Relatable characters and realistic dilemmas are tested against retention and behaviour data. Narratives are refined for each audience."
               }
             },
             {
@@ -381,8 +417,8 @@
                 "Click-through or ignore rate of interactive in-app warnings"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Click-through training. Employees read, watch, and click through static content. There are no decisions to make and no feedback.",
+                "level5": "Adaptive interaction. Decision-based formats adjust to each person's skill and engagement in real time. Intensity eases off before fatigue or reactance sets in."
               }
             }
           ]
@@ -407,8 +443,8 @@
                 "Retention of security behaviors that transfer between home and office"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Work-only framing. Content covers organisational risk and compliance alone. Nothing connects security to employees' homes, families, or finances.",
+                "level5": "Personal entry points. Content is personalised to employees' home, family, and financial security. The programme can show these habits carry over into work."
               }
             },
             {
@@ -427,8 +463,8 @@
                 "Incident reporting rates for targeted attack vectors (e.g. BEC reported by finance)"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "One module for everyone. Executives, finance staff, and admins get the same generic training as everyone else. Role-specific risk is ignored.",
+                "level5": "Scenarios mirror real roles. Content is refined with threat intelligence and behaviour data as roles and access change. High-risk groups show measurably better outcomes."
               }
             },
             {
@@ -447,8 +483,8 @@
                 "Pre- and post-training assessment scores across distinct knowledge baselines"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "A uniform workforce. Everyone receives identical content in the same style and channel. No one checks who is most at risk or already proficient.",
+                "level5": "Dynamic segments. Profiles update as roles, risks, and knowledge gaps change. Content, style, and channel adapt to each segment, with measurable differences in outcomes."
               }
             }
           ]
@@ -480,7 +516,11 @@
                 "Frequency of leadership-delivered security communications per quarter.",
                 "Employee survey scores on 'leadership treats security as a priority' tracked over time.",
                 "Security's presence in strategic artefacts: board agenda items and objectives referencing security per cycle."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Silent leadership. Senior leaders rarely mention security and skip the practices they expect of others. Attention comes only after a breach.",
+                "level5": "Leading by example. Executives model secure behaviour and join staff training. They frame security as a business enabler, backed by risk data."
+              }
             },
             {
               "name": "Resource allocation",
@@ -500,7 +540,11 @@
                 "Budget stability: ratio of approved multi-year funding to ad-hoc, incident-driven spend.",
                 "Headcount and disciplinary mix of the awareness function (security, HR, behavioural science).",
                 "ROSI or cost-per-incident-avoided estimates reported to leadership each cycle."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "No budget, no owner. Money is spent only after an incident. Training always loses out to daily work.",
+                "level5": "Risk-based investment. Budgets are justified by risk reduction and ROSI and adjusted as results come in. Employee time for security is built into the workday."
+              }
             },
             {
               "name": "Policy Sponsorship",
@@ -519,7 +563,11 @@
                 "Employee awareness that leadership endorses the policy (survey: 'this policy matters to senior management').",
                 "Policy exception volume and average time-to-decision at executive level.",
                 "Compliance rate trend following leadership endorsement campaigns versus IT-only communications."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Policy without backing. There is no real security policy, or it is left entirely to IT. Leadership plays no visible role.",
+                "level5": "Owned at the top. Executives sponsor the policy and own the risks they accept. It shapes business decisions and is refined with compliance data."
+              }
             }
           ]
         },
@@ -544,7 +592,11 @@
                 "Employee survey agreement with 'security is part of my job, not just IT's' tracked over time.",
                 "Number of employee-initiated security improvements or champion volunteers per quarter.",
                 "Secure behavior observed without prompting in spot checks (clean desks, locked screens, challenged tailgating)."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "IT's problem. Responsibility is unclear and defaults to IT. Risks surface only after an incident, usually followed by blame.",
+                "level5": "Everyone's responsibility. Employees act as proactive risk sensors, flagging issues and helping respond. Ownership is reinforced through recognition and performance goals."
+              }
             },
             {
               "name": "Psychological Safety",
@@ -563,7 +615,11 @@
                 "Self-reported incidents as a share of all detected incidents.",
                 "Survey scores on 'I can admit a security mistake here without fear of blame'.",
                 "Repeat-reporting rate: whether employees who reported once report again later."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Blame culture. Employees hide mistakes to avoid punishment. Incidents go unreported until damage is done.",
+                "level5": "Safe to speak up. Reporting mistakes is expected and met with thanks. Blameless reviews and fast feedback turn every report into measurable learning."
+              }
             },
             {
               "name": "Social Norms",
@@ -582,7 +638,11 @@
                 "Active security champion coverage: share of teams with a trained, engaged champion.",
                 "Variance in secure-behavior metrics between teams (converging upward indicates norm spread).",
                 "Peer-referral rate: employees seeking security advice from colleagues or champions versus not at all."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Unchallenged shortcuts. Risky habits like shared logins are normal. Managers neither model nor expect secure behaviour.",
+                "level5": "Secure is how things are done. Lapses draw immediate peer feedback. Managers and security champions model secure behaviour every day."
+              }
             }
           ]
         },
@@ -607,7 +667,11 @@
                 "Access-rights accuracy after role changes (orphaned or excessive permissions found in periodic reviews).",
                 "Time to revoke access at offboarding.",
                 "Number of interventions co-designed with HR per year, and their measured behavioural impact."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Absent from HR. Security plays no part in onboarding, job descriptions, or reviews. Access is not reviewed when people change roles or leave.",
+                "level5": "Built into every stage. HR and security co-own the lifecycle from recruitment to exit. Expectations, training, and access update automatically with each role change."
+              }
             },
             {
               "name": "Role Specific Ownership",
@@ -626,7 +690,11 @@
                 "Department-level incident and simulation-failure trends compared against that department's tailored baseline.",
                 "Percentage of policy-required behaviors with a named accountable owner.",
                 "Role-relevance rating of training in post-course feedback by job family."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "No role accountability. Employees see security as IT's job and cannot name their own duties. Required behaviours have no named owner.",
+                "level5": "Clear, evolving ownership. Every required behaviour has a named owner, mapped to each role's real risks. Responsibilities update as roles and access change."
+              }
             },
             {
               "name": "User Centric Design",
@@ -645,7 +713,11 @@
                 "Volume of friction reports submitted and percentage resolved with a policy or workflow change.",
                 "Unintentional non-compliance rate attributed to unclear expectations in incident root-cause analysis.",
                 "Time for an employee to find and understand the correct procedure in usability tests."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "Written for IT, not users. Policies and materials are generic, dense, and full of jargon. Nobody tests whether people can follow them.",
+                "level5": "Designed around real work. Guidance is simple, personalised to role and risk, and refined through employee feedback. The right support appears when it is needed."
+              }
             },
             {
               "name": "Accessibility",
@@ -665,7 +737,11 @@
                 "Comprehension-test pass rates across employee groups with different technical literacy levels.",
                 "Non-compliance incidents attributed to misunderstanding in root-cause analysis, trending down.",
                 "Engagement rates with training among employees using assistive technologies versus the workforce average."
-              ]
+              ],
+              "maturityLevels": {
+                "level1": "One format for everyone. Materials are dense, jargon-heavy, and incompatible with assistive technology. Some employees are effectively excluded.",
+                "level5": "Inclusive by design. Accessibility is a core requirement, with plain language, assistive-technology support, and localised content. Metrics confirm equitable impact across groups."
+              }
             }
           ]
         }
@@ -695,8 +771,8 @@
                 "Year-over-year reduction in standard-operation security policy infractions discovered via silent audits"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Behaviour unseen. No one observes how employees actually work. Gaps like unlocked screens surface only after an incident.",
+                "level5": "Discreet and actionable. Unannounced checks vary in method and timing to stay valid without eroding trust. Results benchmark behaviour and drive programme changes."
               }
             },
             {
@@ -715,8 +791,8 @@
                 "Time taken by employees to report simulated phishing emails to the security operations center (SOC)"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "No baseline. No phishing simulations are run, so click and reporting rates are unknown. Vulnerability is revealed only by a real attack.",
+                "level5": "Real-time read on human risk. Results tune difficulty and trigger supportive coaching as they come in. Templates track current phishing trends without eroding trust."
               }
             },
             {
@@ -735,8 +811,8 @@
                 "Average score in the knowledge, attitude, and behavior dimensions of the HAIS-Q or equivalent scale"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Nothing measured. No structured surveys of knowledge, attitudes, or behaviour exist. Programme effectiveness is assumed.",
+                "level5": "Validated and verified. Instruments like the HAIS-Q are adapted to the organisation and repeated over time. Scores are shown to track real behaviour."
               }
             }
           ]
@@ -761,8 +837,8 @@
                 "Year-over-year reduction in cleanup and recovery costs associated with employee-related security incidents"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Disconnected data. Incidents are handled by IT and never linked to training or behaviour. No baseline exists.",
+                "level5": "Evidence-based impact. More reports signal vigilance, while confirmed breaches are read against the threat landscape. Trends are tied to specific interventions."
               }
             },
             {
@@ -781,8 +857,8 @@
                 "Frequency of policy bypasses or \"shadow security\" workarounds detected in system audits"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Success assumed. No one measures whether behaviour changes, and there is no framework to define it. The knowing-doing gap goes unnoticed.",
+                "level5": "Proven, lasting change. Simulation, audit, and observation data combine into a live dashboard. Shadow security is tackled and change holds across groups."
               }
             },
             {
@@ -801,8 +877,8 @@
                 "Rate of knowledge decay measured across different training delivery formats (e.g., CBT vs instructor-led)"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Never measured. There is no baseline or follow-up testing. Whether anything was retained is unknown.",
+                "level5": "Predictive retention tracking. Knowledge is monitored continuously, and fading areas trigger targeted refreshers. Combined with simulation and incident data, it predicts where risk is rising."
               }
             },
             {
@@ -821,8 +897,8 @@
                 "Percentage of training feedback indicating that the material was immediately applicable to daily work tasks"
               ],
               "maturityLevels": {
-                "level1": "",
-                "level5": ""
+                "level1": "Relevance never asked. No one checks whether training is useful for daily work. Employees who see no value quietly work around it.",
+                "level5": "Usefulness drives design. Perceived relevance is tracked by team as an early predictor of behaviour change. Low scores trigger redesign around that team's real workflows."
               }
             }
           ]
