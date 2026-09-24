@@ -109,39 +109,12 @@ function RadarChart({ dims, revealed }) {
   );
 }
 
-// --- Minimal single-page PDF of a text summary (no dependency) ---
-const pdfEsc = (s) => s.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
-const pdfAscii = (s) => s
-  .replace(/[•]/g, '-')
-  .replace(/[–—]/g, '-')          // en/em dash
-  .replace(/[‘’]/g, "'")           // curly single quotes
-  .replace(/[“”]/g, '"')           // curly double quotes
-  .replace(/[^\x20-\x7E]/g, '');             // keep ASCII so byte offsets == char offsets
-const buildSummaryPdf = (title, lines) => {
-  let content = 'BT\n/F1 16 Tf 72 760 Td (' + pdfEsc(pdfAscii(title)) + ') Tj\n/F1 11 Tf 0 -30 Td 16 TL\n';
-  content += lines.map(s => '(' + pdfEsc(pdfAscii(s)) + ') Tj T*\n').join('');
-  content += 'ET';
-  const objs = [
-    '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
-    '<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream',
-  ];
-  let pdf = '%PDF-1.4\n';
-  const offsets = [];
-  objs.forEach((body, i) => { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\n${body}\nendobj\n`; });
-  const xref = pdf.length;
-  pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`
-    + offsets.map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('')
-    + `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
-  return pdf;
-};
-
 function AssessmentScreen() {
   const navigate = useNavigate();
   const layoutRef = useRef(null);
   const [maturityLevels, setMaturityLevels] = useState([]);
+  // The full mind map tree: the PDF report pulls factor overviews and action items from it.
+  const [mapData, setMapData] = useState(null);
   const [assessment, setAssessment] = useState(null);
   const [phase, setPhase] = useState('intro'); // intro | quiz | results
   const [sectionIdx, setSectionIdx] = useState(0);
@@ -162,6 +135,9 @@ function AssessmentScreen() {
   const [revealed, setRevealed] = useState(false);
   const [countPct, setCountPct] = useState(0);
   const [copied, setCopied] = useState(false);
+  // Optional organisation name for the PDF cover and filename.
+  const [preparedFor, setPreparedFor] = useState(() => localStorage.getItem('assessmentPreparedFor') || '');
+  const [pdfState, setPdfState] = useState('idle'); // idle | busy | error
   const [selectedLevelIdx, setSelectedLevelIdx] = useState(null);
   const [expandedLevels, setExpandedLevels] = useState({ 0: true });
   // Answered questions collapse to a compact summary row (qid -> collapsed).
@@ -192,6 +168,9 @@ function AssessmentScreen() {
   useEffect(() => {
     localStorage.setItem('assessmentMode', mode);
   }, [mode]);
+  useEffect(() => {
+    localStorage.setItem('assessmentPreparedFor', preparedFor);
+  }, [preparedFor]);
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
@@ -209,6 +188,7 @@ function AssessmentScreen() {
           return [];
         };
         setMaturityLevels(findMaturity(data));
+        setMapData(data);
       })
       .catch(err => console.error("Error loading maturity stages", err));
 
@@ -434,32 +414,32 @@ function AssessmentScreen() {
     } catch { /* clipboard unavailable */ }
   };
 
-  const downloadPdf = () => {
-    if (!results) return;
-    const lines = [
-      `Generated ${new Date().toLocaleDateString('en-CA')}`,
-      '',
-      results.overallLevel != null
-        ? `Overall maturity:  Level ${results.overallLevel}  (${Math.round(results.overallPct * 100)}%)`
-        : 'Overall maturity:  not enough answers',
-      '',
-      'By dimension:',
-      ...results.dims.map(d => d.level != null
-        ? `   ${d.label}:  Level ${d.level}  (${d.score}/${d.max}${d.skipped ? `, ${d.skipped} not sure` : ''})`
-        : `   ${d.label}:  not enough answers`),
-      '',
-      'Looking to strengthen your program? I provide consulting to help',
-      'organisations close these gaps. Reach out: liam@edurisk.ca',
-    ];
-    const blob = new Blob([buildSummaryPdf('Security Awareness Program Maturity Assessment', lines)], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'maturity-assessment.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+  // The report module and jsPDF load on first click, keeping them out of the main bundle.
+  const downloadPdf = async () => {
+    if (!results || pdfState === 'busy') return;
+    setPdfState('busy');
+    try {
+      const { saveReport } = await import('./reportPdf');
+      saveReport({
+        results, maturityLevels, mapData, mode, preparedFor,
+        siteUrl: new URL(import.meta.env.BASE_URL, window.location.origin).href,
+        items: quiz.flatMap(d => d.questions.map(q => {
+          const sure = answers[q.id] !== DK;
+          return {
+            dim: d.key, dimLabel: d.label, weight: d.weight, factor: q.factor, text: q.text,
+            answer: sure ? q.descriptors[answers[q.id]] : null,
+            points: sure ? pointsFor(q, answers[q.id]) : null,
+            best: q.descriptors.find((_, i) => pointsFor(q, i) === q.descriptors.length),
+          };
+        })),
+      });
+      setPdfState('idle');
+    } catch (err) {
+      // Most likely a stale chunk after a redeploy, or no network.
+      console.error('PDF export failed', err);
+      setPdfState('error');
+      setTimeout(() => setPdfState('idle'), 5000);
+    }
   };
 
   const toggleExpand = (idx) => setExpandedLevels(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -700,11 +680,23 @@ function AssessmentScreen() {
             </div>
 
             <div className="results-actions">
+              <label className="prepared-for" title="Shown on the PDF cover and in its filename">
+                <span>Prepared for</span>
+                <input
+                  type="text"
+                  value={preparedFor}
+                  onChange={(e) => setPreparedFor(e.target.value)}
+                  placeholder="Organisation (optional)"
+                  maxLength={80}
+                  autoComplete="organization"
+                />
+              </label>
               <button className="back-btn" onClick={copySummary} style={pillStyle}>
                 <Copy size={16} /><span>{copied ? 'Copied!' : 'Copy summary'}</span>
               </button>
-              <button className="back-btn" onClick={downloadPdf} style={pillStyle}>
-                <Download size={16} /><span>Save as PDF</span>
+              <button className="back-btn" onClick={downloadPdf} disabled={pdfState === 'busy'} aria-live="polite" style={pillStyle}>
+                <Download size={16} />
+                <span>{pdfState === 'busy' ? 'Preparing…' : pdfState === 'error' ? "Couldn't create PDF. Refresh and retry" : 'Save as PDF'}</span>
               </button>
               <button className="back-btn" onClick={retake} style={pillStyle}>
                 <RotateCcw size={16} /><span>Retake</span>
